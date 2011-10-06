@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="com.intellij_annotations_7.0.3">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib_managed/jars/com.intellij/annotations/annotations-7.0.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib_managed/jars/com.intellij/annotations/annotations-7.0.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="com.weiglewilczek.slf4s_slf4s_2.9.1_1.0.7">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib_managed/jars/com.weiglewilczek.slf4s/slf4s_2.9.1/slf4s_2.9.1-1.0.7.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/lib_managed/docs/com.weiglewilczek.slf4s/slf4s_2.9.1/slf4s_2.9.1-1.0.7-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib_managed/srcs/com.weiglewilczek.slf4s/slf4s_2.9.1/slf4s_2.9.1-1.0.7-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

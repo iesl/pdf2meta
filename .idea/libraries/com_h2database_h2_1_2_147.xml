@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="com.h2database_h2_1.2.147">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib_managed/jars/com.h2database/h2/h2-1.2.147.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/lib_managed/docs/com.h2database/h2/h2-1.2.147-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib_managed/srcs/com.h2database/h2/h2-1.2.147-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

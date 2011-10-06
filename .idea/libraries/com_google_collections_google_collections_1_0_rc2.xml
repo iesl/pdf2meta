@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="com.google.collections_google-collections_1.0-rc2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib_managed/jars/com.google.collections/google-collections/google-collections-1.0-rc2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/lib_managed/docs/com.google.collections/google-collections/google-collections-1.0-rc2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib_managed/srcs/com.google.collections/google-collections/google-collections-1.0-rc2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

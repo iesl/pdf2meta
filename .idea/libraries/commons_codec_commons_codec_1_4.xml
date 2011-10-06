@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="commons-codec_commons-codec_1.4">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib_managed/jars/commons-codec/commons-codec/commons-codec-1.4.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/lib_managed/docs/commons-codec/commons-codec/commons-codec-1.4-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib_managed/srcs/commons-codec/commons-codec/commons-codec-1.4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
