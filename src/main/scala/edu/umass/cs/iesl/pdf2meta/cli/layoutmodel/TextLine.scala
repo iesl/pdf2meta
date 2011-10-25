@@ -1,38 +1,41 @@
-package edu.umass.cs.iesl.pdf2meta.cli.layout
+package edu.umass.cs.iesl.pdf2meta.cli.layoutmodel
 
 import collection.Seq
 import edu.umass.cs.iesl.pdf2meta.webapp.lib.pdf.util.Util
+import collection.immutable.Map
 
-class TextLine(override val id: String, override val text: String, fonts: Seq[String], rectangles: List[Rectangle])
-        extends TextBox(id, Seq.empty)
+class TextLine(override val id: String, override val text: String, fonts: Seq[String], rectangles: List[RectangleOnPage])
+        extends DocNode(id, Seq.empty, None, None,true)
   {
-  override lazy val rectangle: Rectangle = Rectangle.encompassing(rectangles, 0)
-                                           .getOrElse(throw new Error("TextLine without rectangle"))
-  private lazy val heights = rectangles.map(x => x.height)
+  override lazy val rectangle: Option[RectangleOnPage] = RectangleOnPage.encompassing(rectangles, 0)
+  //.getOrElse(throw new Error("TextLine without rectangle"))
+  // round heights to nearest .05 points
+  private lazy val heights = rectangles.map(_.height) //rectangles.map(x => (x.height * 20.0).round / 20.0)
   lazy val fontsWithHeights: List[FontWithHeight] =
     {
     if (fonts.length == 1)
       {
       val uniqueHeights = Set(heights)
       require(uniqueHeights.size == 1)
-      List((fonts.head, heights.head))
+      List(new FontWithHeight(fonts.head, heights.head))
       }
     else
       {
       require(fonts.length == text.length)
       require(fonts.length == heights.length)
-      (fonts zip heights).toList
+      val t: List[(String, Double)] = (fonts zip heights).toList
+      t.map(x => new FontWithHeight(x._1, x._2))
       }
     };
 
-  override lazy val dominantFont: (String, Double) =
+  override lazy val dominantFont: Option[FontWithHeight] =
     {
-    if (fontsWithHeights.isEmpty) ("None", 0)
+    if (fontsWithHeights.isEmpty) Some(new FontWithHeight("None", 0))
     else
       {
-      val fontCounts = fontsWithHeights groupBy (identity) map
-                       {case (c, cs) => (c, cs.size)}
-      fontCounts.toSeq.sortWith((a, b) => a._2 > b._2).head._1
+      val fontCounts = Util.histogram(fontsWithHeights)
+
+      Some(fontCounts.toSeq.sortWith((a, b) => a._2 > b._2).head._1)
       }
     }
   private def runsToTextLines(runs: List[(FontWithHeight, List[FontWithHeight])]) =
@@ -59,7 +62,7 @@ class TextLine(override val id: String, override val text: String, fonts: Seq[St
     runsToTextLines(runs)
     }
 */
-  override def partitionByFont(boxorder: Ordering[Rectangular]) =
+  override def partitionByFont(boxorder: Ordering[RectangularOnPage]) =
     {
     if (fontsWithHeights.isEmpty)
       {
@@ -83,7 +86,12 @@ class TextLine(override val id: String, override val text: String, fonts: Seq[St
     }
 
   // this might be thrown off by superscripts etc.
-  def fontSize = rectangle.height
+  def fontSize = rectangle.get.height
+
+  override def create(childrenA: Seq[DocNode]) =
+    {
+    new TextLine(id, text, fonts, rectangles)
+    }
   }
 
 

@@ -1,0 +1,18 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Jetty" type="ScalaCompilationServerRunConfiguration" factoryName="Scala Compilation Server">
+    <module name="webapp" />
+    <setting name="vmparams" value="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005" />
+    <RunnerSettings RunnerId="Debug">
+      <option name="DEBUG_PORT" value="60877" />
+      <option name="TRANSPORT" value="0" />
+      <option name="LOCAL" value="true" />
+    </RunnerSettings>
+    <RunnerSettings RunnerId="Run" />
+    <ConfigurationWrapper RunnerId="Debug" />
+    <ConfigurationWrapper RunnerId="Run" />
+    <method>
+      <option name="Make" enabled="false" />
+      <option name="SBT.BeforeRunTask" enabled="true" action="jetty-run" runInCurrentModule="false" />
+    </method>
+  </configuration>
+</component>

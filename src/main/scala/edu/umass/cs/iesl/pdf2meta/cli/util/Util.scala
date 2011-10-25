@@ -1,9 +1,39 @@
 package edu.umass.cs.iesl.pdf2meta.webapp.lib.pdf.util
 
-import collection.immutable
+import collection.{immutable, Seq}
+import immutable.Map
 
 object Util
   {
+  def histogram[T](list: Seq[T]): Map[T, Int] =
+    {
+    /*val histEntries = for
+    {key <- list.distinct
+     count = list.count(_ == key)} yield
+      {
+      (key -> count)
+      }
+    val counts = Map(histEntries: _*)
+*/
+
+    val groups: Map[T, Seq[T]] = list groupBy (identity)  // groupby does not keep multiple identical items!
+    val counts = groups map
+                 {case (c, cs) => (c, cs.length)}
+
+    counts
+    }
+
+  def histogramAccumulate[T](weightedList: Seq[(T, Int)]): Map[T, Int] =
+    {
+    val groups: Map[T, Seq[(T, Int)]] = weightedList groupBy (x => x._1)  // does not work !?
+    val counts = groups map
+                 {
+                 case (q, blocks) => (q, blocks.foldLeft(0)((acc, x) => acc + x._2))
+                 }
+
+    counts
+    }
+
 
   import scala.math._
 
@@ -49,11 +79,10 @@ object Util
     b.result
     }
   */
-
- /* def contiguousRuns[K, A](s: List[A])(f: A => K): immutable.List[(K, List[A])] =
-    {
-    contiguousRunsReversed(s.reverse)(f)
-    }*/
+  /* def contiguousRuns[K, A](s: List[A])(f: A => K): immutable.List[(K, List[A])] =
+      {
+      contiguousRunsReversed(s.reverse)(f)
+      }*/
   def contiguousRuns[K, A](s: List[A])(f: A => K): immutable.List[(K, List[A])] =
     {
     if (s.isEmpty) Nil
@@ -62,11 +91,10 @@ object Util
       val p: List[(K, List[A])] = contiguousRuns(s.tail)(f)
 
       val a: A = s.head
-        val k: K = f(a)
+      val k: K = f(a)
 
       if (p.isEmpty)
         {
-
         List((k, List(a)))
         }
       else
