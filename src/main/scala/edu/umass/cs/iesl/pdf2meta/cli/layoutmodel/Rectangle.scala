@@ -92,11 +92,14 @@ trait Rectangle
   def height = (top - bottom).abs
   def area = width * height
 
-  def isLandscape = width > height
-  def isHighlyLandscape = width > 4*height
-  def isPortrait = height > width
-  def isSquare = width == height
+  def aspectRatio = width / height
 
+  def isLandscape = width > height
+  def isPortrait = height > width
+  /*
+  def isHighlyLandscape = width > 4*height
+  def isSquare = width == height
+*/
   def isBogus = (height == 0 && width == 0)
   def isReal = (height != 0 || width != 0)
 
@@ -224,8 +227,7 @@ trait RectangleOnPage extends Rectangle
       }*/
   }
 
-private class RealRectangleOnPage(val page: Page, val left: Double, val bottom: Double, val right: Double,
-                                  val top: Double) extends RectangleOnPage
+private class RealRectangleOnPage(val page: Page, val left: Double, val bottom: Double, val right: Double, val top: Double) extends RectangleOnPage
   {
   require(top >= bottom)
   require(right >= left)

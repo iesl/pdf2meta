@@ -7,6 +7,7 @@ import scala.Function1
 import edu.umass.cs.iesl.pdf2meta.cli.util.Workspace
 
 import scala.sys.process.{Process, ProcessIO}
+import java.util.Date
 
 class PdfMiner extends XmlExtractor with Logging with Function1[Workspace, DocNode]
   {
@@ -15,13 +16,20 @@ class PdfMiner extends XmlExtractor with Logging with Function1[Workspace, DocNo
     lazy val command = "/Users/lorax/iesl/rexa-textmill/bin/rexapdfminer.py --file " + w.file
     lazy val output =
       {
+      logger.debug("Starting PdfMiner...")
+      val startTime = new Date
+      logger.debug("Running PdfMiner...")
+
       val pb = Process(command)
       val sb = StringBuilder.newBuilder
-      val pio = new ProcessIO(_ => (),
-                              stdout => scala.io.Source.fromInputStream(stdout).getLines().foreach(sb append _),
-                              _ => ())
+      val pio = new ProcessIO(_ => (), stdout => scala.io.Source.fromInputStream(stdout).getLines().foreach(sb append _), _ => ())
       val p = pb.run(pio)
       val exitCode = p.exitValue()
+
+      logger.debug("PdfMiner done ")
+      val endTime = new Date()
+
+      logger.debug("PdfMiner took " + ((endTime.getTime - startTime.getTime)) + " milliseconds")
       sb toString()
       }
 
@@ -41,109 +49,119 @@ class PdfMiner extends XmlExtractor with Logging with Function1[Workspace, DocNo
 
     //val pageorder = new PageReadingOrder(errors)
     //var startline = 0;
-    val rawPages = for (page <- xml \\ "page") yield
+    val rawPages =
       {
-      //val errors = boxorder.errors
-      val pageid = (page \ "@pageid").text
-      val pagenum = pageid.toInt
+      logger.debug("Starting XML parsing...")
+      val startTime = new Date()
+      logger.debug("Starting XML parsing...")
 
-      val pageRect: Rectangle = Rectangle((page \ "@bbox").text)
-                                .getOrElse(throw new Error("Page without bounding box, abort"))
-      val thePage = new Page(pagenum, pageRect)
-
-      val textboxes = for (box <- page \ "textbox") yield
+      val result = for (page <- xml \\ "page") yield
         {
-        val textboxid = pageid + "." + (box \ "@index").text
-        var lineid = 0
-        val lines =
-          for (line <- box \ "textline") yield
-            {
-            //val bbox = new BoundingBox((line \ "@bbox").text)
-            //val bbox = (line \ "@bbox").text
-            val fonts = (line \ "@fonts").text
-            val bboxes = (line \ "@bboxes").text
-            val lengthStr = (line \ "@length").text
+        //val errors = boxorder.errors
+        val pageid = (page \ "@pageid").text
+        val pagenum = pageid.toInt
 
-            if (bboxes.isEmpty)
+        val pageRect: Rectangle = Rectangle((page \ "@bbox").text).getOrElse(throw new Error("Page without bounding box, abort"))
+        val thePage = new Page(pagenum, pageRect)
+
+        val textboxes = for (box <- page \ "textbox") yield
+          {
+          val textboxid = pageid + "." + (box \ "@index").text
+          var lineid = 0
+          val lines =
+            for (line <- box \ "textline") yield
               {
-              None
-              }
-            else
-              {
-              //val bboxRect = Rectangle(bbox)
-              val bboxRects = bboxes.split(" ").map(RectangleOnPage(thePage, _)).toList.flatten
-              if (bboxRects.isEmpty)
+              //val bbox = new BoundingBox((line \ "@bbox").text)
+              //val bbox = (line \ "@bbox").text
+              val fonts = (line \ "@fonts").text
+              val bboxes = (line \ "@bboxes").text
+              val lengthStr = (line \ "@length").text
+
+              if (bboxes.isEmpty)
                 {
-                // this happens if there were bounding boxes, but all of them turned out to be bogus (hence None)
                 None
                 }
               else
                 {
-                val id = textboxid + "." + lineid
-                lineid += 1
-
-                val (text: String, length: Int) =
-                  try
+                //val bboxRect = Rectangle(bbox)
+                val bboxRects = bboxes.split(" ").map(RectangleOnPage(thePage, _)).toList.flatten
+                if (bboxRects.isEmpty)
                   {
-                  val lengthR(ccs, bbs, ffs) = lengthStr
-                  // if we got here, it's because there was a cid thingy
-
-                  (line.text.replaceAll(cid, "*"), bbs.toInt)
+                  // this happens if there were bounding boxes, but all of them turned out to be bogus (hence None)
+                  None
                   }
-                  catch
+                else
                   {
-                  case e: MatchError => (line.text, lengthStr.toInt)
-                  }
+                  val id = textboxid + "." + lineid
+                  lineid += 1
 
-                require(length == text.length)
-                require(!text.contains("(cid"))
-                Some(new TextLine(id, text, fonts.split(" "), bboxRects))
+                  val (text: String, length: Int) =
+                    try
+                    {
+                    val lengthR(ccs, bbs, ffs) = lengthStr
+                    // if we got here, it's because there was a cid thingy
+
+                    (line.text.replaceAll(cid, "*"), bbs.toInt)
+                    }
+                    catch
+                    {
+                    case e: MatchError => (line.text, lengthStr.toInt)
+                    }
+
+                  require(length == text.length)
+                  require(!text.contains("(cid"))
+                  Some(new TextLine(id, text, fonts.split(" "), bboxRects))
+                  }
                 }
               }
-            }
-        // val bbox = new BoundingBox((box \ "@bbox").text) //with BoxReadingOrder
-        // val bbox = (box \ "@bbox").text
-        // val bboxRect = Rectangle(bbox)
-        val lf: Seq[DocNode] = lines.flatten
+          // val bbox = new BoundingBox((box \ "@bbox").text) //with BoxReadingOrder
+          // val bbox = (box \ "@bbox").text
+          // val bboxRect = Rectangle(bbox)
+          val lf: Seq[DocNode] = lines.flatten
 
-        lf match
-        {
-          case Nil => None;
-          case _ => Some(new DocNode(textboxid, lf, None, None,false))
-        }
-        }
-      var rectid = 0
-      val rects = (for (rect <- page \ "rect") yield
-        {
-        rectid += 1
-        val bbox: String = (rect \ "@bbox").text
-        if (bbox.trim().isEmpty) None
-        else RectangleOnPage(thePage, bbox).map((r => new RectBox("r-" + pageid + "." + rectid.toString, r)))
-        })
-      var curveid = 0
-      val curves = (for (curve <- page \ "curve") yield
-        {
-        curveid += 1
-        val bbox: String = (curve \ "@bbox").text
-        if (bbox.trim().isEmpty) None
-        else RectangleOnPage(thePage, bbox).map(r => new CurveBox("c-" + pageid + "." + curveid.toString,  r))
-        })
-      var figureid = 0
-      val figures = (for (figure <- page \ "figure") yield
-        {
-        figureid += 1
-        val bbox: String = (figure \ "@bbox").text
-        if (bbox.trim().isEmpty) None
-        else RectangleOnPage(thePage, bbox).map(r => new FigureBox("f-" + pageid + "." + figureid.toString,  r))
-        })
+          lf match
+          {
+            case Nil => None;
+            case _ => Some(new DocNode(textboxid, lf, None, None, false))
+          }
+          }
+        var rectid = 0
+        val rects = (for (rect <- page \ "rect") yield
+          {
+          rectid += 1
+          val bbox: String = (rect \ "@bbox").text
+          if (bbox.trim().isEmpty) None
+          else RectangleOnPage(thePage, bbox).map((r => new RectBox("r-" + pageid + "." + rectid.toString, r)))
+          })
+        var curveid = 0
+        val curves = (for (curve <- page \ "curve") yield
+          {
+          curveid += 1
+          val bbox: String = (curve \ "@bbox").text
+          if (bbox.trim().isEmpty) None
+          else RectangleOnPage(thePage, bbox).map(r => new CurveBox("c-" + pageid + "." + curveid.toString, r))
+          })
+        var figureid = 0
+        val figures = (for (figure <- page \ "figure") yield
+          {
+          figureid += 1
+          val bbox: String = (figure \ "@bbox").text
+          if (bbox.trim().isEmpty) None
+          else RectangleOnPage(thePage, bbox).map(r => new FigureBox("f-" + pageid + "." + figureid.toString, r))
+          })
 
-      new DocNode(pageid, (textboxes.flatten.toList :::
-                           rects.flatten.toList :::
-                           curves.flatten.toList ::: figures.flatten.toList), None, None,false)
-        {
-        override lazy val rectangle : Option[RectangleOnPage] = RectangleOnPage(thePage, pageRect)
-//        override lazy val page = Some(pagenum)
+        new DocNode(pageid, (textboxes.flatten.toList :::
+                             rects.flatten.toList :::
+                             curves.flatten.toList ::: figures.flatten.toList), None, None, false)
+          {
+          override lazy val rectangle: Option[RectangleOnPage] = RectangleOnPage(thePage, pageRect)
+          //        override lazy val page = Some(pagenum)
+          }
         }
+      logger.debug("XML parsing done...")
+      val parseTime = new Date()
+      logger.debug("XML parsing took " + ((parseTime.getTime - startTime.getTime)) + " milliseconds")
+      result
       }
 
 
@@ -155,6 +173,6 @@ class PdfMiner extends XmlExtractor with Logging with Function1[Workspace, DocNo
     //val numberedTextLinesByPage =
     //val textBoxes = pages.map(x=>x.textBoxes.map(y => (x, y))).flatten
 
-    DocNode(w.filename, rawPages.toList, Some(List(command, output).iterator), None,false)
+    DocNode(w.filename, rawPages.toList, Some(List(command, output).iterator), None, false)
     }
   }

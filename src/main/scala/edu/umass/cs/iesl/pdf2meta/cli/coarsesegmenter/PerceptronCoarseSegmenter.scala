@@ -51,18 +51,24 @@ trait PerceptronCoarseSegmenterComponent
 
         for (page <- doc.children; box <- page.allAtoms; feat <- features)
           {
-          val featuresPerBox: MutableWeightedSet[Feature] = featureMap(box)
-          feat match
+          box.text match
           {
-            case f: ContextFeature =>
+            case "" =>
+            case x =>
+
+              val featuresPerBox: MutableWeightedSet[Feature] = featureMap(box)
+              feat match
               {
-              logger.debug("featureMap(" + box + ").incrementBy(" + feat + ", " + f(doc, box) + ")")
-              featuresPerBox.incrementBy(feat, f(doc, box))
-              }
-            case f: LocalFeature =>
-              {
-              logger.debug("featureMap(" + box + ").incrementBy(" + feat + ", " + f(box) + ")")
-              featuresPerBox.incrementBy(feat, f(box))
+                case f: ContextFeature =>
+                  {
+                  //logger.debug("featureMap(" + box + ").incrementBy(" + feat + ", " + f(doc, box) + ")")
+                  featuresPerBox.incrementBy(feat, f(doc, box))
+                  }
+                case f: LocalFeature =>
+                  {
+                  //logger.debug("featureMap(" + box + ").incrementBy(" + feat + ", " + f(box) + ")")
+                  featuresPerBox.incrementBy(feat, f(box))
+                  }
               }
           }
           }
@@ -75,8 +81,13 @@ trait PerceptronCoarseSegmenterComponent
         for (page <- doc.children; box <- page.allAtoms; sc <- scoringFunctions) // classify page.allNodes??
           {
           val featuresPerBox: MutableWeightedSet[Feature] = featureMap(box)
-          logger.debug("scores(" + box.toString + ").incrementBy(" + sc.name + ", " + sc(featuresPerBox) + ")")
-          scores(box).incrementBy(sc.name, sc(featuresPerBox))
+          //logger.debug("scores(" + box.toString + ").incrementBy(" + sc.name + ", " + sc(featuresPerBox) + ")")
+          if (featuresPerBox.asMap.isEmpty)
+            {
+            scores(box).incrementBy("discard", 10)
+            }
+          else
+            scores(box).incrementBy(sc.name, sc(featuresPerBox))
           }
 
         /*val boxes: ClassifiedRectangles =
@@ -98,7 +109,7 @@ trait PerceptronCoarseSegmenterComponent
           {
           def scoreBox(b: DocNode): ClassifiedRectangle =
             {
-            logger.debug(b.toString + ": " + scores(b))
+            //logger.debug(b.toString + ": " + scores(b))
             val best: Option[String] = scores(b).unambiguousBest(.9)
             best match
             {
@@ -107,7 +118,7 @@ trait PerceptronCoarseSegmenterComponent
             }
             }
 
-          new ClassifiedRectangles(doc.children.map(scoreBox))
+          new ClassifiedRectangles(doc.allAtoms.map(scoreBox))
           }
 
 
@@ -228,6 +239,16 @@ object TextContextFeature extends Logging
 abstract class Feature(val name: String)
   {
   override def toString = name
+
+  override def equals(p1: Any) =
+    {
+    p1 match
+    {
+      case x: Feature => name == x.name
+      case _ => false
+    }
+    }
+  override def hashCode() = name.hashCode
   }
 
 abstract class LocalFeature(override val name: String) extends Feature(name)

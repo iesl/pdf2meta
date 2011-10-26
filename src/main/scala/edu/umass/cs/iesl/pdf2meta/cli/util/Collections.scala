@@ -1,6 +1,7 @@
 package edu.umass.cs.iesl.pdf2meta.cli.util
 
 import collection.mutable.HashMap
+import collection.Seq
 
 
 object WeightedSet
@@ -37,6 +38,12 @@ trait WeightedSet[T]
     {
     if (asMap.isEmpty)
       None
+    else if (asMap.size == 1)
+           {
+           val p: (T, Double) = asMap.head
+           if (p._2 <= 0) None
+           else Some(p._1)
+           }
     else
       {
       val w = byWeight;
@@ -48,7 +55,7 @@ trait WeightedSet[T]
       }
     }
 
-  def mkString(sep: String) = asMap.mkString(sep)
+  def mkString(sep: String) = asSeq.mkString(sep)
 
   def normalized: WeightedSet[T] =
     {
@@ -59,7 +66,8 @@ trait WeightedSet[T]
     result
     }
 
-  override def toString = asMap.toString()
+  def asSeq: Seq[(T, Double)] = asMap.toSeq.sortBy(_._2).reverse
+  override def toString = asSeq.toString()
   }
 
 object MutableWeightedSet
