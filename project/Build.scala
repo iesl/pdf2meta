@@ -199,7 +199,7 @@ val iofile = "com.github.scala-incubator.io" %% "scala-io-file" % "0.2.0"
 
   val antiXML = "com.codecommit" %% "anti-xml" % "0.3"
 
-val jetty = "org.mortbay.jetty" % "jetty" % "6.1.22" % "jetty"
+val jetty = "org.mortbay.jetty" % "jetty" % "6.1.26" // % "jetty"
 val dsutils = "com.davidsoergel" % "dsutils" % "1.03"
 val karafConsole = "org.apache.karaf.shell" % "org.apache.karaf.shell.console" % "2.2.4"
 }
@@ -258,11 +258,35 @@ val cliDeps = Seq() //karafConsole
     out
   }
 
+  lazy val overrideSettings = {
+    lazy val publishSetting = publishTo <<= (version) {
+      version: String =>
+        def repo(name: String) = name at "http://iesl.cs.umass.edu:8081/nexus/content/repositories/" + name
+      val isSnapshot = version.trim.endsWith("SNAPSHOT")
+      val repoName   = if(isSnapshot) "snapshots" else "releases"
+      Some(repo(repoName))
+    }
+
+    lazy val credentialsSetting = credentials += {
+      Seq("build.publish.user", "build.publish.password").map(k => Option(System.getProperty(k))) match {
+        case Seq(Some(user), Some(pass)) =>
+          Credentials("Sonatype Nexus Repository Manager", "iesl.cs.umass.edu", user, pass)
+        case _ =>
+          Credentials(Path.userHome / ".ivy2" / ".credentials")
+      }
+    }
+
+    Defaults.defaultSettings ++ Seq(
+      publishSetting,
+      credentialsSetting
+    )
+  }
 
   lazy val cli:Project = Project(
-    id = "cli",
+    id = "pdf2meta-"
+         + "cli",
     base = file("cli"),
-    settings = buildSettings ++ Seq (libraryDependencies := commonDeps ++ cliDeps)
+    settings = buildSettings ++ Seq (libraryDependencies := commonDeps ++ cliDeps)  ++ overrideSettings
   )
 
 
@@ -272,10 +296,10 @@ val cliDeps = Seq() //karafConsole
  // seq(com.github.siasia.WebPlugin.webSettings: _*)
   seq(WebPlugin.webSettings: _*)
   Project(
-           id = "webapp",
+           id = "pdf2meta-webapp",
            base = file("webapp"),
            dependencies = Seq(cli),
-           settings = buildSettings ++ Seq (libraryDependencies := commonDeps ++ webDeps) ++ WebPlugin.webSettings
+           settings = buildSettings ++ Seq (libraryDependencies := commonDeps ++ webDeps) ++ WebPlugin.webSettings ++ overrideSettings
          )
   }
 

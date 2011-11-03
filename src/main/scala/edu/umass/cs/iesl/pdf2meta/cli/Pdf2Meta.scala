@@ -1,6 +1,5 @@
 package edu.umass.cs.iesl.pdf2meta.cli
 
-import coarsesegmenter.ClassifiedRectangles
 import config.{WiredExtractOnlyPipeline, WiredPipeline}
 import layoutmodel.DocNode
 import tools.nsc.io.JFile
@@ -41,8 +40,9 @@ class Pdf2Meta
     {
       case "textonly" =>
         {
-        val doc: DocNode = WiredExtractOnlyPipeline.pipeline.apply(w)
-        val result = doc.text
+        val w = new FileWorkspace(new JFile(infilename))
+        val doc: DocNode = WiredExtractOnlyPipeline(w)
+        val result: String = doc.text
         println(result)
         }
       case _ => Pdf2Meta.usage()

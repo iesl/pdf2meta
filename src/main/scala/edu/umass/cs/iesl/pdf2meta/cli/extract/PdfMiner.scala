@@ -4,16 +4,31 @@ import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel._
 
 import com.weiglewilczek.slf4s.Logging
 import scala.Function1
-import edu.umass.cs.iesl.pdf2meta.cli.util.Workspace
-
 import scala.sys.process.{Process, ProcessIO}
 import java.util.Date
+import edu.umass.cs.iesl.pdf2meta.cli.util.{Util, Workspace}
+import tools.nsc.io.JFile
+
+object PdfMiner
+  {
+  lazy val executable =
+    {
+    val tempPythonLocation = "/tmp/pdf2meta/rexapdfminer.py"
+    val py = getClass.getResourceAsStream("/rexapdfminer.py")
+    val tempPythonFile = new JFile(tempPythonLocation)
+    tempPythonFile.getParentFile.mkdirs()
+    Util.copy(py, tempPythonFile)
+    tempPythonFile.setExecutable(true)
+    tempPythonLocation
+    }
+  }
 
 class PdfMiner extends XmlExtractor with Logging with Function1[Workspace, DocNode]
   {
+
   def apply(w: Workspace): DocNode =
     {
-    lazy val command = "/Users/lorax/iesl/rexa-textmill/bin/rexapdfminer.py --file " + w.file
+    lazy val command = PdfMiner.executable + " --file " + w.file
     lazy val output =
       {
       logger.debug("Starting PdfMiner...")
