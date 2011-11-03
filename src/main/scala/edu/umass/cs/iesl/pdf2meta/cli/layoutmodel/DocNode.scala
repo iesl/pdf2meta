@@ -81,7 +81,7 @@ class DocNode(val id: String, val children: Seq[DocNode], val localInfo: Option[
   {
 
 
-  lazy val charSpanProportional: Map[DocNode, (Double, Double)] =
+lazy val charSpanProportional: Map[DocNode, (Double, Double)] =
     {
     def appendEnd(l: List[(DocNode, Int)], n: DocNode): List[(DocNode, Int)] =
       {
@@ -181,7 +181,7 @@ def computePage: Option[Int] =
         {
         allNodes.collect({case x: TextLine => None; case x: TextBox => None; case x: DocNode => Some(x)}).flatten
         }*/
-  def textBoxes: Seq[DocNode] =
+/*  def textBoxes: Seq[DocNode] =
     {
     allNodes.collect({
                      //case x: TextLine => None;
@@ -197,7 +197,7 @@ def computePage: Option[Int] =
                      case x: TextBox => Some(x)
                      }).flatten
     }
-
+*/
   def delimitingBoxes: scala.Seq[DelimitingBox] =
     {
     val all = allNodes

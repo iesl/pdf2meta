@@ -1,12 +1,14 @@
 package edu.umass.cs.iesl.pdf2meta.cli.layoutmodel
 
 import collection.Seq
-import edu.umass.cs.iesl.pdf2meta.webapp.lib.pdf.util.Util
-import collection.immutable.Map
+import edu.umass.cs.iesl.pdf2meta.cli.util.Util
 
-class TextLine(override val id: String, override val text: String, fonts: Seq[String], rectangles: List[RectangleOnPage])
-        extends DocNode(id, Seq.empty, None, None,true)
+class TextLine(override val id: String, val theText: String, fonts: Seq[String], rectangles: List[RectangleOnPage])
+        extends DocNode(id, Seq.empty, None, None, true)
   {
+
+  override def mkString(d: String) = theText
+
   override lazy val rectangle: Option[RectangleOnPage] = RectangleOnPage.encompassing(rectangles, 0)
   //.getOrElse(throw new Error("TextLine without rectangle"))
   // round heights to nearest .05 points

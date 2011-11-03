@@ -1,7 +1,9 @@
-package edu.umass.cs.iesl.pdf2meta.webapp.lib.pdf.util
+package edu.umass.cs.iesl.pdf2meta.cli.util
 
 import collection.{immutable, Seq}
 import immutable.Map
+import java.io._
+import java.net.URL
 
 object Util
   {
@@ -130,4 +132,145 @@ object Util
         {runs.head :: next}
       }
     }
+
+  // stolen from scalate IOUtil
+
+  def loadText(in: InputStream, encoding: String = "UTF-8"): String = new String(loadBytes(in), encoding)
+
+    def loadTextFile(path: File, encoding: String = "UTF-8") = new String(loadBinaryFile(path), encoding)
+
+    def loadBinaryFile(path: File): Array[Byte] = {
+      val baos = new ByteArrayOutputStream
+      val in = new FileInputStream(path)
+      try {
+        copy(in, baos)
+      } finally {
+        in.close
+      }
+
+      baos.toByteArray
+    }
+
+    def loadBytes(in: InputStream): Array[Byte] = {
+      val baos = new ByteArrayOutputStream
+      try {
+        copy(in, baos)
+      } finally {
+        in.close
+      }
+      baos.toByteArray
+    }
+
+  def copy(in: File, out: File): Long = {
+    out.getParentFile.mkdirs
+    copy(new FileInputStream(in), new FileOutputStream(out))
   }
+
+  def copy(file: File, out: OutputStream): Long = copy(new BufferedInputStream(new FileInputStream(file)), out)
+
+  def copy(in: InputStream, file: File): Long = {
+    val out = new FileOutputStream(file)
+    try {
+      copy(in, out)
+    } finally {
+      out.close
+    }
+  }
+
+  def copy(url: URL, file: File): Long = {
+    val in = url.openStream
+    try {
+      copy(in, file)
+    } finally {
+      in.close
+    }
+  }
+
+  def copy(in: InputStream, out: OutputStream): Long = {
+    var bytesCopied: Long = 0
+    val buffer = new Array[Byte](8192)
+
+    var bytes = in.read(buffer)
+    while (bytes >= 0) {
+      out.write(buffer, 0, bytes)
+      bytesCopied += bytes
+      bytes = in.read(buffer)
+    }
+
+    bytesCopied
+  }
+
+
+  def copy(in: Reader, out: Writer): Long = {
+    var charsCopied: Long = 0
+    val buffer = new Array[Char](8192)
+
+    var chars = in.read(buffer)
+    while (chars >= 0) {
+      out.write(buffer, 0, chars)
+      charsCopied += chars
+      chars = in.read(buffer)
+    }
+
+    charsCopied
+  }
+
+
+  }
+
+
+//http://michid.wordpress.com/2009/02/23/function_mem/
+class Memoize1[-T, +R](f: T => R) extends (T => R)
+  {
+
+  import scala.collection.mutable
+
+  private[this] val vals = mutable.Map.empty[T, R]
+
+  def apply(x: T): R =
+    {
+    if (vals.contains(x))
+      {
+      vals(x)
+      }
+    else
+      {
+      val y = f(x)
+      vals += ((x, y))
+      y
+      }
+    }
+  }
+
+object Memoize1
+  {
+  def apply[T, R](f: T => R) = new Memoize1(f)
+  def Y[T, R](f: (T, T => R) => R) =
+    {
+    var yf: T => R = null
+    yf = Memoize1(f(_, yf(_)))
+    yf
+    }
+  }
+
+/*
+case class Memoize1[-T, +R](f: T => R) extends Function1[T, R]
+  {
+
+  import scala.collection.mutable
+
+  private[this] val vals = mutable.Map.empty[T, R]
+
+  def apply(x: T): R = vals.getOrElseUpdate(x, f(x))
+  }
+
+object RecursiveMemoizedFunction
+  {
+  def apply[T, R](fRec: (T, T => R) => R): (T => R) =
+    {
+    def f(n: T): R = fRec(n, n => f(n))
+    Memoize1(f)
+    }
+  }
+*/
+

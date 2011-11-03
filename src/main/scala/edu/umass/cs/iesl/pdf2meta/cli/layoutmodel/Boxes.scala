@@ -4,7 +4,9 @@ import collection.Seq
 
 trait TextContainer
   {
-  def text: String
+  final def text: String = mkString(" ")
+  def mkString(d : String) : String
+
   }
 
 // font id, height

@@ -19,14 +19,14 @@ trait XmlExtractor extends Function1[Workspace, DocNode]
   }
 
 //case class Status(command: String, output: String)
-
+/*
 trait XmlExtractorComponent
   {
   // because this component has no dependencies, we don't need a self type here, and the service class needn't be inner.
 
   val xmlExtractor: XmlExtractor
   }
-
+*/
 /*
 class test extends XmlExtractor
   {

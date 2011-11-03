@@ -36,7 +36,7 @@ class PdfMiner extends XmlExtractor with Logging with Function1[Workspace, DocNo
     lazy val outfile =
       {
       output // just trigger the lazy evaluation
-      w.file + ".d/pdfminer/" + w.file.segments.last + ".pdfminer.xml"
+      w.dir + "/" + w.filename + ".d/pdfminer/" + w.file.segments.last + ".pdfminer.xml"
       }
 
     // lazy val outlines = scala.io.Source.fromFile(outfile).mkString

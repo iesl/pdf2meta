@@ -1,21 +1,32 @@
 package edu.umass.cs.iesl.pdf2meta.cli
 
-import coarsesegmenter.{ClassifiedRectangles, CoarseSegmenterComponent}
-import extract.XmlExtractorComponent
+import coarsesegmenter.{CoarseSegmenter, ClassifiedRectangles}
+import extract.XmlExtractor
 import layoutmodel.DocNode
 import metadatamodel.MetadataModel
-import pagetransform.{DocTransformerComponent, DocTransformer}
+import pagetransform.DocTransformer
 import util.Workspace
 import java.util.Date
 import com.weiglewilczek.slf4s.Logging
 
-trait PipelineComponent
+// explicated CAKE example
+trait PipelineComponent extends Function1[Workspace, MetadataModel]
   {
-  this: XmlExtractorComponent with
-          CoarseSegmenterComponent with DocTransformerComponent =>
+  // Requirements
+  // this component only works when mixed with these other components, which provide dependencies
+  //this: XmlExtractorComponent with
+  //        CoarseSegmenterComponent => //with DocTransformerComponent =>
+  // when dependencies have no further dependencies, we can just ask for them directly instead of making an extra "component" layer
+  val xmlExtractor: XmlExtractor
+  val docTransformer: DocTransformer
+  val coarseSegmenter: CoarseSegmenter
 
+  // this component provides a dependency that may be used by others
   val pipeline: Pipeline
 
+  // one way of satisfying that dependency (in fact, the only way since "Pipeline" is not an independent interface)
+  // is to instantiate this inner class in the mixed class
+  // the trick is this can refer to members of the other components directly (e.g., docTransformer) because they're in the same namespace after mixing.
   class Pipeline extends Function1[Workspace, MetadataModel]
     {
     def apply(w: Workspace): MetadataModel =
@@ -27,15 +38,39 @@ trait PipelineComponent
       }
     }
 
+  def apply(w: Workspace): MetadataModel = pipeline.apply(w)
   }
 
-trait WebPipelineComponent extends Logging
+trait ExtractOnlyPipelineComponent extends Function1[Workspace, DocNode]
   {
-  this: XmlExtractorComponent with
-          CoarseSegmenterComponent =>
+  //this: XmlExtractorComponent with DocTransformerComponent =>
+  val xmlExtractor: XmlExtractor
+  val docTransformer: DocTransformer
 
   val pipeline: Pipeline
+
+  class Pipeline extends Function1[Workspace, DocNode]
+    {
+    def apply(w: Workspace): DocNode =
+      {
+      val doc = xmlExtractor(w)
+      val regrouped = docTransformer(doc)
+      regrouped
+      }
+    }
+
+  def apply(w: Workspace): DocNode = pipeline.apply(w)
+  }
+
+trait WebPipelineComponent extends Function1[Workspace, (DocNode, ClassifiedRectangles)] with Logging
+  {
+  //this: XmlExtractorComponent with
+  //        CoarseSegmenterComponent =>
+  val xmlExtractor: XmlExtractor
   val docTransformer: DocTransformer
+  val coarseSegmenter: CoarseSegmenter
+
+  val pipeline: Pipeline
 
   class Pipeline extends Function1[Workspace, (DocNode, ClassifiedRectangles)]
     {
@@ -70,4 +105,5 @@ trait WebPipelineComponent extends Logging
       }
     }
 
+  def apply(w: Workspace): (DocNode, ClassifiedRectangles) = pipeline.apply(w)
   }

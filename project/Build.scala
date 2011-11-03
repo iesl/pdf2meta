@@ -99,7 +99,7 @@ object Resolvers {
     ModuleConfiguration("org.guiceyfruit", GuiceyFruitRepo),
     ModuleConfiguration("org.jboss", JBossRepo),
     ModuleConfiguration("org.jboss.netty", JBossRepo),
-    ModuleConfiguration("org.jboss.netty", JBossRepo),
+    //ModuleConfiguration("org.jboss.netty", JBossRepo),
     ModuleConfiguration("org.multiverse", CodehausRepo),
     ModuleConfiguration("org.scala-tools", "time", CasbahSnapshotRepo),
     ModuleConfiguration("org.scalatest", ScalaToolsReleases),
@@ -199,10 +199,9 @@ val iofile = "com.github.scala-incubator.io" %% "scala-io-file" % "0.2.0"
 
   val antiXML = "com.codecommit" %% "anti-xml" % "0.3"
 
-val jetty =
-    "org.mortbay.jetty" % "jetty" % "6.1.22" % "jetty"
-val dsutils =
-    "com.davidsoergel" % "dsutils" % "1.03"
+val jetty = "org.mortbay.jetty" % "jetty" % "6.1.22" % "jetty"
+val dsutils = "com.davidsoergel" % "dsutils" % "1.03"
+val karafConsole = "org.apache.karaf.shell" % "org.apache.karaf.shell.console" % "2.2.4"
 }
 
 object Pdf2MetaBuild extends Build {
@@ -212,6 +211,8 @@ object Pdf2MetaBuild extends Build {
   import Resolvers._
   import Dependencies._
   import BuildSettings._
+
+val cliDeps = Seq() //karafConsole
 
   val commonDeps = Seq(
   //  casbahCore,
@@ -258,14 +259,11 @@ object Pdf2MetaBuild extends Build {
   }
 
 
-
   lazy val cli:Project = Project(
     id = "cli",
     base = file("cli"),
-    settings = buildSettings ++ Seq (libraryDependencies := commonDeps)
+    settings = buildSettings ++ Seq (libraryDependencies := commonDeps ++ cliDeps)
   )
-
-
 
 
   lazy val webapp:Project = {

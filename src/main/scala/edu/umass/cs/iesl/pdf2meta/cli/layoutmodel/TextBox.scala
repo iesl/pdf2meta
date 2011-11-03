@@ -1,7 +1,7 @@
 package edu.umass.cs.iesl.pdf2meta.cli.layoutmodel
 
 import collection.Seq
-import edu.umass.cs.iesl.pdf2meta.webapp.lib.pdf.util.Util
+import edu.umass.cs.iesl.pdf2meta.cli.util.Util
 
 //class TextBox(id: String, children: Seq[DocNode]) extends DocNode(id, children) with HasFontInfo
 trait TextBox extends HasFontInfo
@@ -11,11 +11,11 @@ trait TextBox extends HasFontInfo
   override def toString = text.substring(text.length.max(30).min(0))
 
   // todo make lazy
-  val text: String =
+  def mkString(d:String): String =
     {
     (for (x <- children.collect
                {case x: HasFontInfo => x}) yield
-      {x.text}).mkString(" ")
+      {x.text}).mkString(d)
     }
 
 lazy val allFonts: Seq[(FontWithHeight, Int)] =

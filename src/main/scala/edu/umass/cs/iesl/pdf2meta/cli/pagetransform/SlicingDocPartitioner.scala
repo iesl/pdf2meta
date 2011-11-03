@@ -3,6 +3,7 @@ package edu.umass.cs.iesl.pdf2meta.cli.pagetransform
 import collection.Seq
 import edu.umass.cs.iesl.pdf2meta.cli.util.Intervals
 import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel._
+import com.weiglewilczek.slf4s.Logging
 
 /*
 object SlicingLayoutPartitioner extends LayoutPartitioner
@@ -15,7 +16,7 @@ object SlicingLayoutPartitioner extends LayoutPartitioner
     }
   }
 */
-class SlicingDocPartitioner extends DocTransformer
+class SlicingDocPartitioner extends DocTransformer with Logging
   {
 
 
@@ -40,6 +41,11 @@ class SlicingDocPartitioner extends DocTransformer
       case n: PartitionedDocNode => PartitionedDocNode(node.id, node.children.map(apply(_)), node.localInfo, node.localErrors)
       case n =>
         {
+        val debugDelimiters = node.delimitingBoxes
+        if (debugDelimiters.length > 0)
+          {
+          logger.info("Got delimiters")
+          }
         // attempt to partition, in order:
         // * left vs right, with line
         // * top vs bottom, with line
@@ -56,7 +62,7 @@ class SlicingDocPartitioner extends DocTransformer
         x match
         {
           case Nil => node //DocNode(node.id, node.children.map(apply(_)), node.localInfo, node.localErrors)
-          case newChildren => DocNode(node.id, newChildren.map(apply(_)), node.localInfo, node.localErrors,false)
+          case newChildren => DocNode(node.id, newChildren.map(apply(_)), node.localInfo, node.localErrors, false)
         }
         }
     }
@@ -68,13 +74,17 @@ class SlicingDocPartitioner extends DocTransformer
     {
     // if there is a RectBox or CurveBox that separates the space, use it
     val delimiters: Seq[DocNode] = rect.children.collect({case x: DelimitingBox => x})
+    val nonDelimiters: Seq[DocNode] = rect.children.collect({
+                                                            case x: DelimitingBox => None
+                                                            case x => Some(x)
+                                                            }).flatten
 
     val horizontalDelimiter: Option[DocNode] =
       {
       // sort by line thickness so that we later prefer the thickest delimiter
       val horizontalLines = delimiters.filter(_.rectangle.get.isLandscape).sortBy(x => x.rectangle.get.height)
 
-      val horizontalHoles = Intervals.holesBySize(Intervals.union(rect.children.map(_.rectangle.get.verticalInterval)))
+      val horizontalHoles = Intervals.holesBySize(Intervals.union(nonDelimiters.map(_.rectangle.get.verticalInterval)))
       /*  def verticalHoleContainsDelimiter(hole: (Double, Double)) =
       {
       !(horizontalLines.filter(d =>
@@ -104,7 +114,7 @@ class SlicingDocPartitioner extends DocTransformer
       {
       // sort by line thickness so that we later prefer the thickest delimiter
       val verticalLines = delimiters.filter(_.rectangle.get.isPortrait).sortBy(x => x.rectangle.get.width)
-      val verticalHoles = Intervals.holesBySize(Intervals.union(rect.children.map(_.rectangle.get.horizontalInterval)))
+      val verticalHoles = Intervals.holesBySize(Intervals.union(nonDelimiters.map(_.rectangle.get.horizontalInterval)))
       def verticalLineInHole(line: DocNode) =
         {
         verticalHoles.exists({
@@ -125,8 +135,8 @@ class SlicingDocPartitioner extends DocTransformer
     val verticalSplit =
       verticalDelimiter.map(d =>
                               {
-                              List(DocNode(rect.id + ".l", rect.children.filter(_.rectangle.get.isLeftOf(d.rectangle.get.left)), None, None,false),
-                                   DocNode(rect.id + ".r", rect.children.filter(_.rectangle.get.isRightOf(d.rectangle.get.right)), None, None,false))
+                              List(DocNode(rect.id + ".l", rect.children.filter(_.rectangle.get.isLeftOf(d.rectangle.get.left)), None, None, false), d,
+                                   DocNode(rect.id + ".r", rect.children.filter(_.rectangle.get.isRightOf(d.rectangle.get.right)), None, None, false))
                               })
 
     verticalSplit match
@@ -137,8 +147,8 @@ class SlicingDocPartitioner extends DocTransformer
         val horizontalSplit =
           horizontalDelimiter.map(d =>
                                     {
-                                    List(DocNode(rect.id + ".t", rect.children.filter(_.rectangle.get.isAbove(d.rectangle.get.top)), None, None,false),
-                                         DocNode(rect.id + ".b", rect.children.filter(_.rectangle.get.isBelow(d.rectangle.get.bottom)), None, None,false))
+                                    List(DocNode(rect.id + ".t", rect.children.filter(_.rectangle.get.isAbove(d.rectangle.get.top)), None, None, false), d,
+                                         DocNode(rect.id + ".b", rect.children.filter(_.rectangle.get.isBelow(d.rectangle.get.bottom)), None, None, false))
                                     })
 
         horizontalSplit
@@ -152,12 +162,24 @@ class SlicingDocPartitioner extends DocTransformer
     val verticalPartition: Option[(Double, Double)] = Intervals.largestHole(Intervals.union(rect.children.map(_.rectangle.get.horizontalInterval)), 1)
     val horizontalPartition: Option[(Double, Double)] = Intervals.largestHole(Intervals.union(rect.children.map(_.rectangle.get.verticalInterval)), 1)
 
+
     def verticalSplit =
       {
       verticalPartition.map(d =>
                               {
-                              List(DocNode(rect.id + ".l", rect.children.filter(_.rectangle.get.isLeftOf(d._1)), None, None,false),
-                                   DocNode(rect.id + ".r", rect.children.filter(_.rectangle.get.isRightOf(d._2)), None, None,false))
+                              lazy val vrect = new RectangleOnPage
+                                {
+                                val page = rect.rectangle.get.page
+                                val bottom = page.rectangle.bottom
+                                val left = d._1
+                                val right = d._2
+                                val top = page.rectangle.top
+                                }
+
+                              lazy val verticalPartitionBox = new RectBox(rect.id + ".vert", vrect)
+
+                              List(DocNode(rect.id + ".l", rect.children.filter(_.rectangle.get.isLeftOf(d._1)), None, None, false), // verticalPartitionBox,
+                                   DocNode(rect.id + ".r", rect.children.filter(_.rectangle.get.isRightOf(d._2)), None, None, false))
                               })
       }
 
@@ -165,8 +187,19 @@ class SlicingDocPartitioner extends DocTransformer
       {
       horizontalPartition.map(d =>
                                 {
-                                List(DocNode(rect.id + ".t", rect.children.filter(_.rectangle.get.isAbove(d._1)), None, None,false),
-                                     DocNode(rect.id + ".b", rect.children.filter(_.rectangle.get.isBelow(d._2)), None, None,false))
+                                lazy val hrect = new RectangleOnPage
+                                  {
+                                  val page = rect.rectangle.get.page
+                                  val bottom = d._1
+                                  val left = page.rectangle.left
+                                  val right = page.rectangle.right
+                                  val top = d._2
+                                  }
+
+                                lazy val horizontalPartitionBox = new RectBox(rect.id + ".vert", hrect)
+
+                                List(DocNode(rect.id + ".t", rect.children.filter(_.rectangle.get.isAbove(d._1)), None, None, false), // horizontalPartitionBox,
+                                     DocNode(rect.id + ".b", rect.children.filter(_.rectangle.get.isBelow(d._2)), None, None, false))
                                 })
       }
     (verticalPartition, horizontalPartition) match
