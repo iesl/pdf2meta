@@ -10,19 +10,37 @@ trait TextBox extends HasFontInfo
 
   override def toString = text.substring(text.length.max(30).min(0))
 
+  def spanText =
+    {
+    if (text.length < 80)
+      {text}
+    else
+      {
+      text.substring(0,37) + " ... " + text.substring(text.length - 37, text.length)
+      }
+    }
+
   // todo make lazy
-  def mkString(d:String): String =
+  def mkString(d: String): String =
     {
     (for (x <- children.collect
                {case x: HasFontInfo => x}) yield
       {x.text}).mkString(d)
     }
 
-lazy val allFonts: Seq[(FontWithHeight, Int)] =
-        {
-        val leafFonts = for(leaf <- allLeaves if leaf.dominantFont.isDefined) yield (leaf.dominantFont.get,leaf.text.size)
-        Util.histogramAccumulate(leafFonts).toSeq
-        }
+  lazy val allFonts: Seq[(FontWithHeight, Int)] =
+    {
+    if (children.isEmpty)
+      {
+      // Must be a RectBox or something, with no fonts in it
+      Seq()
+      }
+    else
+      {
+      val leafFonts = for (leaf <- allLeaves if leaf.dominantFont.isDefined) yield (leaf.dominantFont.get, leaf.text.size)
+      Util.histogramAccumulate(leafFonts).toSeq
+      }
+    }
 
   lazy val dominantFont: Option[FontWithHeight] =
     {
@@ -37,6 +55,46 @@ lazy val allFonts: Seq[(FontWithHeight, Int)] =
           Some(bestFont._1)
           }
         else None
+        }
+    }
+    }
+
+  lazy val allTextLineWidths: Seq[(Double, Int)] =
+    {
+    if (children.isEmpty)
+      {
+      // Must be a RectBox or something, with no fonts in it
+      Seq()
+      }
+    else
+      {
+      // round up to the nearest 10; this is just a rough estimate of column width
+      val lineWidthsWithLength = textLines.map(t => (t.rectangle.map(r => ((r.width / 10.0).ceil * 10.0)).getOrElse(0.0), t.text.length))
+      Util.histogramAccumulate(lineWidthsWithLength).toSeq
+      }
+    }
+
+  lazy val dominantTextLineWidth: Option[Double] =
+    {
+    textLines.length match
+    {
+      case 0 => None
+      case _ =>
+        {
+        val sortedTextLineWidths: Seq[(Double, Int)] = allTextLineWidths.toSeq.sortWith((a, b) => a._2 > b._2)
+        if (sortedTextLineWidths.isEmpty)
+          {
+          None
+          }
+        else
+          {
+          val bestLineWidth = sortedTextLineWidths.head
+          if (bestLineWidth._2 > text.length() * .5)
+            {
+            Some(bestLineWidth._1)
+            }
+          else None
+          }
         }
     }
     }
@@ -71,7 +129,7 @@ lazy val allFonts: Seq[(FontWithHeight, Int)] =
       };
 
     fontBlocks.map({
-                   case ((key, blocks), index) => DocNode(id + "." + index, blocks, None, None, true)
+                   case ((key, blocks), index) => DocNode(id + "." + index, blocks, None, None, true, true)
                    })
 
     // the regrouped boxes are still in order, but now only TextBoxes are provided

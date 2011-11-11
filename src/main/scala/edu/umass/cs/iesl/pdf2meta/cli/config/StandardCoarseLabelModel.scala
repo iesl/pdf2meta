@@ -6,11 +6,26 @@ import scala.Int
 
 class StandardCoarseLabelModel extends CoarseLabelModel
   {
-  override val coarseLabelMap: LinkedHashMap[String, L] = LinkedHashMap("title" -> L("title", 30, 200, 1, 5, List("title")), "authors" -> L("authors", 10, 10000, 1,10, List("authors")),
-                                                                        "abstract" -> L("abstract", 100, 5000, 1, 5, List("abstract")),
-                                                                        "body" -> L("body", 500, Int.MaxValue, 5, Int.MaxValue, List("body", "header", "footnote", "caption")),
-                                                                        "references" -> L("references", 0, Int.MaxValue, 0,Int.MaxValue,List("references")), "end" -> L("end", 0, 0, 1,1,List("end")))
-  override val definiteLabels = List("contactinfo", "affiliations", "header", "footer", "metadata", "discard", "discardX", "discardY")
+  override val coarseLabelMap: LinkedHashMap[String, CoarseAlignmentConstraint] = LinkedHashMap("title" -> CoarseAlignmentConstraint("title", 30, 200, 1, 5, List("title")),
+                                                                                                "authors" -> CoarseAlignmentConstraint("authors", 10, 10000, 1, 10, List("authors")),
+                                                                                                "abstract" -> CoarseAlignmentConstraint("abstract", 100, 5000, 1, 5, List("abstract")), "body" ->
+
+
+                                                                                                                                                                                        CoarseAlignmentConstraint("body",
+                                                                                                                                                                                                                  500,
+                                                                                                                                                                                                                  Int
+                                                                                                                                                                                                                  .MaxValue,
+                                                                                                                                                                                                                  5,
+                                                                                                                                                                                                                  Int
+                                                                                                                                                                                                                  .MaxValue,
+                                                                                                                                                                                                                  List("body",
+                                                                                                                                                                                                                       "heading",
+                                                                                                                                                                                                                       "footnote",
+                                                                                                                                                                                                                       "codeOrData")),
+                                                                                                "references" ->
+                                                                                                CoarseAlignmentConstraint("references", 0, Int.MaxValue, 0, Int.MaxValue, List("references")),
+                                                                                                "end" -> CoarseAlignmentConstraint("end", 0, 0, 1, 1, List("end")))
+  override val definiteLabels = List("contactinfo", "affiliations", "header", "footer", "caption", "metadata", "discard") //, "discardX", "discardY")
   }
 
 

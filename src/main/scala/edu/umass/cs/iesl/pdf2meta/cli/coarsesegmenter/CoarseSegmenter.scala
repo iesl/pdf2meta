@@ -59,13 +59,15 @@ case class ClassifiedRectangle(node: DocNode, featureWeights: WeightedSet[Featur
     case Some(x) => Some(x)
     case None => basedOn.flatMap(_.label) // "[ambiguous]"
   }
+
+  def discarded = label.map(_.equalsIgnoreCase("discard")).getOrElse(false)
   }
 
 class ClassifiedRectangles(val raw: Seq[ClassifiedRectangle])
   {
 
   def legit = raw.filter(_.label.map(s => !s.equalsIgnoreCase("discard")).getOrElse(true))
-  def discarded = raw.filter(_.label.map(s => s.equalsIgnoreCase("discard")).getOrElse(false))
+  def discarded = raw.filter(_.discarded)
   val delimiters = raw.map(_.node).filter({case x : DelimitingBox => true; case _ => false})
 
   def onPage(page: Page) =

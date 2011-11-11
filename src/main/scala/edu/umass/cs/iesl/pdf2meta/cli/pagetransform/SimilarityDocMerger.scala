@@ -1,11 +1,12 @@
 package edu.umass.cs.iesl.pdf2meta.cli.pagetransform
 
-import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.DocNode
+import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.{AnnotatedDocNode, DocNode}
+import com.weiglewilczek.slf4s.Logging
 
 /**
  * Group consecutive children that have appropriate similarity
  */
-abstract class SimilarityDocMerger extends DocTransformer
+abstract class SimilarityDocMerger extends DocTransformer with Logging
   {
   def apply(rect: DocNode): DocNode =
     {
@@ -15,8 +16,8 @@ abstract class SimilarityDocMerger extends DocTransformer
       }
     else if (rect.children.length == 1)
            {
-           // recurse, but declare nonatomic
-           DocNode(rect.id, rect.children.map(apply(_)), rect.localInfo, rect.localErrors, false)
+           // just recurse, don't flatten yet
+           rect.create(rect.children.map(apply(_)))
            }
     else
       {
@@ -30,25 +31,36 @@ abstract class SimilarityDocMerger extends DocTransformer
           // this node is already a single item block, so all of the children got merged into a new node.  Recursing this won't terminate.
           // instead recurse into the existing children
           // actually don't bother, since this is an atom; just return the existing children
-          DocNode(rect.id, rect.children, rect.localInfo, rect.localErrors, true)
+          //DocNode(rect.id, rect.children, rect.localInfo, rect.localErrors, true)
+          rect.makeAtomic
           }
         else
           {
-          // the intermediate children may be atoms (which the merging taxes care of)
+          // the intermediate children may be atoms (which the merging takes care of)
           // but this one may not be
           val newChildren = intermediateChildren.map(apply(_))
-          DocNode(rect.id, newChildren, rect.localInfo, rect.localErrors, false)
+          this match
+          {
+            case x: AnnotatedDocNode =>
+              {
+              logger.error("wtf")
+              }
+            case _ =>
+          }
+          //DocNode(rect.id, newChildren, rect.localInfo, rect.localErrors, false)
+          rect.create(newChildren)
           }
       result
       }
     }
+
 
   def merge(precontext: List[DocNode], r: DocNode): List[DocNode] =
     {
     precontext match
     {
       case Nil => List(r)
-      case h :: t => if (similar(h, r))
+      case h :: t => if (h.isMergeable && r.isMergeable && similar(h, r))
                        {(h :+ r) :: t}
                      else
                        {r :: precontext}
@@ -58,12 +70,21 @@ abstract class SimilarityDocMerger extends DocTransformer
   def similar(an: DocNode, bn: DocNode): Boolean
   }
 
-
-class ParagraphMerger extends SimilarityDocMerger
+@deprecated // see IndentedParagraphsMerger
+class ParagraphMerger extends SimilarityDocMerger with Logging
   {
   // note relationship with RectangularReadingOrder
   def similar(an: DocNode, bn: DocNode): Boolean =
     {
+    an match
+    {
+      case ana: AnnotatedDocNode =>
+        {
+        logger.debug("sideways")
+        }
+      case _ =>
+    }
+
     (an.rectangle, bn.rectangle) match
     {
       case (Some(a), Some(b)) =>
@@ -106,7 +127,7 @@ class LineMerger extends SimilarityDocMerger
           case _ => false
         }*/
         // allow overlap
-        val sameLine = b.isRightOf(a.left) && ((a.top - b.top).abs < 2) && ((a.bottom - b.bottom).abs < 2)
+        val sameLine = b.isRightOf(a.left) && ((a.top - b.top).abs < 3) && ((a.bottom - b.bottom).abs < 3)
 
         //sameFont &&
         sameLine
@@ -116,3 +137,64 @@ class LineMerger extends SimilarityDocMerger
     }
   }
 
+
+class SidewaysLineMerger extends SimilarityDocMerger
+  {
+  def similar(an: DocNode, bn: DocNode): Boolean =
+    {
+
+    def checkOneCharColumn: Boolean =
+      {
+      (an.rectangle, bn.rectangle) match
+      {
+        case (Some(a), Some(b)) =>
+          {
+          /*val sameFont = (an.dominantFont, bn.dominantFont) match
+            {
+              case (Some(af), Some(bf)) => af.equalsWithinOneQuantum(bf)
+              case _ => false
+            }
+*/
+          val sameColumn = b.isBelow(a.top) && ((a.left - b.left).abs < 5)
+
+          // sameFont &&
+          sameColumn
+          }
+        case _ => false
+      }
+      }
+
+    (an.text.length, bn.text.length) match
+    {
+      case (1, 1) => checkOneCharColumn
+      case (x, 1) =>
+        {
+        an match
+        {
+          case ana: AnnotatedDocNode =>
+            {if (ana.annotations.contains("sideways")) checkOneCharColumn else false}
+          case _ => false
+        }
+        }
+      case _ => false
+    }
+    }
+
+
+  override def merge(precontext: List[DocNode], r: DocNode): List[DocNode] =
+    {
+    precontext match
+    {
+      case Nil => List(r)
+      case h :: t => if (h.isMergeable && r.isMergeable && similar(h, r))
+                       {
+                       val merged = AnnotatedDocNode(h.id + "+" + r.id, h.children :+ r, h.localInfo, h.localErrors, true, true, Seq("sideways"))
+                       merged :: t
+                       }
+                     else
+                       {r :: precontext}
+    }
+    }
+  }
+
+// SidewaysParagraphMerger: ignore

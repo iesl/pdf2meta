@@ -36,27 +36,27 @@ trait PerceptronCoarseSegmenterComponent extends CoarseSegmenter with Logging
 
       // assign node-local features.  Note the text boxes may be in a hierarchy, but we don't take that into account; we just classify the "atomic" ones
 
-      for (box <- doc.allAtoms; feat <- features)
+      for (box <- doc.spanningAtoms; feat <- features)
         {
-        box.text match
+        /* box.text match
         {
           case "" =>
           case x =>
-
-            val featuresPerBox: MutableWeightedSet[Feature] = featureMap(box)
-            feat match
+*/
+        val featuresPerBox: MutableWeightedSet[Feature] = featureMap(box)
+        feat match
+        {
+          case f: ContextFeature =>
             {
-              case f: ContextFeature =>
-                {
-                //logger.debug("featureMap(" + box + ").incrementBy(" + feat + ", " + f(doc, box) + ")")
-                featuresPerBox.incrementBy(feat, f(doc)(box))
-                }
-              case f: LocalFeature =>
-                {
-                //logger.debug("featureMap(" + box + ").incrementBy(" + feat + ", " + f(box) + ")")
-                featuresPerBox.incrementBy(feat, f(box))
-                }
+            //logger.debug("featureMap(" + box + ").incrementBy(" + feat + ", " + f(doc, box) + ")")
+            featuresPerBox.incrementBy(feat, f(doc)(box))
             }
+          case f: LocalFeature =>
+            {
+            //logger.debug("featureMap(" + box + ").incrementBy(" + feat + ", " + f(box) + ")")
+            featuresPerBox.incrementBy(feat, f(box))
+            }
+          //      }
         }
         }
 
@@ -64,16 +64,21 @@ trait PerceptronCoarseSegmenterComponent extends CoarseSegmenter with Logging
       // could propagate neighbor effects here?
       // how to do positional / ordering effects?
       // this is why we have to classify all boxes at once instead of per page
-      for (box <- doc.allAtoms; sc <- scoringFunctions) // classify page.allNodes??
+      for (box <- doc.spanningAtoms) // classify page.allNodes??
         {
         val featuresPerBox: MutableWeightedSet[Feature] = featureMap(box)
         //logger.debug("scores(" + box.toString + ").incrementBy(" + sc.name + ", " + sc(featuresPerBox) + ")")
         if (featuresPerBox.asMap.isEmpty)
           {
-          mutableScores(box).incrementBy("discardY", 10)
+          mutableScores(box).incrementBy("discard", 10)
           }
         else
-          mutableScores(box).incrementBy(sc.name, sc(featuresPerBox))
+          {
+          for (sc <- scoringFunctions)
+            {
+            mutableScores(box).incrementBy(sc.name, sc(featuresPerBox))
+            }
+          }
         }
 
       /*val boxes: ClassifiedRectangles =
@@ -104,7 +109,7 @@ trait PerceptronCoarseSegmenterComponent extends CoarseSegmenter with Logging
                     }
                     }*/
 
-        new ClassifiedRectangles(doc.allAtoms.map(scoreBox))
+        new ClassifiedRectangles(doc.spanningAtoms.map(scoreBox))
         }
 
 

@@ -199,7 +199,7 @@ val iofile = "com.github.scala-incubator.io" %% "scala-io-file" % "0.2.0"
 
   val antiXML = "com.codecommit" %% "anti-xml" % "0.3"
 
-val jetty = "org.mortbay.jetty" % "jetty" % "6.1.26" // % "jetty"
+val jetty = "org.mortbay.jetty" % "jetty" % "6.1.22" % "jetty"
 val dsutils = "com.davidsoergel" % "dsutils" % "1.03"
 val karafConsole = "org.apache.karaf.shell" % "org.apache.karaf.shell.console" % "2.2.4"
 }
@@ -276,19 +276,12 @@ val cliDeps = Seq() //karafConsole
       }
     }
 
-    Defaults.defaultSettings ++ Seq(
+    //Defaults.defaultSettings ++
+    Seq(
       publishSetting,
       credentialsSetting
     )
   }
-
-  lazy val cli:Project = Project(
-    id = "pdf2meta-"
-         + "cli",
-    base = file("cli"),
-    settings = buildSettings ++ Seq (libraryDependencies := commonDeps ++ cliDeps)  ++ overrideSettings
-  )
-
 
   lazy val webapp:Project = {
     import com.github.siasia.WebPlugin;
@@ -299,9 +292,18 @@ val cliDeps = Seq() //karafConsole
            id = "pdf2meta-webapp",
            base = file("webapp"),
            dependencies = Seq(cli),
-           settings = buildSettings ++ Seq (libraryDependencies := commonDeps ++ webDeps) ++ WebPlugin.webSettings ++ overrideSettings
+           settings = buildSettings ++ WebPlugin.webSettings ++ Seq (libraryDependencies := commonDeps ++ webDeps) ++ overrideSettings
          )
   }
+
+  lazy val cli:Project = Project(
+    id = "pdf2meta-"
+         + "cli",
+    base = file("cli"),
+    settings = buildSettings ++ Seq (libraryDependencies := commonDeps ++ cliDeps)  ++ overrideSettings
+  )
+
+
 
 
 

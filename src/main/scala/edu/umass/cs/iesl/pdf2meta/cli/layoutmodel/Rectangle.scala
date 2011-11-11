@@ -1,6 +1,7 @@
 package edu.umass.cs.iesl.pdf2meta.cli.layoutmodel
 
 import com.weiglewilczek.slf4s.Logging
+import edu.umass.cs.iesl.pdf2meta.cli.readingorder.OverlapRatios
 
 object Rectangle extends Logging
   {
@@ -70,6 +71,10 @@ object Rectangle extends Logging
 
 trait Rectangle
   {
+  def topEdge: Rectangle = Rectangle(left, top, right, top).get
+
+  def bottomEdge: Rectangle = Rectangle(left, bottom, right, bottom).get
+
   //def container: Rectangle
   def horizontalMiddle = (right + left) / 2.
 
@@ -78,6 +83,10 @@ trait Rectangle
   def isRightOf(d: Double) = (left >= d)
   def isAbove(d: Double) = (bottom >= d)
   def isBelow(d: Double) = (top <= d)
+
+  def isBelowAndAbove(a: Double, b: Double): Boolean = (isBelow(a) && isAbove(b))
+
+  def isMostlyBelow(r: Rectangle) = new OverlapRatios(this, r).mostlyBelow
 
   val left: Double
   val bottom: Double
@@ -167,6 +176,8 @@ case class Page(pagenum: Int, rectangle: Rectangle)
 
 trait RectangleOnPage extends Rectangle
   {
+
+
   val page: Page
 
 

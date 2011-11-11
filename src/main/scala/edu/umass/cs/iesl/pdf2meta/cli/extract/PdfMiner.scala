@@ -137,7 +137,7 @@ class PdfMiner extends XmlExtractor with Logging with Function1[Workspace, DocNo
           lf match
           {
             case Nil => None;
-            case _ => Some(new DocNode(textboxid, lf, None, None, false))
+            case _ => Some(new DocNode(textboxid, lf, None, None, false, true))
           }
           }
         var rectid = 0
@@ -165,9 +165,13 @@ class PdfMiner extends XmlExtractor with Logging with Function1[Workspace, DocNo
           else RectangleOnPage(thePage, bbox).map(r => new FigureBox("f-" + pageid + "." + figureid.toString, r))
           })
 
-        new DocNode(pageid, (textboxes.flatten.toList :::
-                             rects.flatten.toList :::
-                             curves.flatten.toList ::: figures.flatten.toList), None, None, false)
+        //val topOfPageRect =new RectBox("top-"+pageid, RectangleOnPage(thePage,pageRect.topEdge).get)
+        //val bottomOfPageRect = new RectBox("bottom-"+pageid,RectangleOnPage(thePage,pageRect.bottomEdge).get)
+
+        new DocNode(pageid, (//topOfPageRect :: bottomOfPageRect ::
+                            textboxes.flatten.toList :::
+                            rects.flatten.toList :::
+                            curves.flatten.toList ::: figures.flatten.toList), None, None, false, false)
           {
           override lazy val rectangle: Option[RectangleOnPage] = RectangleOnPage(thePage, pageRect)
           //        override lazy val page = Some(pagenum)
@@ -187,7 +191,17 @@ class PdfMiner extends XmlExtractor with Logging with Function1[Workspace, DocNo
     // val numberedTextLines = for (page <- pages.sorted; line <- page.textLines) yield line
     //val numberedTextLinesByPage =
     //val textBoxes = pages.map(x=>x.textBoxes.map(y => (x, y))).flatten
+    //need to add an empty node, but only to the last page
+    val allPagesWithEmptyEndNode =
+      {
+      val r = rawPages.reverse
+      val lastPage = r.head
+      val lastPageRect: RectangleOnPage = lastPage.rectangle.get
+      val bottomOfPageRect = new RectBox("bottom-" + lastPage.id, RectangleOnPage(lastPageRect.page, lastPageRect.bottomEdge).get)
+      //val emptyNode = new DocNode("End", Nil, None, None, true)
+      ((lastPage :+ bottomOfPageRect) :: r.tail.toList).reverse
+      }
 
-    DocNode(w.filename, rawPages.toList, Some(List(command, output).iterator), None, false)
+    DocNode(w.filename, allPagesWithEmptyEndNode, Some(List(command, output).iterator), None, false, false)
     }
   }

@@ -1,7 +1,6 @@
 package edu.umass.cs.iesl.pdf2meta.cli.coarsesegmenter
 
 import edu.umass.cs.iesl.pdf2meta.cli.util.Util
-import tools.nsc.io.JFile
 import java.io.InputStream
 
 object Lexicon
@@ -23,14 +22,40 @@ object Lexicon
   }
 
 
-class Lexicon(s: InputStream) //(filename: String)
+class Lexicon(s: InputStream)
   {
-  //Util.loadTextFile(new JFile(filename))
-  val lexTokens: Map[String, Boolean] = Util.loadText(s).toLowerCase.split("\n").map(x => (x -> true)).toMap
-
-  def countMatches(tokens: Seq[String]) : Int =
+  val (lexTokens, lexTokensLC) =
     {
-    // perf
+    val text: String = Util.loadText(s)
+    val lexTokensLC: Map[String, Boolean] = text.toLowerCase.split("\n").map(x => (x -> true)).toMap
+    val lexTokens: Map[String, Boolean] = text.split("\n").map(x => (x -> true)).toMap
+    (lexTokens, lexTokensLC)
+    }
+  def countMatches(tokens: Seq[String]): Int =
+    {
     tokens.map(lexTokens.get(_)).flatten.length
+    }
+
+  def countMatchesLC(tokens: Seq[String]): Int =
+    {
+    tokens.map((x: String) => lexTokensLC.get(x.toLowerCase)).flatten.length
+    }
+
+  def matches(tokens: Seq[String]): Seq[String] =
+    {
+    tokens.filter(t =>
+                    {
+                    val r: Option[Boolean] = lexTokens.get(t)
+                    r.getOrElse(false)
+                    })
+    }
+
+  def matchesLC(tokens: Seq[String]): Seq[String] =
+    {
+    tokens.filter(t =>
+                    {
+                    val r: Option[Boolean] = lexTokensLC.get(t.toLowerCase)
+                    r.getOrElse(false)
+                    })
     }
   }

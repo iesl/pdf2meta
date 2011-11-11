@@ -39,6 +39,15 @@ object StandardScoringModel extends ScoringModel with Logging
     }
     })
 
+  val sideways = LocalFeature("sideways", (box: DocNode) =>
+    {
+    box match
+    {
+      case b: AnnotatedDocNode => if (b.annotations.contains(("sideways"))) 1.0 else 0.0
+      case _ => 0
+    }
+    })
+
   val marginPercentageMin = 0.05
   val marginPercentageMax = 0.1
 
@@ -140,7 +149,8 @@ object StandardScoringModel extends ScoringModel with Logging
   val lastNode = ContextFeature("lastNode", (doc: DocNode, box: DocNode) =>
     {
     val csp: Map[DocNode, (Double, Double)] = doc.charSpanProportional
-    val result = linearBetween(1, 1)(csp(box)._2)
+    val endPosition: Double = csp(box)._2
+    val result = linearBetween(1, 1)(endPosition)
     result
     })
 
@@ -169,12 +179,15 @@ object StandardScoringModel extends ScoringModel with Logging
     {
     box match
     {
-      case x: DelimitingBox => if (x.theRectangle.width / x.theRectangle.page.rectangle.width > 0.8)1 else 0
+      case x: DelimitingBox =>
+        {
+        if (x.theRectangle.width / x.theRectangle.page.rectangle.width > 0.7) 1 else 0
+        }
       case _ => 0
     }
     })
 
-val isNonMarginFullPageDelimiter = isFullPageDelimiter.multiply("isNonMarginFullPageDelimiter", notInMargin)
+  val isNonMarginFullPageDelimiter = isFullPageDelimiter.multiply("isNonMarginFullPageDelimiter", notInMargin)
 
   /*
   val unusualFont = ContextFeature("unusualFont", (doc:DocNode,box: DocNode) =>
@@ -225,6 +238,35 @@ val isNonMarginFullPageDelimiter = isFullPageDelimiter.multiply("isNonMarginFull
     }
     })
 
+
+  val dominantColumnWidth = ContextFeature("dominantColumnWidth ", (doc: DocNode, box: DocNode) =>
+    {
+    box.rectangle match
+    {
+      case None => 0
+      case Some(x) =>
+        {
+        val width: Option[Double] = doc.dominantTextLineWidth
+        width.map(w =>
+                    {
+                    if ((((x.width / 10.0).ceil) * 10.0) == w) 1.0 else 0.0
+                    }).getOrElse(0.0)
+        }
+    }
+    })
+
+
+  val longColumnWidth = ContextFeature("longColumnWidth ", (doc: DocNode, box: DocNode) =>
+    {
+    box.rectangle match
+    {
+      case None => 0
+      case Some(x) =>
+        if (x.width > doc.dominantTextLineWidth.getOrElse(Double.MaxValue)) 1
+        else 0
+    }
+    })
+
   /*  val nonDominantFont = ContextFeature("nonDominantFont", (doc: DocNode, box: DocNode) =>
       {
       box.dominantFont match
@@ -248,25 +290,39 @@ val isNonMarginFullPageDelimiter = isFullPageDelimiter.multiply("isNonMarginFull
   val highlyPunctuated = LocalFeature("highlyPunctuated", (box: TextBox) =>
     {
     val l: Double = box.text.length()
-    val punct: Double = l - box.text.filter(c => (c.isLetterOrDigit || c.isSpaceChar)).length()
-    //logger.debug("Box " + box + " has punctuation ratio " + (punct / l))
-    //if (punct / l > .05) 1 else -1
-    linearBetween(.04, .08)(punct / l)
+    l match
+    {
+      case 0 => 0
+      case _ =>
+        {
+        val punct: Double = l - box.text.filter(c => (c.isLetterOrDigit || c.isSpaceChar)).length()
+        //logger.debug("Box " + box + " has punctuation ratio " + (punct / l))
+        //if (punct / l > .05) 1 else -1
+        linearBetween(.04, .08)(punct / l)
+        }
+    }
     })
 
   val notHighlyPunctuated = LocalFeature("notHighlyPunctuated", (box: TextBox) =>
     {
     val l: Double = box.text.length()
-    val punct: Double = l - box.text.filter(c => (c.isLetterOrDigit || c.isSpaceChar)).length()
-    //logger.debug("Box " + box + " has punctuation ratio " + (punct / l))
-    //if (punct / l > .05) 1 else -1
-    linearBetween(.04, .08)(punct)
+    l match
+    {
+      case 0 => 0
+      case _ =>
+        {
+        val punct: Double = l - box.text.filter(c => (c.isLetterOrDigit || c.isSpaceChar)).length()
+        //logger.debug("Box " + box + " has punctuation ratio " + (punct / l))
+        //if (punct / l > .05) 1 else -1
+        linearBetween(.04, .08)(punct)
+        }
+    }
     })
 
   //val short = TextFeature("short", (box: TextBox) => if (box.text.length() < 5) 1 else -1)
   val startsWithDelimiting = LocalFeature("startWithDelimiting", (box: DocNode) =>
     {
-    box.allNodes match
+    box.allLeaves match
     {
       case Nil => 0
       case (x: DelimitingBox) :: y => 1
@@ -304,45 +360,112 @@ val isNonMarginFullPageDelimiter = isFullPageDelimiter.multiply("isNonMarginFull
     }
 
   val emailRE = ".*@.*\\.(com|org|net|edu|..)"
-  val doiRE = "10\\.\\d+\\/\\d+"
+  val doiRE = "10\\.\\d+\\/.+"
   val initialsRE = " [A-Z]\\.? "
   val digitsRE = "[0-9]*"
-  val dateRE = "((0?[1-9]|^1[0-2])\\/(0?[1-9]|[1-2][0-9]|3[0-1])\\/(19|20)?[0-9][0-9])|((Jan(uary)?|Feb(ruary)?|Mar(ch)?|Apr(il)?|May|Jun(e)?|Jul(y)?|Aug(ust)?|Sept(ember)?|Oct(ober)?|Nov(ember)?|Dec(ember)?) +([1-2][0-9]|3[0-1]|0?[1-9]), +(19|20)[0-9][0-9])"
+  val dateRE1 = "((0?[1-9]|^1[0-2])\\/(0?[1-9]|[1-2][0-9]|3[0-1])\\/(19|20)?[0-9][0-9])"
+  val monthRE = "((jan(uary)?|feb(ruary)?|mar(ch)?|apr(il)?|may|jun(e)?|jul(y)?|aug(ust)?|sept(ember)?|oct(ober)?|nov(ember)?|dec(ember)?)"
+  val dateRE2 = monthRE + " +([1-2][0-9]|3[0-1]|0?[1-9]),? +(19|20)[0-9][0-9])"
+  val dateRE3 = "([1-2][0-9]|3[0-1]|0?[1-9]) +" + monthRE + ",? +(19|20)[0-9][0-9])"
 
-  def countContains(name: String, regex: String) =
+  def contains(name: String, regex: String) =
     {
     LocalFeature(name, (box: TextBox) =>
       {
-      box.text.split(regex).length - 1
+      val count = box.text.split(regex).length - 1
+      count match
+      {
+        case 0 => 0.0
+        case _ => 1.0
+      }
       })
     }
 
-  def textProportion(name: String, ss: Seq[String], min: Double, max: Double) =
+  def containsAny(name: String, regexes: Seq[String]) =
+    {
+    LocalFeature(name, (box: TextBox) =>
+      {
+      val lc: String = box.text
+      val count = regexes.map(lc.split(_).length - 1).sum
+      count match
+      {
+        case 0 => 0.0
+        case _ => 1.0
+      }
+      })
+    }
+
+  def containsAnyLC(name: String, regexes: Seq[String]) =
+    {
+    LocalFeature(name, (box: TextBox) =>
+      {
+      val lc: String = box.text.toLowerCase
+      val count = regexes.map(lc.split(_).length - 1).sum
+      count match
+      {
+        case 0 => 0.0
+        case _ => 1.0
+      }
+      })
+    }
+
+  def textProportion(name: String, ss: Seq[String], min: Double, max: Double) = regexProportion(name, ss.mkString("|"), min, max)
+
+
+  def regexProportion(name: String, regex: String, min: Double, max: Double) =
     {
     LocalFeature(name, (box: TextBox) =>
       {
       val t: String = box.text
-
-      // remove all of the requested strings and see how many characters remain
-      val prop = (t.length - t.split(ss.mkString("|")).mkString.length) / t.length.toDouble
-      linearBetween(min, max)(prop)
+      t.length match
+      {
+        case 0 => 0
+        case _ =>
+          {
+          // remove all of the requested strings and see how many characters remain
+          val prop = (t.length - t.split(regex).mkString.length) / t.length.toDouble
+          linearBetween(min, max)(prop)
+          }
+      }
       })
     }
+
+
+  def lexiconProportion(name: String, lex: Lexicon, min: Double, max: Double) =
+    {
+    LocalFeature(name, (box: TextBox) =>
+      {
+      val t: String = box.text
+      t.length match
+      {
+        case 0 => 0
+        case _ =>
+          {
+          val m = lex.matches(box.text.split("\\W")) // not .toLowerCase
+          val prop = m.mkString("").length.toDouble / t.length.toDouble
+          linearBetween(min, max)(prop)
+          }
+      }
+      })
+    }
+
 
   val university = textProportion("AffiliationTerms", List("University", "Department", "Institute", "Center", "Laboratory"), .05, .1)
 
   val initials = textProportion("Initials", List(initialsRE), 0.05, 0.15)
   val digits = textProportion("Digits", List(digitsRE), 0.05, 0.15)
-  val correspondence = countContains("CorrespondenceTerms", "whom correspondence")
-  val metadataText = countContains("MetadataTerms", "ISSN|issn|DOI|doi|http://|[Cc]opyright")
+  val correspondence = contains("CorrespondenceTerms", "whom correspondence")
+  val metadataText = contains("MetadataTerms", "ISSN|issn|\bDOI\b|\bdoi\b|[Cc]opyright")
   val abstractText = startsWith("AbstractTerms", "Abstract")
   val referencesText = startsWith("ReferencesTerms", "References")
+  val http = contains("http", "http://")
   val figureText = startsWith("FigureTerms", "(Figure|Fig\\.|Table)")
-  val headingText = startsWith("HeadingTerms", "Introduction|Background|Results|Materials|Discussion|Conclusion")
-  val email = countContains("Email", emailRE)
-  val date = countContains("Date", dateRE)
-  val doi = countContains("DOI", doiRE)
+  val headingText = startsWith("HeadingTerms", "Introduction|Background|Results|Materials|Methods|Discussion|Conclusion")
+  val email = contains("Email", emailRE)
+  val date = containsAnyLC("Date", Seq(dateRE1, dateRE2, dateRE3))
+  val doi = contains("DOI", doiRE)
 
+  /*
   def countLexiconMatches(name: String, lex: Lexicon) =
     {
     LocalFeature(name, (box: TextBox) =>
@@ -350,34 +473,46 @@ val isNonMarginFullPageDelimiter = isFullPageDelimiter.multiply("isNonMarginFull
       lex.countMatches(box.text.toLowerCase.split(" "))
       })
     }
+*/
+  val firstname = new CompoundFeature("FirstName",
+                                      List(lexiconProportion("FirstNameMed", Lexicon.firstnameMed, 0.0, 0.2) -> 0.3, lexiconProportion("FirstNameHigh", Lexicon.firstnameHigh, 0.0, 0.2) -> 0.6,
+                                           lexiconProportion("FirstNameHighest", Lexicon.firstnameHighest, 0.0, 0.2) -> 1.0).toMap)
+  val lastname = new CompoundFeature("LastName", List(lexiconProportion("LastNameMed", Lexicon.lastnameMed, 0.0, 0.2) -> 0.3, lexiconProportion("LastNameHigh", Lexicon.lastnameHigh, 0.0, 0.2) -> 0.6,
+                                                      lexiconProportion("LastNameHighest", Lexicon.lastnameHighest, 0.0, 0.2) -> 1.0).toMap)
+  val noLastName = new FunctionFeature("NoLastName", lastname,
+                                       {x =>
+                                         {
+                                         linearBetween(.9, .95)(1 - x)
+                                         }
+                                       }
+                                       /*_ match
+  {
+    case 0 => 1;
+    case _ => 0
+  }
+  */)
 
-  val firstname = new CompoundFeature("FirstName", List(countLexiconMatches("FirstNameMed", Lexicon.firstnameMed) -> 0.3, countLexiconMatches("FirstNameHigh", Lexicon.firstnameHigh) -> 0.6,
-                                                        countLexiconMatches("FirstNameHighest", Lexicon.firstnameHighest) -> 1.0).toMap)
-  val lastname = new CompoundFeature("LastName", List(countLexiconMatches("LastNameMed", Lexicon.lastnameMed) -> 0.3, countLexiconMatches("LastNameHigh", Lexicon.lastnameHigh) -> 0.6,
-                                                      countLexiconMatches("LastNameHighest", Lexicon.lastnameHighest) -> 1.0).toMap)
-val noLastName = new FunctionFeature("NoLastName", lastname, _ match {case 0 => 1; case _=>0} )
-
-  val cities = countLexiconMatches("cities", Lexicon.cities)
-  val states = countLexiconMatches("cities", Lexicon.states)
+  val cities = lexiconProportion("cities", Lexicon.cities, 0.05, 0.1)
+  val states = lexiconProportion("states", Lexicon.states, 0.05, 0.1)
 
   val scoringFunctions =
     List(ScoringFunction("title", nearBeginning -> 2, notNearBeginning -> -2, nearPageTop -> 1, largeFont -> 1, veryLargeFont -> 2, highlyPunctuated -> -1, lengthBetween(30, 200) -> 2,
-                         lengthAbove(200) -> -2),
-         ScoringFunction("authors", firstname -> 2, noLastName -> -100, nearBeginning -> 1.5, nearPageTop -> .5, largeFont -> .5, dominantFont -> -1, highlyPunctuated -> 2, lengthBetween(10, 1000) -> 1, initials -> 5,
-                         digits -> -10),
-         ScoringFunction("affiliations", cities -> 1, states->1, nearBeginning -> 1.4, dominantFont -> -1, highlyPunctuated -> 2, lengthBetween(10, 1000) -> 1, university -> 5),
+                         lengthAbove(200) -> -2, longColumnWidth -> 2),
+         ScoringFunction("authors", firstname -> 2, noLastName -> -100, nearBeginning -> 1.5, nearPageTop -> .5, largeFont -> .5, dominantFont -> -1, highlyPunctuated -> 2,
+                         lengthBetween(10, 1000) -> 1, initials -> 5, digits -> -10, longColumnWidth -> 2),
+         ScoringFunction("affiliations", cities -> 1, states -> 1, nearBeginning -> 1.4, dominantFont -> -1, highlyPunctuated -> 2, lengthBetween(10, 1000) -> 1, university -> 5),
          ScoringFunction("contactinfo", correspondence -> 3, email -> 3, dominantFont -> -1, highlyPunctuated -> 2, lengthBetween(10, 1000) -> 1),
          ScoringFunction("abstract", abstractText -> 10, nearBeginning -> 2, nearPageTop -> .5, largeFont -> .2, dominantFont -> -1, highlyPunctuated -> -2, lengthBetween(100, 5000) -> 1,
-                         initials -> -5),
+                         initials -> -5, longColumnWidth -> 2),
          ScoringFunction("caption", figureText -> 10, nearBeginning -> -1, smallFont -> 1, dominantFont -> -1, lengthBetween(100, 5000) -> 1, startsWithDelimiting -> .5),
-         ScoringFunction("heading", nearBeginning -> -.5, lengthBetween(5, 100) -> 1, lengthAbove(150) -> -5, largeFont -> 2, veryLargeFont -> -2, highlyPunctuated -> -2, headingText -> 10),
-         ScoringFunction("body", dominantFont -> 3, highlyPunctuated -> -2),
-         ScoringFunction("references", lastname -> 2, referencesText -> 10, nearEnd -> 2, nearBeginning -> -2, dominantFont -> -1, smallFont -> 2, highlyPunctuated -> 2),
+         ScoringFunction("heading", nearBeginning -> -.5, bottomMargin -> -10, lengthBetween(5, 100) -> 1, lengthAbove(150) -> -5, largeFont -> 2, veryLargeFont -> -2, highlyPunctuated -> -2,
+                         headingText -> 10), ScoringFunction("body", dominantFont -> 3, dominantColumnWidth -> 1, highlyPunctuated -> -2),
+         ScoringFunction("references", noLastName -> -100, lastname -> 2, referencesText -> 110, nearEnd -> 2, nearBeginning -> -2, dominantFont -> -1, smallFont -> 2, highlyPunctuated -> 2,
+                         http -> 1), ScoringFunction("codeOrData", lastname -> -2, dominantFont -> -1, highlyPunctuated -> 4),
          ScoringFunction("header", topMargin -> 3, notInMargin -> -4, lengthBetween(10, 200) -> 1, highlyLandscape -> 1, veryLargeFont -> -2),
          ScoringFunction("footnote", bottomMargin -> 3, smallFont -> 1, highlyPunctuated -> -1, lengthBetween(10, 200) -> 1, startsWithDelimiting -> .1),
          ScoringFunction("footer", bottomMargin -> 3, notInMargin -> -4, lengthBetween(10, 200) -> 1, highlyLandscape -> 1),
-         ScoringFunction("metadata", doi -> 10, metadataText -> 10, date -> 1),
-         ScoringFunction("discard", lengthBetween(0, 5) -> 10),
-         ScoringFunction("end", lastNode -> 10,  isFullPageDelimiter -> 10)) //nearEnd -> .1, //isDelimiter -> 3,
+         ScoringFunction("metadata", doi -> 10, metadataText -> 10, date -> 1, http -> 1), ScoringFunction("discard", sideways -> 10, lengthBetween(0, 5) -> 10),
+         ScoringFunction("end", lastNode -> 15, isNonMarginFullPageDelimiter -> 15)) //nearEnd -> .1, //isDelimiter -> 3,
   }
 

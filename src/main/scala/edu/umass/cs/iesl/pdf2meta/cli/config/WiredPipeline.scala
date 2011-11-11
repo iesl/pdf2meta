@@ -16,7 +16,7 @@ object WiredPipeline extends PipelineComponent //with CoarseSegmenterComponent//
   //{
   val docTransformer = new DocTransformerPipelineComponent
     {
-    lazy val transformers = List(new PageStarDocPartitioner, new SlicingDocPartitioner, new DocDeepSorter(RectangularReadingOrder), new StarDocPartitioner, new LineMerger, new ParagraphMerger,
+    lazy val transformers = List(new PageHonoringDocFlattener, new SlicingDocPartitioner, new DocDeepSorter(RectangularReadingOrder), new DocFlattener, new LineMerger, new ParagraphMerger,
                                  new EmptyEndNodeAdder)
     //val docTransformer = new DocTransformerPipeline
     } //.docTransformer
@@ -43,7 +43,7 @@ object WiredExtractOnlyPipeline extends ExtractOnlyPipelineComponent //with XmlE
   //  {
   val docTransformer = new DocTransformerPipelineComponent
     {
-    val transformers = List(new PageStarDocPartitioner, new SlicingDocPartitioner, new DocDeepSorter(RectangularReadingOrder), new StarDocPartitioner, new LineMerger, new ParagraphMerger)
+    val transformers = List(new PageHonoringDocFlattener, new SlicingDocPartitioner, new DocDeepSorter(RectangularReadingOrder), new DocFlattener, new LineMerger, new ParagraphMerger)
     //val docTransformer = new DocTransformerPipeline
     } //.docTransformer
   //   }.docTransformer

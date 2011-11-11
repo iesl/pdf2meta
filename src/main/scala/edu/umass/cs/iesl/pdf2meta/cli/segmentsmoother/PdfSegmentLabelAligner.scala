@@ -13,8 +13,8 @@ class PdfSegmentLabelAligner(val model: CoarseLabelModel) extends ExtendedMatchD
     }
 
   val labelExtendThreshold = 0.1
-  override val beforeStartTextSkipPenalty: Double = -0.0
-  override val afterEndTextSkipPenalty: Double = -0.0
+  override val beforeStartTextSkipPenalty: Double = -0.05
+  override val afterEndTextSkipPenalty: Double = -0.05
   override val lightTextSkipPenalty: Double = -0.1
   override val heavyTextSkipPenalty: Double = -5.0
 
@@ -88,7 +88,7 @@ class PdfSegmentLabelAligner(val model: CoarseLabelModel) extends ExtendedMatchD
       }
     else if (alignedLabels.contains("end"))
            {
-           (None, Some("discardZ"), afterEndTextSkipPenalty)
+           (None, Some("discard"), afterEndTextSkipPenalty)
            }
     else if (alignableLabels.contains(localLabel.getOrElse("Bogus")))
            {

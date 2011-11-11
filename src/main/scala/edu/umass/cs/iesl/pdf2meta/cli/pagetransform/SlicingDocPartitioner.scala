@@ -5,76 +5,48 @@ import edu.umass.cs.iesl.pdf2meta.cli.util.Intervals
 import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel._
 import com.weiglewilczek.slf4s.Logging
 
-/*
-object SlicingLayoutPartitioner extends LayoutPartitioner
-  {
-  def apply(id: String, children: Seq[DocNode]): DocNode with SlicingLayoutPartitioner =
-    {
-    if (children.exists({case x: TextBox => true; case _ => false}))
-      {new TextBox(id, children) with SlicingLayoutPartitioner}
-    else new DocNode(id, children) with SlicingLayoutPartitioner
-    }
-  }
-*/
 class SlicingDocPartitioner extends DocTransformer with Logging
   {
-
-
-  def apply(rect: DocNode): DocNode =
-    {
-    // first ignore any existing groupings
-    //    val star = DocNode(rect.id,rect.allLeaves,rect.localInfo,rect.localErrors)
-    // then do top-down slice partitioning
-    val result = partition(rect)
-    result
-    }
 
   /**
    * Starting from a DocNode, partition its children if possible.  Group the resulting intermediate nodes in
    * a new Rectangle which substitutes for the argument.
+   * attempt to partition, in order:
+   * left vs right, with line
+   * top vs bottom, with line
+   * largest of:
+           - left vs right, without line
+           - top vs bottom, without line
+   * maybe: fonts or other
+         if any partition is found, recurse the whole thing
    */
-  def partition(node: DocNode): DocNode =
+  def apply(node: DocNode): DocNode =
     {
     node match
     {
-      // if this node has already been partitioned, just honor that
-      case n: PartitionedDocNode => PartitionedDocNode(node.id, node.children.map(apply(_)), node.localInfo, node.localErrors)
+      case n if n.isAtomic => n
       case n =>
         {
-        val debugDelimiters = node.delimitingBoxes
-        if (debugDelimiters.length > 0)
-          {
-          logger.info("Got delimiters")
-          }
-        // attempt to partition, in order:
-        // * left vs right, with line
-        // * top vs bottom, with line
-        // * largest of:
-        //   - left vs right, without line
-        //   - top vs bottom, without line
-        // * maybe: fonts or other
-        // if any partition is found, recurse the whole thing
         val byDelimiters: Option[Seq[DocNode]] = partitionByDelimiters(node)
-        val x: Seq[DocNode] = byDelimiters.getOrElse({
-                                                     val byLayout: Option[Seq[DocNode]] = partitionByLayout(node)
-                                                     byLayout.getOrElse(Nil)
-                                                     })
-        x match
-        {
-          case Nil => node //DocNode(node.id, node.children.map(apply(_)), node.localInfo, node.localErrors)
-          case newChildren => DocNode(node.id, newChildren.map(apply(_)), node.localInfo, node.localErrors, false)
+        val newChildren: Seq[DocNode] = byDelimiters.getOrElse({
+                                                               val byLayout: Option[Seq[DocNode]] = partitionByLayout(n)
+                                                               byLayout.getOrElse(node.children)
+                                                               })
+
+        // note if no partition is found, recurse anyway into the existing children because there may be fixed groups etc.
+
+        DocNode(node.id, newChildren.map(apply(_)), node.localInfo, node.localErrors, false, node.isMergeable)
         }
-        }
+
     }
     }
 
 
-  //def partitionBySpecial(rect: DocNode): Seq[DocNode] = List(rect)
-  def partitionByDelimiters(rect: DocNode): Option[Seq[DocNode]] =
+  def partitionByDelimiters(node: DocNode): Option[Seq[DocNode]] =
     {
     // if there is a RectBox or CurveBox that separates the space, use it
-    val delimiters: Seq[DocNode] = rect.children.collect({case x: DelimitingBox => x})
-    val nonDelimiters: Seq[DocNode] = rect.children.collect({
+    val delimiters: Seq[DocNode] = node.children.collect({case x: DelimitingBox => x})
+    val nonDelimiters: Seq[DocNode] = node.children.collect({
                                                             case x: DelimitingBox => None
                                                             case x => Some(x)
                                                             }).flatten
@@ -85,14 +57,7 @@ class SlicingDocPartitioner extends DocTransformer with Logging
       val horizontalLines = delimiters.filter(_.rectangle.get.isLandscape).sortBy(x => x.rectangle.get.height)
 
       val horizontalHoles = Intervals.holesBySize(Intervals.union(nonDelimiters.map(_.rectangle.get.verticalInterval)))
-      /*  def verticalHoleContainsDelimiter(hole: (Double, Double)) =
-      {
-      !(horizontalLines.filter(d =>
-                            {
-                            d.rectangle.isAbove(hole._1) &&
-                            d.rectangle.isBelow(hole._2)
-                            })).isEmpty
-      }*/
+
       def horizontalLineInHole(line: DocNode) =
         {
         horizontalHoles.exists({
@@ -135,8 +100,8 @@ class SlicingDocPartitioner extends DocTransformer with Logging
     val verticalSplit =
       verticalDelimiter.map(d =>
                               {
-                              List(DocNode(rect.id + ".l", rect.children.filter(_.rectangle.get.isLeftOf(d.rectangle.get.left)), None, None, false), d,
-                                   DocNode(rect.id + ".r", rect.children.filter(_.rectangle.get.isRightOf(d.rectangle.get.right)), None, None, false))
+                              List(DocNode(node.id + ".l", node.children.filter(_.rectangle.get.isLeftOf(d.rectangle.get.left)), None, None, false, false), d,
+                                   DocNode(node.id + ".r", node.children.filter(_.rectangle.get.isRightOf(d.rectangle.get.right)), None, None, false, false))
                               })
 
     verticalSplit match
@@ -147,88 +112,192 @@ class SlicingDocPartitioner extends DocTransformer with Logging
         val horizontalSplit =
           horizontalDelimiter.map(d =>
                                     {
-                                    List(DocNode(rect.id + ".t", rect.children.filter(_.rectangle.get.isAbove(d.rectangle.get.top)), None, None, false), d,
-                                         DocNode(rect.id + ".b", rect.children.filter(_.rectangle.get.isBelow(d.rectangle.get.bottom)), None, None, false))
+                                    List(DocNode(node.id + ".t", node.children.filter(_.rectangle.get.isAbove(d.rectangle.get.top)), None, None, false, false), d,
+                                         DocNode(node.id + ".b", node.children.filter(_.rectangle.get.isBelow(d.rectangle.get.bottom)), None, None, false, false))
                                     })
+
 
         horizontalSplit
         }
     }
     }
 
-  def partitionByLayout(rect: DocNode): Option[Seq[DocNode]] =
+  // wow this got ugly.
+  // we may have already determined the double-spacing threshold at higher levels of the tree, so we have to pass it in.
+  def partitionByLayout(node: DocNode ): Option[Seq[DocNode]] =
     {
+    //******** Vertical Partition
+    // for vertical partitions it's good enough to pick the largest, do a binary partition, and recurse
+    val verticalPartition: Option[(Double, Double)] = Intervals.largestHole(Intervals.union(node.children.map(_.rectangle.get.horizontalInterval)), 5)
 
-    val verticalPartition: Option[(Double, Double)] = Intervals.largestHole(Intervals.union(rect.children.map(_.rectangle.get.horizontalInterval)), 1)
-    val horizontalPartition: Option[(Double, Double)] = Intervals.largestHole(Intervals.union(rect.children.map(_.rectangle.get.verticalInterval)), 1)
 
-
-    def verticalSplit =
+    def verticalSplit: Option[List[DocNode ]] =
       {
       verticalPartition.map(d =>
                               {
                               lazy val vrect = new RectangleOnPage
                                 {
-                                val page = rect.rectangle.get.page
-                                val bottom = page.rectangle.bottom
+                                val page = node.rectangle.get.page
+                                val bottom = node.rectangle.get.bottom
                                 val left = d._1
                                 val right = d._2
-                                val top = page.rectangle.top
+                                val top = node.rectangle.get.top
                                 }
 
-                              lazy val verticalPartitionBox = new RectBox(rect.id + ".vert", vrect)
+                              lazy val verticalPartitionBox = new RectBox(node.id + ".vert", vrect)
 
-                              List(DocNode(rect.id + ".l", rect.children.filter(_.rectangle.get.isLeftOf(d._1)), None, None, false), // verticalPartitionBox,
-                                   DocNode(rect.id + ".r", rect.children.filter(_.rectangle.get.isRightOf(d._2)), None, None, false))
+                              List(new DocNode(node.id + ".l", node.children.filter(_.rectangle.get.isLeftOf(d._1)), None, None, false, false)
+                                   , verticalPartitionBox, new DocNode(node.id + ".r", node.children.filter(_.rectangle.get.isRightOf(d._2)), None, None, false, false) )
                               })
       }
 
-    def horizontalSplit =
+//******** Horizontal Partition
+    // for horizontal partitions it's good enough to pick the largest, do a binary partition, and recurse
+    val horizontalPartition: Option[(Double, Double)] = Intervals.largestHole(Intervals.union(node.children.map(_.rectangle.get.verticalInterval)), 5)
+
+
+    def horizontalSplit: Option[List[DocNode ]] =
       {
       horizontalPartition.map(d =>
+                              {
+                              lazy val vrect = new RectangleOnPage
                                 {
-                                lazy val hrect = new RectangleOnPage
-                                  {
-                                  val page = rect.rectangle.get.page
-                                  val bottom = d._1
-                                  val left = page.rectangle.left
-                                  val right = page.rectangle.right
-                                  val top = d._2
-                                  }
+                                val page = node.rectangle.get.page
+                                val bottom = d._1
+                                val left = node.rectangle.get.left
+                                val right = node.rectangle.get.right
+                                val top = d._2
+                                }
 
-                                lazy val horizontalPartitionBox = new RectBox(rect.id + ".vert", hrect)
+                              lazy val horizontalPartitionBox = new RectBox(node.id + ".vert", vrect)
 
-                                List(DocNode(rect.id + ".t", rect.children.filter(_.rectangle.get.isAbove(d._1)), None, None, false), // horizontalPartitionBox,
-                                     DocNode(rect.id + ".b", rect.children.filter(_.rectangle.get.isBelow(d._2)), None, None, false))
-                                })
+                              List(new DocNode(node.id + ".t", node.children.filter(_.rectangle.get.isAbove(d._1)), None, None, false, false)
+                                   , horizontalPartitionBox, new DocNode(node.id + ".b", node.children.filter(_.rectangle.get.isBelow(d._2)), None, None, false, false) )
+                              })
       }
-    (verticalPartition, horizontalPartition) match
-    {
-      case (Some(v), Some(h)) => if ((v._2 - v._1).abs > (h._2 - h._1).abs) verticalSplit else horizontalSplit
-      case (Some(v), None) => verticalSplit
-      case (None, Some(h)) => horizontalSplit
-      case (None, None) => None
-    }
+
+
+
+
+
+
+
+
+
+
+
+    if (!horizontalSplit.isEmpty)
+      {
+      horizontalSplit
+      }
+    else
+      {
+      verticalSplit
+      }
+}}
+  /*
+    //******** Horizontal Partition
+    // horizontal partitions are trickier due to the need to detect double-spacing. Because this is context-dependent, we can't just make a binary tree.
+    // instead, take the set of all holes, and select the largest size threshold such that there are not four holes within 90%.
+    // tht is just a heuristic for an unambiguous threshold.
+    val vIntervals: Seq[(Double, Double)] = node.children.map(_.rectangle.get.verticalInterval)
+    val vIntervalUnion: List[(Double, Double)] = Intervals.union(vIntervals)
+    val vHoles: List[(Double, Double)] = Intervals.holesBySize(vIntervalUnion)
+
+    def acceptHorizontalSplit(holes: List[(Double, Double)]): Boolean =
+      {
+      if (holes.isEmpty) false
+      else
+        {
+        val h = holes.head
+        val hSplitSize = (h._2 - h._1).abs
+
+        val t = holes.tail
+        val nextFour = t.slice(0, t.length.min(4))
+
+        if (hSplitSize < vSplitSize || hSplitSize < 5) false
+        else if (nextFour.length < 4) true
+        else
+          {
+          val l = nextFour.last
+          val gradientDetectorSplitSize: Double = (l._2 - l._1).abs
+          (gradientDetectorSplitSize < (hSplitSize * .9), gradientDetectorSplitSize)
+          }
+        }
+      }
+
+    def chooseAcceptedSplits(holes: List[(Double, Double)]): (List[(Double, Double)], Double) =
+      {
+      // newMaxSize differs from node.minHorizontalGapSize only when the split is not accepted
+      val (isAccepted: Boolean, newMaxSize: Double) = acceptHorizontalSplit(holes)
+      if (isAccepted)
+        {
+        ((holes.head :: chooseAcceptedSplits(holes.tail)._1), newMaxSize)
+        }
+      else
+        {
+        (List(), newMaxSize)
+        }
+      }
+
+    val (acceptedSplits, newMaxSize: Double) = chooseAcceptedSplits(vHoles)
+    val acceptedSplitsSorted = acceptedSplits.sortBy(_._1)
+
+    val contentBlocks: List[(Double, Double)] = Intervals.invert(acceptedSplitsSorted, Double.MinValue, Double.MaxValue)
+
+    val contentNodes = contentBlocks.zipWithIndex.map({
+                                                      case ((bottom, top), index) =>
+                                                        {
+                                                        val newChildren: Seq[DocNode] = node.children.filter(_.rectangle.get.isBelowAndAbove(top, bottom))
+                                                        if (newChildren.isEmpty) None
+                                                        else
+                                                          Some(new DocNode(node.id + ".v" + index, newChildren, None, None, false, false) with HorizontalSplitLimit
+                                                            {
+                                                            val minHorizontalGapSize = newMaxSize
+                                                            })
+                                                        }
+                                                      }).toList.flatten
+
+
+    val holeNodes = acceptedSplitsSorted.zipWithIndex.map({
+                                                          case ((b, t), index) =>
+                                                            {
+                                                            val hrect = new RectangleOnPage
+                                                              {
+                                                              val page = node.rectangle.get.page
+                                                              val bottom = b
+                                                              val left = node.rectangle.get.left
+                                                              val right = node.rectangle.get.right
+                                                              val top = t
+                                                              }
+
+                                                            new RectBox(node.id + ".vh" + index, hrect) with HorizontalSplitLimit
+                                                              {
+                                                              val minHorizontalGapSize = newMaxSize // irrelevant
+                                                              }
+                                                            }
+                                                          }).toList
+
+    val horizontalSplit = if (holeNodes.isEmpty) None
+                          else
+                            {Some(holeNodes ::: contentNodes)}
+
+    // the horizontalSplit is empty if there is a larger vertical hole
+    if (!horizontalSplit.isEmpty)
+      {
+      horizontalSplit
+      }
+    else
+      {
+      verticalSplit
+      }
+
+    //horizontalSplit.map((_, newMaxSize)).getOrElse(verticalSplit.map((_, newMaxSize)))
     }
   }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+*/
 
 
 

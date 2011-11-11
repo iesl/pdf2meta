@@ -5,8 +5,7 @@ import collection.Seq
 trait TextContainer
   {
   final def text: String = mkString(" ")
-  def mkString(d : String) : String
-
+  def mkString(d: String): String
   }
 
 // font id, height
@@ -22,13 +21,25 @@ class FontWithHeight(val fontid: String, rawheight: Double)
     }
     }
 
-  override def hashCode : Int = 41 * (41 + fontid.hashCode) + height.hashCode()
+  override def hashCode: Int = 41 * (41 + fontid.hashCode) + height.hashCode()
 
-  def equalsWithinOneQuantum(p1: FontWithHeight) : Boolean =
+  def equalsWithinOneQuantum(p1: FontWithHeight): Boolean =
     {
     p1 match
     {
       case x: FontWithHeight => (fontid == x.fontid && (height - x.height).abs <= 0.1)
+      case _ => false
+    }
+    }
+
+
+  def sizeEqualsWithinOneQuantum(p1: FontWithHeight): Boolean = sizeEqualsWithin(0.1)(p1)
+
+  def sizeEqualsWithin(epsilon: Double)(p1: FontWithHeight): Boolean =
+    {
+    p1 match
+    {
+      case x: FontWithHeight => ((height - x.height).abs <= epsilon)
       case _ => false
     }
     }
@@ -43,10 +54,15 @@ trait HasFontInfo extends TextContainer
 
 
 class DelimitingBox(id: String, val theRectangle: RectangleOnPage)
-        extends DocNode(id, Seq.empty, None, None,true)
+        extends DocNode(id, Seq.empty, None, None, true, false)
   {
   override def computeRectangle = Some(theRectangle)
   //  override def computePage = Some(thePage)
+  override def create(childrenA: Seq[DocNode]) =
+    {
+    assert(childrenA.isEmpty)
+    this
+    }
   }
 
 class RectBox(id: String, override val theRectangle: RectangleOnPage)

@@ -1,6 +1,7 @@
 package edu.umass.cs.iesl.pdf2meta.cli.readingorder
 
 import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.{DocNode, Rectangle}
+
 /*class RectangularReadingOrderFactory extends ReadingOrderFactory
   {
   def apply(handleOrderingError: ((String) => Unit)): Ordering[Rectangular] =
@@ -35,6 +36,9 @@ class OverlapRatios(a: Rectangle, basis: Rectangle)
   def fullyAbove = a.area == above.area
   def fullyBelow = a.area == below.area
 
+  def startsAboveLeft = a.left < basis.left && a.top > basis.top
+  def startsBelowRight = a.left > basis.left && a.top > basis.top
+
 
   def mostlyLeftOf = left.area > a.area * .5 // more than half of a is to the left of the basis left border
   def mostlyRightOf = right.area > a.area * .5
@@ -61,7 +65,8 @@ object RectangularReadingOrder extends Ordering[DocNode]
   override def compare(wrappedA: DocNode, wrappedBasis: DocNode): Int =
     {
 
-    (wrappedA.rectangle, wrappedBasis.rectangle) match
+
+  (wrappedA.rectangle, wrappedBasis.rectangle) match
     {
       case (None, None) => SAME
       case (Some(x), None) => BEFORE
@@ -77,7 +82,25 @@ object RectangularReadingOrder extends Ordering[DocNode]
           case (a, basis) if (a.page.pagenum > basis.page.pagenum) => AFTER
           case (a, basis) =>
             {
-            val overlaps = new OverlapRatios(a, basis)
+            // if there is a main rectangle, there must also be a core rectangle (maybe just the same)
+            val coreA = wrappedA.coreRectangle
+            val coreB = wrappedBasis.coreRectangle
+            compareRectanglesSolid(a,basis).
+            getOrElse(compareRectanglesSolid(coreA.get, coreB.get).
+            getOrElse(compareRectanglesFuzzy(coreA.get,coreB.get).    // note order
+                      getOrElse(compareRectanglesFuzzy(a, basis).
+                      getOrElse(SAME))))
+
+
+            }
+        }
+        }
+    }
+    }
+
+  private def compareRectanglesSolid(a: Rectangle, basis: Rectangle): Option[Int] =
+    {
+     val overlaps = new OverlapRatios(a, basis)
             val reverseOverlaps = new OverlapRatios(basis, a)
 
             // careful to make everything symmetric
@@ -86,31 +109,52 @@ object RectangularReadingOrder extends Ordering[DocNode]
 
             (overlaps, reverseOverlaps) match
             {
-              case (o, r) if r.fullyContained => BEFORE
-              case (o, r) if o.fullyContained => AFTER
-              case (o, r) if o.fullyLeftOf => BEFORE
-              case (o, r) if o.fullyRightOf => AFTER
+              case (o, r) if o.fullyLeftOf => Some(BEFORE)
+              case (o, r) if o.fullyRightOf => Some(AFTER)
 
               // these cases already covered
               // case (o,r) if r.fullyLeftOf => AFTER
               // case (o,r) if r.fullyRightOf => BEFORE
               // these kick in only if the horizontal matches failed, i.e. there is at least some horizontal overlap
-              case (o, r) if o.fullyAbove => BEFORE
-              case (o, r) if o.fullyBelow => AFTER
+              case (o, r) if o.fullyAbove => Some(BEFORE)
+              case (o, r) if o.fullyBelow => Some(AFTER)
 
               // these cases already covered
               // case (o,r) if r.fullyAbove => AFTER
               // case (o,r) if r.fullyBelow => BEFORE
+
+              case (o, r) => None
+            }
+    }
+
+// assume the solid comparison has already failed
+
+  private def compareRectanglesFuzzy(a: Rectangle, basis: Rectangle): Option[Int] =
+    {
+     val overlaps = new OverlapRatios(a, basis)
+            val reverseOverlaps = new OverlapRatios(basis, a)
+
+            // careful to make everything symmetric
+            // if a is fully to the left of that, it comes first, regardless of y position (think columns)
+            // note we have to consider the extents of the rectangles, not just the centers
+
+            (overlaps, reverseOverlaps) match
+            {
+
+              case (o, r) if r.fullyContained => Some(BEFORE)
+              case (o, r) if o.fullyContained => Some(AFTER)
+              // here's where it gets tricky
               // there is some horizontal and some vertical overlap, but not full containment
               // these cases could be done by comparing a.center to basis borders
-              case (o, r) if o.mostlyLeftOf => BEFORE
-              case (o, r) if o.mostlyRightOf => AFTER
-              case (o, r) if r.mostlyLeftOf => AFTER
-              case (o, r) if r.mostlyRightOf => BEFORE
-              case (o, r) if o.mostlyAbove => BEFORE
-              case (o, r) if o.mostlyBelow => AFTER
-              case (o, r) if r.mostlyAbove => AFTER
-              case (o, r) if r.mostlyBelow => BEFORE
+
+              case (o, r) if o.mostlyAbove => Some(BEFORE)
+              case (o, r) if o.mostlyBelow => Some(AFTER)
+              case (o, r) if r.mostlyAbove => Some(AFTER)
+              case (o, r) if r.mostlyBelow => Some(BEFORE)
+              case (o, r) if o.mostlyLeftOf => Some(BEFORE)
+              case (o, r) if o.mostlyRightOf => Some(AFTER)
+              case (o, r) if r.mostlyLeftOf => Some(AFTER)
+              case (o, r) if r.mostlyRightOf => Some(BEFORE)
 
               // a.center is within basis, and vice versa
               // just vote among the overhangs
@@ -120,15 +164,11 @@ object RectangularReadingOrder extends Ordering[DocNode]
                 val afterVotes = o.right.area + o.below.area + r.left.area + r.above.area
                 (beforeVotes - afterVotes) match
                 {
-                  case d if (d > 0) => BEFORE
-                  case d if (d < 0) => AFTER
-                  case _ => SAME
+                  case d if (d > 0) => Some(BEFORE)
+                  case d if (d < 0) => Some(AFTER)
+                  case _ => None
                 }
                 }
             }
-            }
-        }
-        }
-    }
     }
   }

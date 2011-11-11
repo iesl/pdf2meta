@@ -5,10 +5,10 @@ import edu.umass.cs.iesl.pdf2meta.cli.coarsesegmenter.{LabelFixer, LabelTransfor
 
 trait CoarseLabelModel
   {
-  val coarseLabelMap: LinkedHashMap[String, L] //LinkedHashMap[String, List[String]]
+  val coarseLabelMap: LinkedHashMap[String, CoarseAlignmentConstraint] //LinkedHashMap[String, List[String]]
   val definiteLabels: Seq[String]
 
-  case class L(coarseLabel: String, minChars: Int, maxChars: Int, minBlocks: Int, maxBlocks: Int, fineLabels: Seq[String])
+  case class CoarseAlignmentConstraint(coarseLabel: String, minChars: Int, maxChars: Int, minBlocks: Int, maxBlocks: Int, fineLabels: Seq[String])
 
   lazy val coarseLabelsReverse: Map[String, String] = (for (t <- coarseLabelMap.values; l <- t.fineLabels) yield (l, t.coarseLabel)).toMap
   lazy val coarseLabels = coarseLabelMap.keys.toSeq
@@ -17,7 +17,7 @@ trait CoarseLabelModel
 
   lazy val definiteClassifier = new LabelFixer(definiteLabels)
 
-  def get(x: String): Option[L] = coarseLabelMap.get(x)
+  def get(x: String): Option[CoarseAlignmentConstraint] = coarseLabelMap.get(x)
   }
 
 

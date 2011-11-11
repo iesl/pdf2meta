@@ -16,9 +16,12 @@ object Intervals
     new DoubleInterval(t._1, t._2)
     }
 
+
+  def invert[T](list: List[(T, T)], min : T, max : T): List[(T, T)] = invertIgnoreEdges(((min,min) :: list) :+ (max,max))
+
   // is there some better foldy way?
   // note we ignore the edges and just return the holes.  Not really correct but it's what we need right now.
-  def invert[T](list: List[(T, T)]): List[(T, T)] =
+  def invertIgnoreEdges[T](list: List[(T, T)]): List[(T, T)] =
     {
     // require list is sorted and nonoverlapping
     list match
@@ -29,7 +32,7 @@ object Intervals
         {
           case Nil => Nil
           case _ =>
-            (a._2, t.head._1) :: invert(list.tail);
+            (a._2, t.head._1) :: invertIgnoreEdges(list.tail);
         }
       // assert(b._1 > a._2)
     }
@@ -49,7 +52,7 @@ object Intervals
 
   def holesBySize(list: List[(Double, Double)]): List[(Double, Double)] =
     {
-    invert(list).sortBy[Double]((x: (Double, Double)) => x._1 - x._2)  // note reverse sort
+    invertIgnoreEdges(list).sortBy[Double]((x: (Double, Double)) => x._1 - x._2)  // note reverse sort
     }
 
   //implicit def tupleToInterval[T](t: (T, T)) = new BasicInterval[T](t._1, t._2, true, true)
