@@ -12,25 +12,6 @@ trait OrderedTreeNode[T <: OrderedTreeNode[T]] extends TreeNode[T] //with Sorted
   def id: String
   def create(children: Seq[T]): T
 
-  /*
-  def deepSorted(ordering: Ordering[T]): T =
-    {
-    children.length match
-    {
-      case 0 => this
-      case _ =>
-        {
-        val sortedChildren = for (node <- this.children) yield node.deepSorted(ordering);
-
-        val result = create(sortedChildren.toSeq.sorted[T](ordering))
-        result
-        }
-    }
-    }
-*/
-//  def deepSorted(ordering: Ordering[T]): T = postOrderApply(n => create(n.children.toSeq.sorted[T](ordering)))
-
-
   /**
    * provided a function that transforms a single node: apply it recursively, processing children first.
    *
@@ -40,7 +21,7 @@ trait OrderedTreeNode[T <: OrderedTreeNode[T]] extends TreeNode[T] //with Sorted
    *    2) nothing changed, so the node itself is returned,
    *    3) None is returned (i.e., the node should be eliminated)
    *
-   * Cases 1 and 2 are covered by returning Some[DocNode].  Case 3 should be covered by returning a node with no children.
+   * Cases 1 and 2 are covered by returning Some[DocNode].
    */
   def postOrderApply(f: T => Option[T]): Option[T] =
     {

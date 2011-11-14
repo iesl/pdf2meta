@@ -484,13 +484,8 @@ object StandardScoringModel extends ScoringModel with Logging
                                          {
                                          linearBetween(.9, .95)(1 - x)
                                          }
-                                       }
-                                       /*_ match
-  {
-    case 0 => 1;
-    case _ => 0
-  }
-  */)
+                                       })
+
 
   val cities = lexiconProportion("cities", Lexicon.cities, 0.05, 0.1)
   val states = lexiconProportion("states", Lexicon.states, 0.05, 0.1)

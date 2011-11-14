@@ -54,16 +54,12 @@ class PdfMiner extends XmlExtractor with Logging with Function1[Workspace, DocNo
       w.dir + "/" + w.filename + ".d/pdfminer/" + w.file.segments.last + ".pdfminer.xml"
       }
 
-    // lazy val outlines = scala.io.Source.fromFile(outfile).mkString
     lazy val xml = scala.xml.XML.loadFile(outfile)
 
     val lengthR = """(.*),(.*),(.*)""".r
-    //  val cid = """(.*)\(cid:.*\)(.*)""" .r
     val cid = """\(cid:.*?\)"""
 
 
-    //val pageorder = new PageReadingOrder(errors)
-    //var startline = 0;
     val rawPages =
       {
       logger.debug("Starting XML parsing...")
@@ -72,7 +68,6 @@ class PdfMiner extends XmlExtractor with Logging with Function1[Workspace, DocNo
 
       val result = for (page <- xml \\ "page") yield
         {
-        //val errors = boxorder.errors
         val pageid = (page \ "@pageid").text
         val pagenum = pageid.toInt
 
@@ -86,8 +81,6 @@ class PdfMiner extends XmlExtractor with Logging with Function1[Workspace, DocNo
           val lines =
             for (line <- box \ "textline") yield
               {
-              //val bbox = new BoundingBox((line \ "@bbox").text)
-              //val bbox = (line \ "@bbox").text
               val fonts = (line \ "@fonts").text
               val bboxes = (line \ "@bboxes").text
               val lengthStr = (line \ "@length").text
@@ -98,7 +91,6 @@ class PdfMiner extends XmlExtractor with Logging with Function1[Workspace, DocNo
                 }
               else
                 {
-                //val bboxRect = Rectangle(bbox)
                 val bboxRects = bboxes.split(" ").map(RectangleOnPage(thePage, _)).toList.flatten
                 if (bboxRects.isEmpty)
                   {
@@ -129,9 +121,6 @@ class PdfMiner extends XmlExtractor with Logging with Function1[Workspace, DocNo
                   }
                 }
               }
-          // val bbox = new BoundingBox((box \ "@bbox").text) //with BoxReadingOrder
-          // val bbox = (box \ "@bbox").text
-          // val bboxRect = Rectangle(bbox)
           val lf: Seq[DocNode] = lines.flatten
 
           lf match
@@ -174,7 +163,6 @@ class PdfMiner extends XmlExtractor with Logging with Function1[Workspace, DocNo
                             curves.flatten.toList ::: figures.flatten.toList), None, None)
           {
           override lazy val rectangle: Option[RectangleOnPage] = RectangleOnPage(thePage, pageRect)
-          //        override lazy val page = Some(pagenum)
           }
         }
       logger.debug("XML parsing done...")
@@ -183,14 +171,6 @@ class PdfMiner extends XmlExtractor with Logging with Function1[Workspace, DocNo
       result
       }
 
-
-    // couple ways to do this:
-    // 1.  assemble all the raw strings, then zipWithIndex
-    // 2.  grab the already-numbered textLines from each page, and merge them
-    // 3.  for-comprehension as follows
-    // val numberedTextLines = for (page <- pages.sorted; line <- page.textLines) yield line
-    //val numberedTextLinesByPage =
-    //val textBoxes = pages.map(x=>x.textBoxes.map(y => (x, y))).flatten
     //need to add an empty node, but only to the last page
     val allPagesWithEmptyEndNode =
       {
@@ -198,7 +178,6 @@ class PdfMiner extends XmlExtractor with Logging with Function1[Workspace, DocNo
       val lastPage = r.head
       val lastPageRect: RectangleOnPage = lastPage.rectangle.get
       val bottomOfPageRect = new RectBox("bottom-" + lastPage.id, RectangleOnPage(lastPageRect.page, lastPageRect.bottomEdge).get)
-      //val emptyNode = new DocNode("End", Nil, None, None, true)
       ((lastPage :+ bottomOfPageRect) :: r.tail.toList).reverse
       }
 

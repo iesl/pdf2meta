@@ -7,20 +7,23 @@ import edu.umass.cs.iesl.pdf2meta.cli.coarsesegmenter.{PerceptronCoarseSegmenter
 import edu.umass.cs.iesl.pdf2meta.cli.{ExtractOnlyPipelineComponent, PipelineComponent}
 import edu.umass.cs.iesl.pdf2meta.cli.segmentsmoother.BestCoarseLabelModelAligner
 
-object WiredPipeline extends PipelineComponent //with CoarseSegmenterComponent//with XmlExtractorComponent with
-//CoarseSegmenterComponent //with  DocTransformerComponent
+object WiredPipeline extends PipelineComponent
   {
   val xmlExtractor = new PdfMiner
 
-  //val docTransformer = new DocTransformerComponent
-  //{
   val docTransformer = new DocTransformerPipelineComponent
     {
-    lazy val transformers = List(new PageHonoringDocFlattener, new SlicingDocPartitioner, new DocDeepSorter(RectangularReadingOrder), new DocFlattener, new LineMerger, new ParagraphMerger,
-                                 new EmptyEndNodeAdder)
-    //val docTransformer = new DocTransformerPipeline
-    } //.docTransformer
-  //}.docTransformer
+    val transformers = List(new PageHonoringDocFlattener
+                            // top-down phase
+                            , new SlicingDocPartitioner, new WeakPartitionRemover, new DocDeepSorter(RectangularReadingOrder)
+
+                            // bottom-up phase
+                            , new LineMerger, new SidewaysLineMerger, new IndentedParagraphsMerger, new EmptyEndNodeAdder
+
+                            // finally ditch any intermediate hierarchy levels
+                            , new DocFlattener)
+    }
+
   val coarseSegmenter = new AlignedPerceptronCoarseSegmenterComponent
     {
     lazy val perceptronPhase = new PerceptronCoarseSegmenterComponent
@@ -32,21 +35,25 @@ object WiredPipeline extends PipelineComponent //with CoarseSegmenterComponent//
       val coarseLabelModels = List(new StandardCoarseLabelModel) //, new LetterCoarseLabelModel)
       }
     }
+
   val pipeline = new Pipeline;
   }
 
-object WiredExtractOnlyPipeline extends ExtractOnlyPipelineComponent //with XmlExtractorComponent //with DocTransformerComponent
+object WiredExtractOnlyPipeline extends ExtractOnlyPipelineComponent
   {
   val xmlExtractor = new PdfMiner
-
-  //val docTransformer = new DocTransformerComponent
-  //  {
   val docTransformer = new DocTransformerPipelineComponent
     {
-    val transformers = List(new PageHonoringDocFlattener, new SlicingDocPartitioner, new DocDeepSorter(RectangularReadingOrder), new DocFlattener, new LineMerger, new ParagraphMerger)
-    //val docTransformer = new DocTransformerPipeline
-    } //.docTransformer
-  //   }.docTransformer
+    val transformers = List(new PageHonoringDocFlattener
+                            // top-down phase
+                            , new SlicingDocPartitioner, new WeakPartitionRemover, new DocDeepSorter(RectangularReadingOrder)
+
+                            // bottom-up phase
+                            , new LineMerger, new SidewaysLineMerger, new IndentedParagraphsMerger, new EmptyEndNodeAdder
+
+                            // finally ditch any intermediate hierarchy levels
+                            , new DocFlattener)
+    }
   val pipeline = new Pipeline;
   }
 

@@ -2,12 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="07333077-3e4c-44de-81dd-202c030dbb49" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/runConfigurations/Jetty.xml" afterPath="$PROJECT_DIR$/.idea/runConfigurations/Jetty.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/Pdf2Meta.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/Pdf2Meta.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/PipelineComponent.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/PipelineComponent.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/coarsesegmenter/AlignedPerceptronCoarseSegmenterComponent.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/coarsesegmenter/AlignedPerceptronCoarseSegmenterComponent.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/coarsesegmenter/CoarseSegmenter.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/coarsesegmenter/CoarseSegmenter.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/coarsesegmenter/LabelFixer.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/coarsesegmenter/LabelFixer.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/coarsesegmenter/PerceptronCoarseSegmenterComponent.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/coarsesegmenter/PerceptronCoarseSegmenterComponent.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/coarsesegmenter/StubCoarseSegmenter.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/coarsesegmenter/StubCoarseSegmenter.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/coarsesegmenter/ScoringModel.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/coarsesegmenter/ScoringModel.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/config/StandardScoringModel.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/config/StandardScoringModel.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/config/WiredPipeline.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/config/WiredPipeline.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/extract/PdfMiner.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/extract/PdfMiner.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/extract/XmlExtractor.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/extract/XmlExtractor.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/Boxes.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/Boxes.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/DocNode.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/DocNode.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/Rectangle.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/Rectangle.scala" />
@@ -16,14 +21,21 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/DocDeepSorter.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/DocDeepSorter.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/DocFlattener.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/DocFlattener.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/DocTransformer.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/DocTransformer.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/EmptyEndNodeAdder.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/EmptyEndNodeAdder.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/DocTransformerPipelineComponent.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/DocTransformerPipelineComponent.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/IndentedParagraphsMerger.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/IndentedParagraphsMerger.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/SimilarityDocMerger.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/SimilarityDocMerger.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/SlicingDocPartitioner.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/SlicingDocPartitioner.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/WeakPartitionRemover.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/WeakPartitionRemover.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/readingorder/RectangularReadingOrder.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/readingorder/RectangularReadingOrder.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/segmentsmoother/BestCoarseLabelModelAligner.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/segmentsmoother/BestCoarseLabelModelAligner.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/segmentsmoother/CoarseLabelModel.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/segmentsmoother/CoarseLabelModel.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/segmentsmoother/ExtendedMatchDPAligner.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/segmentsmoother/ExtendedMatchDPAligner.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/segmentsmoother/PdfSegmentLabelAligner.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/segmentsmoother/PdfSegmentLabelAligner.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/segmentsmoother/SegmentSmoother.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/segmentsmoother/SegmentSmoother.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/util/Collections.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/util/Collections.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/util/Intervals.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/util/Intervals.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/util/Trees.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/util/Trees.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/util/Util.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/util/Util.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webapp/src/main/scala/bootstrap/liftweb/Boot.scala" afterPath="$PROJECT_DIR$/webapp/src/main/scala/bootstrap/liftweb/Boot.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webapp/src/main/scala/edu/umass/cs/iesl/pdf2meta/webapp/cakesnippet/ShowPdfComponent.scala" afterPath="$PROJECT_DIR$/webapp/src/main/scala/edu/umass/cs/iesl/pdf2meta/webapp/cakesnippet/ShowPdfComponent.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/DoubleSpaceSlicingCorrection.scala" afterPath="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/WeakPartitionRemover.scala" />
     </list>
     <ignored path="pdf2meta.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -95,7 +107,7 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/DocNode.scala" line="407" class="edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.DocNode" package="">
+      <breakpoint url="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/DocNode.scala" line="250" class="edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.DocNode" package="">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -108,7 +120,7 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/DocNode.scala" line="413" class="edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.DocNode" package="">
+      <breakpoint url="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/DocNode.scala" line="256" class="edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.DocNode" package="">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -196,118 +208,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="SimilarityDocMerger.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/SimilarityDocMerger.scala">
+      <file leaf-file-name="Collections.scala" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/util/Collections.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="200" column="85" selection-start="5815" selection-end="5815" vertical-scroll-proportion="0.0">
+            <state line="112" column="3" selection-start="2651" selection-end="2651" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TextLine.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/TextLine.scala">
+      <file leaf-file-name="Intervals.scala" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/util/Intervals.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="22" column="20" selection-start="1024" selection-end="1024" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DocNode.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/DocNode.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="413" column="0" selection-start="13626" selection-end="13626" vertical-scroll-proportion="-16.923077">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PdfMiner.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/extract/PdfMiner.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="201" column="18" selection-start="7446" selection-end="7446" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TextBox.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/TextBox.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="33" column="7" selection-start="809" selection-end="809" vertical-scroll-proportion="-12.461538">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="EmptyEndNodeAdder.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/EmptyEndNodeAdder.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="11" column="10" selection-start="267" selection-end="267" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DocFlattener.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/DocFlattener.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="97" column="34" selection-start="3002" selection-end="3002" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PerceptronCoarseSegmenterComponent.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/coarsesegmenter/PerceptronCoarseSegmenterComponent.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="66" column="22" selection-start="2547" selection-end="2547" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="StubCoarseSegmenter.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/coarsesegmenter/StubCoarseSegmenter.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="11" column="17" selection-start="379" selection-end="379" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="StandardScoringModel.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/config/StandardScoringModel.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="324" column="8" selection-start="9169" selection-end="9169" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="IndentedParagraphsMerger.scala" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/IndentedParagraphsMerger.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="151" column="29" selection-start="5553" selection-end="5553" vertical-scroll-proportion="0.7024169">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SlicingDocPartitioner.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/SlicingDocPartitioner.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="190" column="152" selection-start="8261" selection-end="8261" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DocTransformer.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/DocTransformer.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="16" column="41" selection-start="569" selection-end="569" vertical-scroll-proportion="0.0">
+            <state line="70" column="0" selection-start="2222" selection-end="2222" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -316,34 +229,34 @@
       <file leaf-file-name="Trees.scala" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/util/Trees.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="70" column="32" selection-start="2490" selection-end="2490" vertical-scroll-proportion="0.0">
+            <state line="23" column="58" selection-start="834" selection-end="834" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Boot.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/webapp/src/main/scala/bootstrap/liftweb/Boot.scala">
+      <file leaf-file-name="Workspace.scala" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/util/Workspace.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="76" column="41" selection-start="2551" selection-end="2551" vertical-scroll-proportion="0.0">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="WeakPartitionRemover.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/WeakPartitionRemover.scala">
+      <file leaf-file-name="SimilarityDocMerger.scala" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/SimilarityDocMerger.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="51" column="91" selection-start="1646" selection-end="1646" vertical-scroll-proportion="0.0">
+            <state line="153" column="39" selection-start="3944" selection-end="3944" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DocDeepSorter.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/DocDeepSorter.scala">
+      <file leaf-file-name="DocFlattener.scala" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/DocFlattener.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="4" column="64" selection-start="177" selection-end="177" vertical-scroll-proportion="0.0">
+            <state line="6" column="16" selection-start="175" selection-end="175" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -352,7 +265,61 @@
       <file leaf-file-name="Util.scala" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/util/Util.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="9" column="6" selection-start="161" selection-end="161" vertical-scroll-proportion="0.0">
+            <state line="45" column="0" selection-start="1131" selection-end="1131" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Pdf2Meta.scala" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/Pdf2Meta.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="15" column="0" selection-start="271" selection-end="271" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PipelineComponent.scala" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/PipelineComponent.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="22" column="58" selection-start="891" selection-end="891" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="StandardScoringModel.scala" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/config/StandardScoringModel.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="488" column="0" selection-start="14496" selection-end="14496" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BestCoarseLabelModelAligner.scala" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/segmentsmoother/BestCoarseLabelModelAligner.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="14" column="0" selection-start="633" selection-end="633" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="WiredPipeline.scala" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/config/WiredPipeline.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="55" column="5" selection-start="2357" selection-end="2357" vertical-scroll-proportion="0.9496403">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Boot.scala" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/webapp/src/main/scala/bootstrap/liftweb/Boot.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="98" column="30" selection-start="2128" selection-end="3361" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -361,7 +328,52 @@
       <file leaf-file-name="Boxes.scala" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/Boxes.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="0" selection-start="140" selection-end="140" vertical-scroll-proportion="0.0">
+            <state line="57" column="0" selection-start="1357" selection-end="1357" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DocNode.scala" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/DocNode.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="289" column="0" selection-start="10585" selection-end="10585" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Rectangle.scala" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/Rectangle.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="258" column="0" selection-start="7366" selection-end="7366" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TextBox.scala" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/TextBox.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="121" column="0" selection-start="3348" selection-end="3348" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TextLine.scala" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/TextLine.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="83" column="0" selection-start="2662" selection-end="2662" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MetadataModel.scala" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/metadatamodel/MetadataModel.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="12" column="6" selection-start="230" selection-end="230" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -390,22 +402,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/DocTransformer.scala" />
-        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/coarsesegmenter/PerceptronCoarseSegmenterComponent.scala" />
-        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/coarsesegmenter/StubCoarseSegmenter.scala" />
-        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/extract/PdfMiner.scala" />
-        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/Boxes.scala" />
-        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/TextLine.scala" />
-        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/Rectangle.scala" />
-        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/util/Trees.scala" />
         <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/WeakPartitionRemover.scala" />
-        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/SlicingDocPartitioner.scala" />
-        <option value="$PROJECT_DIR$/webapp/src/main/scala/edu/umass/cs/iesl/pdf2meta/webapp/cakesnippet/ShowPdfComponent.scala" />
-        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/TextBox.scala" />
-        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/EmptyEndNodeAdder.scala" />
-        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/DocNode.scala" />
-        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/SimilarityDocMerger.scala" />
-        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/IndentedParagraphsMerger.scala" />
+        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/readingorder/RectangularReadingOrder.scala" />
+        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/segmentsmoother/BestCoarseLabelModelAligner.scala" />
+        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/segmentsmoother/CoarseLabelModel.scala" />
+        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/segmentsmoother/ExtendedMatchDPAligner.scala" />
+        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/segmentsmoother/PdfSegmentLabelAligner.scala" />
+        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/segmentsmoother/SegmentSmoother.scala" />
+        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/util/Collections.scala" />
+        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/util/Intervals.scala" />
+        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/util/Trees.scala" />
+        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/util/Util.scala" />
+        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/Pdf2Meta.scala" />
+        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/PipelineComponent.scala" />
+        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/config/StandardScoringModel.scala" />
+        <option value="$PROJECT_DIR$/webapp/src/main/scala/bootstrap/liftweb/Boot.scala" />
+        <option value="$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/config/WiredPipeline.scala" />
       </list>
     </option>
   </component>
@@ -1143,341 +1155,11 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="readingorder" />
+              <option name="myItemId" value="config" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="RectangularReadingOrder.scala" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pdf2meta" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cli" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scala" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pdf2meta" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cli" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pagetransform" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pdf2meta" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cli" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scala" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pdf2meta" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cli" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pagetransform" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="SimilarityDocMerger.scala" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pdf2meta" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cli" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scala" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pdf2meta" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cli" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pagetransform" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="IndentedParagraphsMerger.scala" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pdf2meta" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cli" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scala" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pdf2meta" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cli" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="layoutmodel" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pdf2meta" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cli" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scala" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pdf2meta" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cli" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="layoutmodel" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Rectangle.scala" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pdf2meta" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cli" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scala" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pdf2meta" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cli" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="layoutmodel" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="DocNode.scala" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pdf2meta" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cli" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scala" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pdf2meta" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cli" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="layoutmodel" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Boxes.scala" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pdf2meta" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cli" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scala" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pdf2meta" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cli" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="extract" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pdf2meta" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cli" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scala" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pdf2meta" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cli" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="extract" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="PdfMiner.scala" />
+              <option name="myItemId" value="WiredPipeline.scala" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -1512,40 +1194,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="config" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pdf2meta" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cli" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scala" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pdf2meta" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cli" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="coarsesegmenter" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -2140,114 +1788,114 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/Boxes.scala">
+    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/WeakPartitionRemover.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="0" selection-start="140" selection-end="140" vertical-scroll-proportion="0.0">
+        <state line="50" column="0" selection-start="1516" selection-end="1516" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/coarsesegmenter/PerceptronCoarseSegmenterComponent.scala">
+    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/util/Trees.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="66" column="22" selection-start="2547" selection-end="2547" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/segmentsmoother/BestCoarseLabelModelAligner.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="0" selection-start="701" selection-end="701" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/coarsesegmenter/StubCoarseSegmenter.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="17" selection-start="379" selection-end="379" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/config/StandardScoringModel.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="324" column="8" selection-start="9169" selection-end="9169" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/Rectangle.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="260" column="76" selection-start="7902" selection-end="7902" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/webapp/src/main/scala/edu/umass/cs/iesl/pdf2meta/webapp/cakesnippet/ShowPdfComponent.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="18" selection-start="610" selection-end="610" vertical-scroll-proportion="0.37354085">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/DocFlattener.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="97" column="34" selection-start="3002" selection-end="3002" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/TextLine.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="20" selection-start="1024" selection-end="1024" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/TextBox.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="7" selection-start="809" selection-end="809" vertical-scroll-proportion="-12.461538">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/EmptyEndNodeAdder.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="10" selection-start="267" selection-end="267" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/project/boot/scala-2.8.1/lib/scala-library.jar!/scala/None.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/extract/PdfMiner.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="201" column="18" selection-start="7446" selection-end="7446" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/SimilarityDocMerger.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="200" column="85" selection-start="5815" selection-end="5815" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/layoutmodel/DocNode.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="413" column="0" selection-start="13626" selection-end="13626" vertical-scroll-proportion="-16.923077">
+        <state line="23" column="58" selection-start="834" selection-end="834" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/pagetransform/IndentedParagraphsMerger.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="151" column="29" selection-start="5553" selection-end="5553" vertical-scroll-proportion="0.7024169">
+        <state line="154" column="0" selection-start="5483" selection-end="5483" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/util/Workspace.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/util/Util.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="45" column="0" selection-start="1131" selection-end="1131" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/readingorder/RectangularReadingOrder.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="42" column="0" selection-start="1703" selection-end="1703" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/Pdf2Meta.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="0" selection-start="271" selection-end="271" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/PipelineComponent.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="22" column="58" selection-start="891" selection-end="891" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/segmentsmoother/CoarseLabelModel.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="70" selection-start="279" selection-end="279" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/config/StandardScoringModel.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="488" column="0" selection-start="14496" selection-end="14496" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/segmentsmoother/ExtendedMatchDPAligner.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="144" column="0" selection-start="5869" selection-end="5869" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/segmentsmoother/BestCoarseLabelModelAligner.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="14" column="0" selection-start="633" selection-end="633" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/segmentsmoother/PdfSegmentLabelAligner.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="108" selection-start="240" selection-end="240" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/segmentsmoother/SegmentSmoother.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="4" column="83" selection-start="215" selection-end="215" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/src/main/scala/bootstrap/liftweb/Boot.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="98" column="30" selection-start="2128" selection-end="3361" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cli/src/main/scala/edu/umass/cs/iesl/pdf2meta/cli/config/WiredPipeline.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="55" column="5" selection-start="2357" selection-end="2357" vertical-scroll-proportion="0.9496403">
           <folding />
         </state>
       </provider>

@@ -11,7 +11,7 @@ object Rectangle extends Logging
     val realRects = rects.filter(_.isReal)
     if (realRects.isEmpty)
       {
-      None //BogusRectangle
+      None
       }
     else
       {
@@ -22,23 +22,8 @@ object Rectangle extends Logging
       Some(new RealRectangle(left, bottom, right, top))
       }
     }
-
-  //def encompassing(rects: Seq[Rectangular]): Rectangle = encompassing(rects.map(x=>x.rectangle))
   val BoundingBoxRE = """(.*),(.*),(.*),(.*)""".r // doesn't enforce number format
-  /*  def apply(coordinates: String): Option[Rectangle] =
-    {
-    if (coordinates.trim.isEmpty) throw new Error("empty coordinate string")
-    else
-      {
-      lazy val BoundingBoxRE(x0s, y0s, x1s, y1s) = coordinates
-      lazy val left = x0s.toDouble;
-      lazy val bottom = y0s.toDouble;
-      lazy val right = x1s.toDouble;
-      lazy val top = y1s.toDouble;
-      Rectangle(left, bottom, right, top)
-      }
-    }
-*/
+
   def apply(coordinates: String): Option[Rectangle] =
     {
     if (coordinates.trim.isEmpty) throw new Error("empty coordinate string")
@@ -55,17 +40,8 @@ object Rectangle extends Logging
 
   def apply(left: Double, bottom: Double, right: Double, top: Double): Option[Rectangle] =
     {
-    //if (left == 0 && bottom == 0 && top == 0 && right == 0) Some(new BogusRectangle)
-    // else
     Some(new RealRectangle(left, bottom, right, top))
     }
-
-  /*  def apply(left: Double, bottom: Double, right: Double, top: Double, container: Rectangle): Option[Rectangle] =
-      {
-      //if (left == 0 && bottom == 0 && top == 0 && right == 0) Some(new BogusRectangle)
-      // else
-      Some(new NestedRealRectangle(left, bottom, right, top, container))
-      }*/
   }
 
 
@@ -75,7 +51,6 @@ trait Rectangle
 
   def bottomEdge: Rectangle = Rectangle(left, bottom, right, bottom).get
 
-  //def container: Rectangle
   def horizontalMiddle = (right + left) / 2.
 
 
@@ -114,7 +89,6 @@ trait Rectangle
 
   def overlaps(that: Rectangle): Boolean =
     {
-    //fullyContains(that) || that.fullyContains(this) ||
     containsCorner(that) || that.containsCorner(this)
     }
 
@@ -164,22 +138,14 @@ private class RealRectangle(val left: Double, val bottom: Double, val right: Dou
   {
   require(top >= bottom)
   require(right >= left)
-  //  def container : Rectangle = this
   }
 
-/*
-private class NestedRealRectangle(override val left: Double,override val bottom: Double, override val right: Double,
-override val top: Double,
-                                  override val container: Rectangle) extends RealRectangle(left, bottom, right, top)
-*/
+
 case class Page(pagenum: Int, rectangle: Rectangle)
 
 trait RectangleOnPage extends Rectangle
   {
-
-
   val page: Page
-
 
   def overlaps(that: RectangleOnPage): Boolean =
     {
@@ -227,15 +193,6 @@ trait RectangleOnPage extends Rectangle
 
   override def toString = "" + page + " (" + left + "," + bottom + "), (" + right + "," + top + ")"
 
-  // The superclass intersection should call the subclass overlaps(), right?
-  /*  def intersection(that: Rectangle): Option[Rectangle] =
-      {
-      if (overlaps(that))
-        {
-        Rectangle(left.max(that.left), bottom.max(that.bottom), right.min(that.right), top.min(that.top))
-        }
-      else None
-      }*/
   }
 
 private class RealRectangleOnPage(val page: Page, val left: Double, val bottom: Double, val right: Double, val top: Double) extends RectangleOnPage
@@ -272,39 +229,8 @@ object RectangleOnPage extends Logging
     }
     }
 
-  /*def encompassing(rects: Seq[RectangleOnPage], padding: Int): Option[RectangleOnPage] =
-    {
-    // PERF
-    val realRects = rects.filter(_.isReal)
-    if (realRects.isEmpty)
-      {
-      None //BogusRectangle
-      }
-    else
-      {
-      val bottom = realRects.map(r => r.bottom).min - padding
-      val left = realRects.map(r => r.left).min - padding
-      val top = realRects.map(r => r.top).max + padding
-      val right = realRects.map(r => r.right).max + padding
-      Some(new RealRectangle(left, bottom, right, top))
-      }
-    }*/
-  //def encompassing(rects: Seq[Rectangular]): Rectangle = encompassing(rects.map(x=>x.rectangle))
   val BoundingBoxRE = """(.*),(.*),(.*),(.*)""".r // doesn't enforce number format
-  /*  def apply(coordinates: String): Option[Rectangle] =
-    {
-    if (coordinates.trim.isEmpty) throw new Error("empty coordinate string")
-    else
-      {
-      lazy val BoundingBoxRE(x0s, y0s, x1s, y1s) = coordinates
-      lazy val left = x0s.toDouble;
-      lazy val bottom = y0s.toDouble;
-      lazy val right = x1s.toDouble;
-      lazy val top = y1s.toDouble;
-      Rectangle(left, bottom, right, top)
-      }
-    }
-*/
+
   def apply(page: Page, coordinates: String): Option[RectangleOnPage] =
     {
     if (coordinates.trim.isEmpty) throw new Error("empty coordinate string")
@@ -326,45 +252,7 @@ object RectangleOnPage extends Logging
 
   def apply(page: Page, left: Double, bottom: Double, right: Double, top: Double): Option[RectangleOnPage] =
     {
-    //if (left == 0 && bottom == 0 && top == 0 && right == 0) Some(new BogusRectangle)
-    // else
     Some(new RealRectangleOnPage(page, left, bottom, right, top))
     }
-
-  /*  def apply(left: Double, bottom: Double, right: Double, top: Double, container: Rectangle): Option[Rectangle] =
-      {
-      //if (left == 0 && bottom == 0 && top == 0 && right == 0) Some(new BogusRectangle)
-      // else
-      Some(new NestedRealRectangle(left, bottom, right, top, container))
-      }*/
   }
 
-
-/*private class BogusRectangle() extends Rectangle
-  {
-  val bottom = _
-  val left = _
-  val right = _
-  val top = _
-  }
-*/
-// This is more like null than like zero, in that a rectangle of zero area is still Real.
-// Could have used an Option for it I guess...
-// private class BogusRectangle extends RealRectangle(0, 0, 0, 0)
-/*
-object NestedRectangular
-  {
-  val errors = new ArrayBuffer[String]
-  val boxorder = new RectangularReadingOrder
-    {
-    def handleOrderingError(message: String)
-      {errors += message}
-    }
-  }
-
-trait NestedRectangular[+T <: NestedRectangular] extends OrderedTreeNode[T] with Rectangular
-  {
-
-  }
-*/
-//class ReadingOrderException(message: String) extends Exception(message)

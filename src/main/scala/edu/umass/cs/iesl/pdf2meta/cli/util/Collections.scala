@@ -19,41 +19,6 @@ class Tuple2DoubleValueOrdering[T] extends Ordering[Tuple2[T, Double]]
 
 trait WeightedSet[T]
   {
-  /*
-  }
-  def promoteIfSecondBest(list: List[String], d: Double) : WeightedSet[T] =
-    {
-    if (asMap.isEmpty)
-      this
-sdfgsdfg
-    else if (asMap.size == 1)
-           {
-           val p: (T, Double) = asMap.head
-           if (p._2 <= 0) None
-           else Some(p._1)
-           }
-    else
-      {
-      val w = byWeight;
-      val w1 = w.head._2
-      val w2 = w.tail.head._2
-      if (w2 / w1 <= secondBestRatioThreshold)
-        {Some(byWeight.head._1)}
-      else None
-sdfgsdfg
-      }
-*/
-  /*
-  def mapLabels(map: Map[T, T]) =
-    {
-    val result = MutableWeightedSet[T]()
-    for ((from,to) <- map)
-      {
-      result.incrementBy(to, asMap.getOrElse(from,0.0))
-      }
-    result
-    }
-*/
   def mapLabels(map: Map[T, T]) =
     {
     val result = MutableWeightedSet[T]()
@@ -106,14 +71,10 @@ sdfgsdfg
     {
     val positiveOnly = asMap.filter(t => (t._2 > 0))
     val c = positiveOnly.values.sum
-    /* if (c == 1.0) this // need NearlyEquals due to numerical precision?
-        else
-          {*/
     def normalize(x: (T, Double)) = (x._1, x._2 / c)
 
     val result = WeightedSet[T](positiveOnly.map(normalize).toSeq)
     result
-    //  }
     }
 
   def asSeq: Seq[(T, Double)] = asMap.toSeq.sortBy(_._2).reverse
@@ -150,7 +111,6 @@ object MutableWeightedSet
 
 trait MutableWeightedSet[T] extends WeightedSet[T]
   {
-  //def incrementBy(v: T, d: Double)
   override def asMap: collection.mutable.Map[T, Double]
   def incrementBy(v: T, d: Double)
     {

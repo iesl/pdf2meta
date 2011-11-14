@@ -5,7 +5,7 @@ import edu.umass.cs.iesl.pdf2meta.cli.coarsesegmenter.{ClassifiedRectangle, Clas
 trait BestCoarseLabelModelAligner extends SegmentSmoother
   {
 
-  val coarseLabelModels: List[CoarseLabelModel] // = List(new StandardCoarseLabelModel, new LetterCoarseLabelModel)
+  val coarseLabelModels: List[CoarseLabelModel]
   def tryModel(model: CoarseLabelModel, input: ClassifiedRectangles): (Double, ClassifiedRectangles) =
     {
     // collapse some labels
@@ -49,10 +49,6 @@ trait BestCoarseLabelModelAligner extends SegmentSmoother
 
     val reclassified: Seq[ClassifiedRectangle] = coarseLocalClassifiedBeforeAlignment.map(r => r.callLabel(Some("discard"))).toList :::
      coarseLocalClassifiedInsideAlignment.map(r => r.callLabel(Some(definiteClassifications.getOrElse(r, alignmentMap.getOrElse(r, "discard"))))).toList ::: coarseLocalClassifiedAfterAlignment.map(r => r.callLabel(Some("discard"))).toList
-    //val reclassified : Seq[ClassifiedRectangle] = input.raw.map(r => definiteClassifications.getOrElse(r, alignmentMap.getOrElse(r, r.callLabel(Some("[ambiguous]")))))
-    //val reclassified = alignmentMap.map(t => t._1.callLabel(t._2))
-    // reinstate classifications made prior to label collapsing, for labels that were not to be aligned anyway
-    //val rescued = model.labelRescuer.apply(reclassified)
 
     (score, new ClassifiedRectangles(reclassified.toSeq))
     }
@@ -64,13 +60,3 @@ trait BestCoarseLabelModelAligner extends SegmentSmoother
     }
   }
 
-
-/*
-class WiredAligner(val coarseLabels : Seq[String]) extends SegmentSmoother
-  {
-  val sequenceAligner = new PdfSegmentLabelAligner(coarseLabels)
-def apply(v1: ClassifiedRectangles) = {
-sequenceAligner.apply(v1.raw,coarseLabels)
-}
-}
-*/

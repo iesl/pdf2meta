@@ -7,15 +7,6 @@ import edu.umass.cs.iesl.pdf2meta.cli.segmentsmoother.{SequenceAligner, LengthDP
 
 trait SequenceAligner[S, L] extends ((Seq[S], Seq[L]) => (Double, Seq[(Option[S], Option[L])]))
 
-/*sealed trait Direction
-
-case object Begin extends Direction
-
-case object Insert extends Direction
-
-case object Delete extends Direction
-
-case object Match extends Direction*/
 // return the backtrace paths, in reverse order, with scores
 class DPCell[S, L](val x: Option[S], val y: Option[L], val prefix: Option[DPCell[S, L]], val score: Double) extends Ordered[DPCell[S, L]]
   {
@@ -39,7 +30,6 @@ class LengthDPCell[S, L](x: Option[S], y: Option[L], prefix: Option[DPCell[S, L]
   // (blocks, chars)
   lazy val prevMatched: (Int, Int) =
     {
-    //val prevLength = prefix.map(_.matchedLength).getOrElse(0)
     val t: (Option[L], Option[DPCell[S, L]]) = (y, prefix)
     val result = t match
     {
@@ -151,15 +141,8 @@ trait ExtendedMatchDPAligner[S, L] extends SequenceAligner[S, L] with Logging
 
   def apply(textSymbols: Seq[S], labels: Seq[L]) =
     {
-    val mh = Memoize1.Y[(Seq[S], Seq[L]), Option[DPCell[S, L]]](h) //RecursiveMemoizedFunction
-    // semilocal alignment: insist that all of v2 (the labels) gets used
-    /*val allDpCells: IndexedSeq[Option[DPCell[S, L]]] = for (i <- Range(0, v1.length)) yield //; j <- Range(0, v2.length)
-      {
-      val sPrefix: Seq[S] = v1.slice(0, i).reverse
-      //val lPrefix: Seq[L] = v2.slice(0, j).reverse
-      mh((sPrefix, v2.reverse))
-      }
-    val bestCell: DPCell[S, L] = allDpCells.max.getOrElse(throw new Error("DP failed: No best cell found"))*/
+    val mh = Memoize1.Y[(Seq[S], Seq[L]), Option[DPCell[S, L]]](h)
+
     // global alignment.  Local and semilocal etc. can be produced by setting zero end gap penalties
     val bestCell: DPCell[S, L] = mh((textSymbols.reverse, labels.reverse)).getOrElse(throw new Error("DP failed: No best cell found"))
 

@@ -2,11 +2,10 @@ package edu.umass.cs.iesl.pdf2meta.cli.segmentsmoother
 
 import edu.umass.cs.iesl.pdf2meta.cli.coarsesegmenter.ClassifiedRectangle
 
+
+// todo figure out where the comments in this class were supposed to go, since they apparently got scrambled
 class PdfSegmentLabelAligner(val model: CoarseLabelModel) extends ExtendedMatchDPAligner[ClassifiedRectangle, String]
   {
-
-
-  //val smoothingParameter = 0.1
   def createCell(x: Option[ClassifiedRectangle], y: Option[String], prefix: Option[DPCell[ClassifiedRectangle, String]], score: Double): LengthDPCell[ClassifiedRectangle, String] =
     {
     new LengthDPCell[ClassifiedRectangle, String](x, y, prefix, score, x.map(_.node.text.length).getOrElse(0))
@@ -20,6 +19,8 @@ class PdfSegmentLabelAligner(val model: CoarseLabelModel) extends ExtendedMatchD
 
    val mismatchPenalty: Double = -5.0
 
+
+  // dropping an expected label is very bad.  Note this constant is not normalized re the expected total score
   override val beforeStartLabelSkipPenalty: Double = -100.0
   override val labelSkipPenalty: Double = -100.0
   override val afterEndLabelSkipPenalty: Double = -100.0
@@ -29,7 +30,6 @@ class PdfSegmentLabelAligner(val model: CoarseLabelModel) extends ExtendedMatchD
 
   val alignableLabels: Seq[String] = model.coarseLabels
 
-  // dropping an expected label is very bad.  Note this constant is not normalized re the expected total score
   def scoreDelete(i: Seq[ClassifiedRectangle], j: Seq[String], prefix: Option[DPCell[ClassifiedRectangle, String]]): (Option[ClassifiedRectangle], Option[String], Double) =
     {
     // beforeStartLabelSkipPenalty is dealt with in the DP initialization in the superclass
@@ -58,11 +58,7 @@ class PdfSegmentLabelAligner(val model: CoarseLabelModel) extends ExtendedMatchD
     4) the previous match is a poor match here, but the local prediction is the unalignable kind: trust the local prediction with a light penalty
      */
     // note emitting "None" as the aligned symbol produces a skip, which will later be overridden with the local label
-    /*val sameLabel: (DPCell[ClassifiedRectangle, String]) => Boolean = (dp: DPCell[ClassifiedRectangle, String]) => dp.y.getOrElse("") == label
-            val b: (DPCell[ClassifiedRectangle, String]) => Boolean = _.findLastMatch.map(sameLabel).getOrElse(false)
-            val sameAsLast: Boolean = prefix.map(b).getOrElse(false)*/
-    //val rr: Option[List[DPCell[ClassifiedRectangle, String]]] = prefix.map(_.traceback)
-    //val qq: List[Option[String]] = prefix.map(_.traceback).map(_.map(c => c.y)).flatten.toList
+
     lazy val alignedLabels: List[String] = prefix.map(_.traceback).map(_.map(c => c.y)).flatten.toList.flatten
 
     val (previousLabelBlocks: Int, previousLabelTextLength: Int) = prefix.head match
@@ -111,12 +107,6 @@ class PdfSegmentLabelAligner(val model: CoarseLabelModel) extends ExtendedMatchD
       case _ => mismatchPenalty //localCompatibility
     }
 
-    /*
-    val sameLabel: (DPCell[ClassifiedRectangle, String]) => Boolean = (dp: DPCell[ClassifiedRectangle, String]) => dp.y.getOrElse("") == label
-    //val b: (DPCell[ClassifiedRectangle, String]) => Boolean = _.findLastMatch.map(sameLabel).getOrElse(false)
-    val sameAsLast: Boolean = prefix.map(_.findLastMatch.map(sameLabel).getOrElse(false)).getOrElse(false)
-    val localScore = localCompatibility + (if (sameAsLast) 0 else smoothingParameter)
-*/
     (Some(classifiedRectangle), Some(label), score)
     }
   }

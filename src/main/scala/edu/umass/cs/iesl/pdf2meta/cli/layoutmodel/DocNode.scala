@@ -4,74 +4,31 @@ import collection.Seq
 import edu.umass.cs.iesl.pdf2meta.cli.util.OrderedTreeNode
 import com.weiglewilczek.slf4s.Logging
 
-/*
-object DocNode
-  {
-  def apply(id: String, children: Seq[DocNode]): DocNode =
-    {
-    if (children.exists({case x: TextBox => true; case _ => false}))
-      {new TextBox(id, children)}
-    else new DocNode(id, children)
-    }
-  }
-class DocNode(val id: String, override val children: Seq[DocNode])
-        extends DocNode(id, children) //with Rectangular with OnPage
-  {
-
-  /*  def create(idA: String, childrenA: Seq[DocNode]) =
-      {
-      DocNode(idA, childrenA)
-      }*/
-  def :+(r: DocNode): DocNode =
-    {
-    new DocNode(id + "+" + r.id, children :+ r)
-    }
-  }
-
-*/
 object DocNode
   {
   def apply(id: String, children: Seq[DocNode], localInfo: Option[Iterator[String]], localErrors: Option[Iterator[String]]): DocNode = //, isMergeable: Boolean
     {
-    /* if (children.exists({case x: TextContainer => true; case _ => false}))
-          {new DocNode(id, children)}
-        else */
-
     new DocNode(id, children, localInfo, localErrors)
     }
 
   val begin = new DocNode("begin", Nil, None, None)
-
-  //def apply(id: String, children: Seq[DocNode]) = DocNode(id, children, None, None);
   }
 
 object PartitionedDocNode
   {
-  // "strength" is how certain we are of this partition.  WE just use it for the width of the whitespace (and/or a bonus for containing a line, etc)
+  // "strength" is how certain we are of this partition.  We just use it for the width of the whitespace (and/or a bonus for containing a line, etc)
   def apply(id: String, children: Seq[DocNode], localInfo: Option[Iterator[String]], localErrors: Option[Iterator[String]], strength: Double): DocNode =
     {
-    /* if (children.exists({case x: TextContainer => true; case _ => false}))
-          {new DocNode(id, children)}
-        else */
-
     new PartitionedDocNode(id, children, localInfo, localErrors, strength)
     }
-
-  //def apply(id: String, children: Seq[DocNode]) = DocNode(id, children, None, None);
   }
 
 object AnnotatedDocNode
   {
   def apply(id: String, children: Seq[DocNode], localInfo: Option[Iterator[String]], localErrors: Option[Iterator[String]], annotations: Seq[String]): DocNode =
     {
-    /* if (children.exists({case x: TextContainer => true; case _ => false}))
-          {new DocNode(id, children)}
-        else */
-
     new AnnotatedDocNode(id, children, localInfo, localErrors, annotations)
     }
-
-  //def apply(id: String, children: Seq[DocNode]) = DocNode(id, children, None, None);
   }
 
 class AnnotatedDocNode(override val id: String, override val children: Seq[DocNode], override val localInfo: Option[Iterator[String]], override val localErrors: Option[Iterator[String]],
@@ -86,26 +43,13 @@ class AnnotatedDocNode(override val id: String, override val children: Seq[DocNo
     else
       AnnotatedDocNode(id, childrenA, localInfo, localErrors, annotations)
     }
-
-  /*  override def makeAtomic =
-      {
-      if (isAtomic) this
-      else
-        AnnotatedDocNode(id, children, localInfo, localErrors, true, annotations)
-      }*/
   }
 
-// these are now represented as optional members on DocNode
 trait RectangularOnPage
   {
   def rectangle: Option[RectangleOnPage]
   }
 
-/*trait OnPage
-  {
-  def page: Option[Int]
-  }
-*/
 /**
  * A node representing an established partitions
  */
@@ -124,7 +68,7 @@ class PartitionedDocNode(override val id: String, override val children: Seq[Doc
     else
       PartitionedDocNode(id, childrenA, localInfo, localErrors, strength)
     }
-  //  override def makeAtomic = this
+
   def applyThreshold(threshold: Double): DocNode =
     {
     if (strength > threshold)
@@ -171,7 +115,8 @@ def secretChildren = children
 
 
   // a rectangle may be None if the node has children on multiple pages.
-  // this may not be the best way to handle this situation, as we frequently do foobar.rectangle.get.height or whatever, which is error-prone, and handling Otions in every case is a hassle.
+  // todo this may not be the best way to handle this situation, as we frequently do foobar.rectangle.get.height or whatever,
+  // which is error-prone, and handling Options in every case is a hassle.
   lazy val rectangle: Option[RectangleOnPage] = computeRectangle
 
   // allow backing off to a "core" of the content for ordering when it's ambiguous using the full rectangle
@@ -212,17 +157,6 @@ def secretChildren = children
     if (r.isEmpty) None else Some(r)
     }
 
-  /*  lazy val page: Option[Int] = computePage
-def computePage: Option[Int] =
-    {
-    val d = children.map(_.page).distinct
-    d.length match
-    {
-      case 1 => d(0)
-      case _ => None
-    }
-    }
-*/
   /**
    * recursively collect all nodes in breadth-first order
    * excludes the root, but we don't care
@@ -234,21 +168,6 @@ def computePage: Option[Int] =
     children.toList ::: f
     }
 
-  /*
-  def allNodesBreadthFirstExceptAtomDescendants: List[DocNode] =
-    {
-    if (isAtomic)
-      {
-      List(this)
-      }
-    else
-      {
-      val childNodeLists: List[List[DocNode]] = children.map(_.allNodesBreadthFirst).toList
-      val f: List[DocNode] = childNodeLists.flatten
-      children.toList ::: f
-      }
-    }
-*/
   /**
    * recursively collect all nodes in preorder depth-first order
    */
@@ -264,67 +183,7 @@ def computePage: Option[Int] =
 
   def allSecretLeaves: Seq[DocNode] = if (isSecretLeaf) List(this) else secretChildren.flatMap(_.allSecretLeaves)
 
-  /*  // collect the shallowest set of nodes that are marked "atomic" and span the doc
-  def spanningAtoms: List[DocNode] =
-    {
-    if (isAtomic)
-      {
-      /*this match
-      {
-        case ana: AnnotatedDocNode =>
-          {
-          logger.debug("sideways atom")
-          }
-        case _ =>
-      }
-      this match
-      {
-        case x: DelimitingBox =>
-          {
-          logger.debug("Atomic DelimitingNode");
-          }
-        case _ =>
-      }*/
-      List(this)
-      }
-    else
-      {
-      /*this match
-      {
-        case ana: AnnotatedDocNode =>
-          {
-          logger.debug("sideways nonatom")
-          }
-        case _ =>
-      }*/
-      val childNodeLists: List[List[DocNode]] = children.map(_.spanningAtoms).toList
-      val f: List[DocNode] = childNodeLists.flatten
-      //children.toList ::: f
-      f
-      }
-    }
-*/
-  /*  def allDocNodes: scala.Seq[DocNode] =
-            {
-            allNodes.collect({case x: TextLine => None; case x: TextBox => None; case x: DocNode => Some(x)}).flatten
-            }*/
-  /*  def textBoxes: Seq[DocNode] =
-    {
-    allNodes.collect({
-                     //case x: TextLine => None;
-                     case x: DelimitingBox => None;
-                     case x: TextBox => Some(x)
-                     }).flatten
-    }
-  def textBoxChildren: Seq[DocNode] =
-    {
-    children.collect({
-                     //case x: TextLine => None;
-                     case x: DelimitingBox => None;
-                     case x: TextBox => Some(x)
-                     }).flatten
-    }
-*/
+
   def delimitingBoxes: scala.Seq[DelimitingBox] =
     {
     val all = allNodesDepthFirst
@@ -356,12 +215,8 @@ def computePage: Option[Int] =
                              })
     result
     }
-  /*
-def partitionedChildren : Seq[PartitionedDocNode] =
-        {
-        children.collect({case x: PartitionedDocNode => x })
-        }
-*/
+
+
   // for debugging
   val delimiters = delimitingBoxes.length
 
@@ -372,22 +227,13 @@ def partitionedChildren : Seq[PartitionedDocNode] =
     else
       DocNode(id, childrenA, localInfo, localErrors)
     }
-  /*  def makeAtomic =
-    {
-    if (isAtomic) this
-    else
-      DocNode(id, children, localInfo, localErrors, true)
-    }
-*/
+
+
   // aggregate nodes into a group
   def :+(r: DocNode): DocNode =
     {
     require(!(this.isInstanceOf[AnnotatedDocNode] || r.isInstanceOf[AnnotatedDocNode]))
-    //require(isMergeable && isAtomic)
-    //require(r.isMergeable && r.isAtomic)
-    //val atomic = isMergeable && r.isMergeable
-
-    if (children.isEmpty)
+     if (children.isEmpty)
       {
       DocNode(id + "+" + r.id, List(this, r), None, None)
       }
@@ -401,9 +247,6 @@ def partitionedChildren : Seq[PartitionedDocNode] =
   def :++(r: DocNode): DocNode =
     {
     require(!(this.isInstanceOf[AnnotatedDocNode] || r.isInstanceOf[AnnotatedDocNode]))
-    //require(isMergeable && isAtomic)
-    //require(r.isMergeable && r.isAtomic)
-    //val atomic = isMergeable && r.isMergeable
 
     if (children.isEmpty)
       {
@@ -414,16 +257,9 @@ def partitionedChildren : Seq[PartitionedDocNode] =
       LeafDocNode(id + "+" + r.id, children :+ r, localInfo, localErrors)
       }
     }
-
-  /* override def toString =
-      {
-      "DocNode with " + children.length + " children, " + allNodesDepthFirst.length + " nodes, " + spanningAtoms.length + " atoms, " + allLeaves.length + " leaves, and " + delimiters +
-      " delimiters"
-      }*/
   def printTree(prefix: String): String =
     {
     val buf = new StringBuilder(prefix)
-    //buf.append(if (isMergeable) " MERGABLE " else " FIXED ")
     this match
     {
       case x: DelimitingBox => buf.append("DELIMITER\n")
@@ -451,15 +287,7 @@ def partitionedChildren : Seq[PartitionedDocNode] =
    * Note this node itself doesn't get filtered
    */
   def filterDeep(filt: (DocNode) => Boolean): DocNode = preOrderApply(n => Some(create(children.filter(filt)))).get
-  /*  def filterDeep(filt: (DocNode) => Boolean): Option[DocNode] =
-      {
-      if (filt(this))
-        {
-        val newChildren = children.map(_.filterDeep(filt)).flatten
-        Some(create(newChildren))
-        }
-      else None
-      }*/
+
   }
 
 /**

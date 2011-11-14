@@ -8,7 +8,6 @@ trait TextContainer
   def mkString(d: String): String
   }
 
-// font id, height
 class FontWithHeight(val fontid: String, rawheight: Double)
   {
   val height = (rawheight * 10.0).round / 10.0
@@ -49,7 +48,6 @@ class FontWithHeight(val fontid: String, rawheight: Double)
 trait HasFontInfo extends TextContainer
   {
   def dominantFont: Option[FontWithHeight]
-  //def partitionByFont(boxorder: Ordering[Rectangular]): Seq[TextContainer with HasFontInfo]
   }
 
 
@@ -57,7 +55,6 @@ class DelimitingBox(id: String, val theRectangle: RectangleOnPage)
         extends DocNode(id, Seq.empty, None, None)
   {
   override def computeRectangle = Some(theRectangle)
-  //  override def computePage = Some(thePage)
   override def create(childrenA: Seq[DocNode]) =
     {
     assert(childrenA.isEmpty)

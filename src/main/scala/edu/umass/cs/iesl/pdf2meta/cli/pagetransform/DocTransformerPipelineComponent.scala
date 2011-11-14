@@ -8,9 +8,6 @@ trait DocTransformerPipelineComponent extends DocTransformer with Logging //exte
   {
   val transformers: List[DocTransformer]
 
-  //val docTransformerPipeline : DocTransformerPipeline
-  //class DocTransformerPipeline extends DocTransformer
-  //{
   def apply(rect: DocNode): DocNode =
     {
     val result = transformers.foldLeft(rect)((r: DocNode, f: DocTransformer) =>
@@ -22,7 +19,6 @@ trait DocTransformerPipelineComponent extends DocTransformer with Logging //exte
                                                })
     result
     }
-  // }
   }
 
 

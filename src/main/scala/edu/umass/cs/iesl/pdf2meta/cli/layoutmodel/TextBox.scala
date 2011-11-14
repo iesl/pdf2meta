@@ -3,7 +3,6 @@ package edu.umass.cs.iesl.pdf2meta.cli.layoutmodel
 import collection.Seq
 import edu.umass.cs.iesl.pdf2meta.cli.util.Util
 
-//class TextBox(id: String, children: Seq[DocNode]) extends DocNode(id, children) with HasFontInfo
 trait TextBox extends HasFontInfo
   {
   self: DocNode =>
@@ -35,14 +34,10 @@ trait TextBox extends HasFontInfo
       // Must be a RectBox or something, with no fonts in it
       Seq()
       }
-    /*  else if (isLeaf)
-                 {
-                 Seq((dominantFont.get,text.size))
-                 }*/
     else
       {
+      assert(!isSecretLeaf)
       val leafFonts = allSecretLeaves.filter(_.dominantFont.isDefined).map(leaf => (leaf.dominantFont.get, leaf.text.size))
-      //val leafFonts = for (leaf <- allLeaves if leaf.dominantFont.isDefined) yield (leaf.dominantFont.get, leaf.text.size)
       Util.histogramAccumulate(leafFonts).toSeq
       }
     }
@@ -106,15 +101,11 @@ trait TextBox extends HasFontInfo
 
 
   // first put all the font blocks from the children on equal footing
-  def partitionByFont(boxorder: Ordering[RectangularOnPage]): Seq[DocNode] = // children.map(_.splitByFont).flatten
+  def partitionByFont(boxorder: Ordering[RectangularOnPage]): Seq[DocNode] =
     {
-    // ignore any child that isn't a TextBox.
-    // it never happens otherwise anyway, and if it did, the layout partitioning should cover that case
-    //val c: Seq[DocNode] = children.collect({case x: TextBox => x})
+
     val s: Seq[DocNode] = children.map(_.partitionByFont(boxorder)).flatten
     val fontSplitChildren: Seq[DocNode] = s.map(_.children).flatten
-    //.collect({case x: TextBox => x}) // when TextBoxes were collections, this was s.flatten.collect
-    // then order them
     val sortedChildren = fontSplitChildren.sorted(boxorder)
 
     // then regroup them
@@ -128,7 +119,7 @@ trait TextBox extends HasFontInfo
         {
         (x.dominantFont.get.fontid, x.rectangle.get.left) // ignore the font height
         })
-      // HasFontInfo
+
       val runs: List[((String, Double), List[DocNode])] = Util.contiguousRuns(sortedChildren.toList)(fontAndLeftMatch)
       runs.zipWithIndex
       };

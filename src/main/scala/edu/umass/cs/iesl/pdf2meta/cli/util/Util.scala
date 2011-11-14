@@ -9,14 +9,6 @@ object Util
   {
   def histogram[T](list: Seq[T]): Map[T, Int] =
     {
-    /*val histEntries = for
-    {key <- list.distinct
-     count = list.count(_ == key)} yield
-      {
-      (key -> count)
-      }
-    val counts = Map(histEntries: _*)
-*/
 
     val groups: Map[T, Seq[T]] = list groupBy (identity)  // groupby does not keep multiple identical items!
     val counts = groups map
@@ -52,39 +44,6 @@ object Util
     }
     }
 
-  /*  def contiguousRuns[K](s: Seq[A])(f: A => K): immutable.Seq[Tuple2[K, Int]] =
-    {
-    //val m = mutable.Seq.empty[K, Builder[Tuple2[K, Int]]]
-
-    val b = immutable.Seq.newBuilder[Tuple2[K, Int], Seq[Tuple2[K, Int]]]
-
-    var last: K = Null
-    var count: Int = 0
-    for (elem <- s)
-      {
-      val key = f(elem)
-      key match
-      {
-        case `last` => count = 1
-        case _ => {
-
-        b += ((last,count))
-        last = key
-        count = 1
-        }
-      }
-
-
-      }
-     b += ((last,count))
-
-    b.result
-    }
-  */
-  /* def contiguousRuns[K, A](s: List[A])(f: A => K): immutable.List[(K, List[A])] =
-      {
-      contiguousRunsReversed(s.reverse)(f)
-      }*/
   def contiguousRuns[K, A](s: List[A])(f: A => K): immutable.List[(K, List[A])] =
     {
     if (s.isEmpty) Nil

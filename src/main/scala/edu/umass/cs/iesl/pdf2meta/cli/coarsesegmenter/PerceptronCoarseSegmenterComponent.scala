@@ -8,13 +8,8 @@ import collection.mutable.HashMap
 
 trait PerceptronCoarseSegmenterComponent extends CoarseSegmenter with Logging
   {
-  //this: ScoringModelComponent =>
-  //val scoringFunctions: List[ScoringFunction]
   val scoringModel: ScoringModel
   val scoringFunctions = scoringModel.scoringFunctions
-  //val perceptronCoarseSegmenter: PerceptronCoarseSegmenter
-  //class PerceptronCoarseSegmenter extends Logging
-  //  {
   def apply(doc: DocNode): ClassifiedRectangles =
     {
     // allow classifying all the boxes, not just the textboxes, so that e.g. an HR can be a "DocBreak"
@@ -38,25 +33,18 @@ trait PerceptronCoarseSegmenterComponent extends CoarseSegmenter with Logging
 
       for (box <- doc.allLeaves; feat <- features)
         {
-        /* box.text match
-        {
-          case "" =>
-          case x =>
-*/
+
         val featuresPerBox: MutableWeightedSet[Feature] = featureMap(box)
         feat match
         {
           case f: ContextFeature =>
             {
-            //logger.debug("featureMap(" + box + ").incrementBy(" + feat + ", " + f(doc, box) + ")")
             featuresPerBox.incrementBy(feat, f(doc)(box))
             }
           case f: LocalFeature =>
             {
-            //logger.debug("featureMap(" + box + ").incrementBy(" + feat + ", " + f(box) + ")")
-            featuresPerBox.incrementBy(feat, f(box))
+           featuresPerBox.incrementBy(feat, f(box))
             }
-          //      }
         }
         }
 
@@ -64,10 +52,11 @@ trait PerceptronCoarseSegmenterComponent extends CoarseSegmenter with Logging
       // could propagate neighbor effects here?
       // how to do positional / ordering effects?
       // this is why we have to classify all boxes at once instead of per page
+      // => nope, postpone all that to alignment
+
       for (box <- doc.allLeaves) // classify page.allNodes??
         {
         val featuresPerBox: MutableWeightedSet[Feature] = featureMap(box)
-        //logger.debug("scores(" + box.toString + ").incrementBy(" + sc.name + ", " + sc(featuresPerBox) + ")")
         if (featuresPerBox.asMap.isEmpty)
           {
           mutableScores(box).incrementBy("discard", 10)
@@ -81,45 +70,17 @@ trait PerceptronCoarseSegmenterComponent extends CoarseSegmenter with Logging
           }
         }
 
-      /*val boxes: ClassifiedRectangles =
-                {
-                def scoreBox(b: DocNode): Seq[ClassifiedRectangle] =
-                  {
-                  logger.debug(b.toString + ": " + scores(b))
-                  val best: Option[String] = scores(b).unambiguousBest(.9)
-                  best match
-                  {
-                    case None => (for (c <- b.children) yield (scoreBox(c))).flatten
-                    case Some(x: String) => List((b, x, featureMap(b), scores(b)))
-                  }
-                  }
-
-                new ClassifiedRectangles(doc.children.map(scoreBox).flatten)
-                }*/
       val scores = mutableScores.mapValues[WeightedSet[String]](_.normalized)
       val boxes: ClassifiedRectangles =
         {
         def scoreBox(b: DocNode): ClassifiedRectangle = ClassifiedRectangle(b, featureMap(b), scores(b), None)
-        /*  {
-                    //logger.debug(b.toString + ": " + scores(b))
-                    best match
-                    {
-                      case None => ClassifiedRectangle(b, "[ambiguous]", featureMap(b), scores(b))
-                      case Some(x: String) => ClassifiedRectangle(b, x, featureMap(b), scores(b))
-                    }
-                    }*/
-
         new ClassifiedRectangles(doc.allLeaves.map(scoreBox))
         }
 
 
       boxes
       }
-
-    //def onPage(i: Int) = classifiedBoxes.get(i);
-
-    classifiedBoxes //.values.toMetadataModel
+    classifiedBoxes
     }
-  //  }
   }
 

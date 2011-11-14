@@ -5,7 +5,7 @@ import edu.umass.cs.iesl.pdf2meta.cli.coarsesegmenter.{LabelFixer, LabelTransfor
 
 trait CoarseLabelModel
   {
-  val coarseLabelMap: LinkedHashMap[String, CoarseAlignmentConstraint] //LinkedHashMap[String, List[String]]
+  val coarseLabelMap: LinkedHashMap[String, CoarseAlignmentConstraint]
   val definiteLabels: Seq[String]
 
   case class CoarseAlignmentConstraint(coarseLabel: String, minChars: Int, maxChars: Int, minBlocks: Int, maxBlocks: Int, fineLabels: Seq[String])
@@ -23,16 +23,3 @@ trait CoarseLabelModel
 
 
 
-
-
-
-
-/*
-class WiredAligner(val coarseLabels : Seq[String]) extends SegmentSmoother
-  {
-  val sequenceAligner = new PdfSegmentLabelAligner(coarseLabels)
-def apply(v1: ClassifiedRectangles) = {
-sequenceAligner.apply(v1.raw,coarseLabels)
-}
-}
-*/

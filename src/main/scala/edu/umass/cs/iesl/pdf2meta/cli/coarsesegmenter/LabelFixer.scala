@@ -24,23 +24,3 @@ class LabelFixer(labels: Seq[String]) extends Function1[Seq[ClassifiedRectangle]
     (fixed.toMap, remainder.toSeq)
     }
   }
-
-
-
-/*
-class LabelRescuer(labels: List[String]) extends Function1[Seq[ClassifiedRectangle], Seq[ClassifiedRectangles]]
-  {
-// we could do this either by ignoring "unaligned"
-  def apply(v1: Seq[ClassifiedRectangle]) =
-    {
-    val newRaw = for (c <- v1) yield
-      {
-      val newWeights = c.labelWeights.promoteIfSecondBest(labels, 0.5)
-      new ClassifiedRectangle(c.node, c.labelWeights.unambiguousBest(.9), c.featureWeights, newWeights)
-      }
-    new ClassifiedRectangles(newRaw)
-    }
-  }
-*/
-
-

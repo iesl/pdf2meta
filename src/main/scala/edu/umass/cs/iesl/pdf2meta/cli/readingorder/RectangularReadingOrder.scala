@@ -2,12 +2,6 @@ package edu.umass.cs.iesl.pdf2meta.cli.readingorder
 
 import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.{DocNode, Rectangle}
 
-/*class RectangularReadingOrderFactory extends ReadingOrderFactory
-  {
-  def apply(handleOrderingError: ((String) => Unit)): Ordering[Rectangular] =
-    {new RectangularReadingOrder(handleOrderingError)}
-  }
-*/
 class OverlapRatios(a: Rectangle, basis: Rectangle)
   {
   val above = a.above(basis.top)
@@ -47,17 +41,8 @@ class OverlapRatios(a: Rectangle, basis: Rectangle)
   def mostlyBelow = below.area > a.area * .5
   }
 
-/*
- * Created by IntelliJ IDEA.
- * User: lorax
- * Date: 9/8/11
- * Time: 10:13 AM
- */
-//(val handleOrderingError: ((String) => Unit))
 object RectangularReadingOrder extends Ordering[DocNode]
   {
-  //def handleOrderingError(message: String)
-  //= new ArrayBuffer[String]
   private val BEFORE = -1
   private val SAME = 0
   private val AFTER = 1

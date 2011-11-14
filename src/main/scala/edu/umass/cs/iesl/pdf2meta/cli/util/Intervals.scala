@@ -55,8 +55,6 @@ object Intervals
     invertIgnoreEdges(list).sortBy[Double]((x: (Double, Double)) => x._1 - x._2)  // note reverse sort
     }
 
-  //implicit def tupleToInterval[T](t: (T, T)) = new BasicInterval[T](t._1, t._2, true, true)
-  //implicit def intervalToTuple[T](i: Interval[T]) = (i.getMin, i.getMax)
   implicit def tupleToInterval(t: (Double, Double)): Interval[java.lang.Double] =
     {
     new BasicInterval[java.lang.Double](t._1, t._2, true, true)
@@ -71,9 +69,4 @@ object Intervals
     r.map(intervalToTuple)
     }
 
-  /* def union[T <: Number with Comparable[T]](intervals: Seq[Interval[T]]): List[Interval[T]] =
-            {
-            val u: MultiIntervalUnion[T] = new MultiIntervalUnion(JavaConversions.setAsJavaSet(intervals.toSet))
-            JavaConversions.asScalaIterator[Interval[T]](u.iterator()).toList
-            }*/
   }

@@ -18,59 +18,12 @@ abstract class SimilarityDocMerger extends PreOrderDocTransformer with Logging
 
   }
 
-/*
-  def apply(rect: DocNode): DocNode =
-    {
-    if (rect.children.length == 0)
-      {
-      rect
-      }
-    else if (rect.children.length == 1)
-           {
-           // just recurse, don't flatten yet
-           rect.create(rect.children.map(apply(_)))
-           }
-    else
-      {
-      // reverse recursion: first merge the items at this level; then merge within the _new_ children
-      val intermediateChildrenR: List[DocNode] = rect.children.foldLeft(List[DocNode]())(merge)
-      val intermediateChildren: List[DocNode] = intermediateChildrenR.reverse
-      val result =
-        if (intermediateChildren.length == 1)
-          {
-          // there were more children before and they all got merged, so the result is an atom
-          // this node is already a single item block, so all of the children got merged into a new node.  Recursing this won't terminate.
-          // instead recurse into the existing children
-          // actually don't bother, since this is an atom; just return the existing children
-          //DocNode(rect.id, rect.children, rect.localInfo, rect.localErrors, true)
-          rect.makeAtomic
-          }
-        else
-          {
-          // the intermediate children may be atoms (which the merging takes care of)
-          // but this one may not be
-          val newChildren = intermediateChildren.map(apply(_))
-          this match
-          {
-            case x: AnnotatedDocNode =>
-              {
-              logger.error("wtf")
-              }
-            case _ =>
-          }
-          //DocNode(rect.id, newChildren, rect.localInfo, rect.localErrors, false)
-          rect.create(newChildren)
-          }
-      result
-      }
-
-    }*/
 def merge(precontext: List[DocNode], r: DocNode): List[DocNode] =
     {
     precontext match
     {
       case Nil => List(r)
-      case h :: t => if (similar(h, r))  //h.isMergeable && r.isMergeable &&
+      case h :: t => if (similar(h, r))
                        {(h :++ r) :: t}
                      else
                        {r :: precontext}
@@ -80,6 +33,7 @@ def merge(precontext: List[DocNode], r: DocNode): List[DocNode] =
   def similar(an: DocNode, bn: DocNode): Boolean
   }
 
+/*
 @deprecated // see IndentedParagraphsMerger
 class ParagraphMerger extends SimilarityDocMerger with Logging
   {
@@ -116,6 +70,7 @@ class ParagraphMerger extends SimilarityDocMerger with Logging
     }
     }
   }
+*/
 
 /**
  * Group consecutive children that have appropriate similarity
@@ -196,7 +151,7 @@ class SidewaysLineMerger extends SimilarityDocMerger
     precontext match
     {
       case Nil => List(r)
-      case h :: t => if (similar(h, r))  //h.isMergeable && r.isMergeable &&
+      case h :: t => if (similar(h, r))
                        {
                        val merged = AnnotatedDocNode(h.id + "+" + r.id, h.children :+ r, h.localInfo, h.localErrors, Seq("sideways"))
                        merged :: t

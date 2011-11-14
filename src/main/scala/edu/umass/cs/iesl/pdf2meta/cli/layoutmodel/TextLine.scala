@@ -16,10 +16,7 @@ class TextLine(override val id: String, val theText: String, fonts: Seq[String],
   // we may introduce other ordering problems, though.  Let's try it...
   override lazy val coreRectangle: Option[RectangleOnPage] = RectangleOnPage.encompassing(dominantFontRectangles, 0)
 
-
-  //.getOrElse(throw new Error("TextLine without rectangle"))
-  // round heights to nearest .05 points
-  private lazy val heights = rectangles.map(_.height) //rectangles.map(x => (x.height * 20.0).round / 20.0)
+  private lazy val heights = rectangles.map(_.height)
   override lazy val allFonts: Seq[(FontWithHeight, Int)] =
     {
     if (fonts.length == 1)
@@ -46,7 +43,7 @@ class TextLine(override val id: String, val theText: String, fonts: Seq[String],
 
   override lazy val dominantFont: Option[FontWithHeight] =
     {
-    if (allFonts.isEmpty) None //Some(new FontWithHeight("None", 0))
+    if (allFonts.isEmpty) None
     else
       {
       val fontCounts = Util.histogramAccumulate(allFonts)
@@ -84,13 +81,7 @@ class TextLine(override val id: String, val theText: String, fonts: Seq[String],
       new TextLine(subid, substring, subfonts, subrects)
       }
     }
-  /*
-  def splitByFontRaw =
-    {
-    val runs = Util.contiguousRuns(fonts.split(" ").toList)(x => x)
-    runsToTextLines(runs)
-    }
-*/
+
   override def partitionByFont(boxorder: Ordering[RectangularOnPage]) =
     {
     if (allFonts.isEmpty)

@@ -4,12 +4,6 @@ import com.weiglewilczek.slf4s.Logging
 import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel._
 import edu.umass.cs.iesl.pdf2meta.cli.util.WeightedSet
 
-/*
-trait ScoringModelComponent
-  {
-  val scoringFunctions: List[ScoringFunction]
-  }
-*/
 trait ScoringModel
   {
   def scoringFunctions: List[ScoringFunction]
@@ -20,17 +14,7 @@ object ScoringFunction
   {
   def apply(name: String, features: Tuple2[Feature, Double]*) =
     {
-    new ScoringFunction(name)
-      {
-      def featureCoefficients =
-        {
-        WeightedSet[Feature](features)
-        /*WeightedSet[Feature](features.flatMap({
-                                              case (x: CompoundFeature, d: Double) => x.leafFeatures.map({case ((x2: Feature, d2: Double)) => (x2, d * d2)})
-                                              case x => List(x)
-                                              }))*/
-        } //.normalized
-      }
+    new ScoringFunction(name) { def featureCoefficients = WeightedSet[Feature](features) }
     }
   }
 
@@ -42,8 +26,6 @@ abstract class ScoringFunction(val name: String) extends Logging
   def requiresFeatures = featureCoefficients.asMap.keys
   def apply(weights: WeightedSet[Feature]): Double =
     {
-    //val dotProduct: (Feature, Double) => Double = (f,d) => (weights(f) * d)
-    //logger.debug("Computing dot product: " + weights + " vs. " + featureCoefficients)
     val dotProduct: ((Feature, Double)) => Double = (t: ((Feature, Double))) => (weights(t._1) * t._2)
     (featureCoefficients.asMap.map(dotProduct)).sum
     }
@@ -57,36 +39,12 @@ object LocalFeature extends Logging
       {
       def apply(box: DocNode): Double =
         {
-        //logger.debug("Applying " + f + " to " + box)
         f(box)
         }
       }
     }
   }
 
-/*
-object TextLocalFeature extends Logging
-  {
-  def apply(name: String, f: (TextBox) => Double) =
-    {
-    new LocalFeature(name)
-      {
-      def apply(box: DocNode): Double =
-        {
-        box match
-        {
-          case b: TextBox =>
-            {
-            // logger.debug("Applying " + f + " to " + box)
-            f(b)
-            }
-          case _ => 0
-        }
-        }
-      }
-    }
-  }
-*/
 object ContextFeature extends Logging
   {
   def apply(name: String, f: (DocNode, DocNode) => Double) =
@@ -104,30 +62,6 @@ object ContextFeature extends Logging
     }
   }
 
-/*
-
-object TextContextFeature extends Logging
-  {
-  def apply(name: String, f: (DocNode, DocNode) => Double) =
-    {
-    new ContextFeature(name)
-      {
-      def apply(doc: DocNode, box: DocNode): Double =
-        {
-        box match
-        {
-          case b: TextBox =>
-            {
-            // logger.debug("Applying " + f + " to " + box)
-            f(doc, b)
-            }
-          case _ => 0
-        }
-        }
-      }
-    }
-  }
-*/
 abstract class Feature(val name: String)
   {
   override def toString() = name
@@ -191,8 +125,8 @@ class CompoundFeature(override val name: String, val features: Map[Feature, Doub
     }
   }
 
-class FunctionFeature(override val name: String, val baseFeature: Feature, val f: (Double => Double)) extends ContextFeature(name) // this must be a ContextFeature since it may contain
-// ContextFeatures
+class FunctionFeature(override val name: String, val baseFeature: Feature, val f: (Double => Double)) extends ContextFeature(name)
+// this must be a ContextFeature since it may contain ContextFeatures
   {
   def apply(context: DocNode) =
     {
