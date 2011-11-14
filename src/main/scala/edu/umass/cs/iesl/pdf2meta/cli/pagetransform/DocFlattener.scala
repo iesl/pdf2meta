@@ -1,25 +1,25 @@
 package edu.umass.cs.iesl.pdf2meta.cli.pagetransform
 
-import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.DocNode
 import collection.Seq
+import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.{PartitionedDocNode, DocNode}
 
 class DocFlattener extends DocTransformer
   {
   def apply(rect: DocNode): DocNode =
     {
     // just ignore any existing groupings, but maintain order
-    val result = DocNode(rect.id, rect.allLeaves, rect.localInfo, rect.localErrors, false,false)
+    val result = DocNode(rect.id, rect.allLeaves, rect.localInfo, rect.localErrors)
     result
     }
   }
 
-
+/*
 class PartitionsOrAtomsDocValidator extends DocTransformer
   {
   def apply(rect: DocNode): DocNode =
     {
     rect.allNodesBreadthFirst.map({
-                                                       case x if (!x.isAtomic && x.isMergeable) =>
+                                                       case x if (!x.isAtomic) =>   // && x.isMergeable
                                                          {
                                                          throw new Error("non-atomic, mergable node")
                                                          }
@@ -29,20 +29,32 @@ class PartitionsOrAtomsDocValidator extends DocTransformer
     rect
     }
   }
+  */
 
+/*
 /**
  * For each node, consider the list of children
  * if there is a child that is mergable but not atomic, flatten it
  *
  */
-class PartitionHonoringDocFlattener extends DocTransformer
+class PartitionHonoringDocFlattener extends PreOrderDocTransformer
   {
-  def apply(rect: DocNode): DocNode =
+ def applyLocalOnly(node: DocNode) =
+  {
+  node match {
+    case x : PartitionedDocNode => Some(x)
+    case x =>
+  }
+  }
+  }
+
+/*
+def apply(node: DocNode): DocNode =
     {
-    val origText = rect.text
+    val origText = node.text
 
 
-    val result = rect match
+    val result = node match
     {
       case x if x.isAtomic => x
  /*
@@ -56,13 +68,13 @@ class PartitionHonoringDocFlattener extends DocTransformer
 */
       case x =>  {
         // recurse but flatten the child lists into one node here, since this node is not Partitioned
-        val flattenedChildren: Seq[DocNode] = rect.children.map(apply(_))
+        val flattenedChildren: Seq[DocNode] = node.children.map(apply(_))
         val newChildren: Seq[DocNode] = flattenedChildren.flatMap({
 
-                                                                  case y if ((! y.isAtomic) && y.isMergeable) => y.children
+                                                                  case y if ((! y.isAtomic)) => y.children  // && y.isMergeable
                                                                   case y  => List(y)
                                                                   })
-        DocNode(rect.id, newChildren, rect.localInfo, rect.localErrors, false, rect.isMergeable)
+        DocNode(node.id, newChildren, node.localInfo, node.localErrors, false)
         }
 
     }
@@ -75,25 +87,28 @@ class PartitionHonoringDocFlattener extends DocTransformer
     result
     }
   }
-
+*/
+*/
 
 class AtomDocFlattener extends DocTransformer
   {
-  def apply(rect: DocNode): DocNode =
+  def apply(node: DocNode): DocNode =
     {
     // just ignore any existing groupings, up to the point of nodes that have been declared "atomic"
-    val result = rect.create(rect.spanningAtoms) //DocNode(rect.id, rect.allAtoms, rect.localInfo, rect.localErrors, false,false)
+    val result = node.create(node.allLeaves) //DocNode(rect.id, rect.allAtoms, rect.localInfo, rect.localErrors, false,false)
     result
     }
   }
 
+/**
+ * Ignore any existing groupings below the first level
+ */
 class PageHonoringDocFlattener extends DocTransformer
   {
   def apply(doc: DocNode): DocNode =
     {
-    val regroupedPages = doc.children.map(page => DocNode(page.id, page.allLeaves, page.localInfo, page.localErrors, false,false))
-    // just ignore any existing groupings below the first level
-    val result = doc.create(regroupedPages) // DocNode(doc.id, regroupedPages, doc.localInfo, doc.localErrors,false,false)
+    val regroupedPages = doc.children.map(page => DocNode(page.id, page.allLeaves, page.localInfo, page.localErrors))
+    val result = doc.create(regroupedPages)
     result
     }
   }

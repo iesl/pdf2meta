@@ -5,8 +5,21 @@ import edu.umass.cs.iesl.pdf2meta.cli.util.Intervals
 import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel._
 import com.weiglewilczek.slf4s.Logging
 
-class SlicingDocPartitioner extends DocTransformer with Logging
+class SlicingDocPartitioner extends PreOrderDocTransformer with Logging
   {
+
+
+  def applyLocalOnly(node: DocNode) =
+    {
+    node match
+    {
+      case n if n.isLeaf => Some(n)
+      case n =>
+        {
+        Some(partitionByDelimiters(node).getOrElse(partitionByLayout(n).getOrElse(node)))
+        }
+    }
+    }
 
   /**
    * Starting from a DocNode, partition its children if possible.  Group the resulting intermediate nodes in
@@ -20,29 +33,29 @@ class SlicingDocPartitioner extends DocTransformer with Logging
    * maybe: fonts or other
          if any partition is found, recurse the whole thing
    */
-  def apply(node: DocNode): DocNode =
+/*  def apply2(node: DocNode): DocNode =
     {
     node match
     {
       case n if n.isAtomic => n
       case n =>
         {
-        val byDelimiters: Option[Seq[DocNode]] = partitionByDelimiters(node)
-        val newChildren: Seq[DocNode] = byDelimiters.getOrElse({
-                                                               val byLayout: Option[Seq[DocNode]] = partitionByLayout(n)
-                                                               byLayout.getOrElse(node.children)
-                                                               })
+        val byDelimiters: Option[PartitionedDocNode]
+        = partitionByDelimiters(node)
+        val newChildren: Seq[DocNode] = byDelimiters.map(_.children).getOrElse({
+                                                                               val byLayout: Option[PartitionedDocNode] = partitionByLayout(n)
+                                                                               byLayout.map(_.children).getOrElse(node.children)
+                                                                               })
 
         // note if no partition is found, recurse anyway into the existing children because there may be fixed groups etc.
 
-        DocNode(node.id, newChildren.map(apply(_)), node.localInfo, node.localErrors, false, node.isMergeable)
+        DocNode(node.id, newChildren.map(apply(_)), node.localInfo, node.localErrors, false) //, node.isMergeable)
         }
-
     }
     }
+*/
 
-
-  def partitionByDelimiters(node: DocNode): Option[Seq[DocNode]] =
+  def partitionByDelimiters(node: DocNode): Option[PartitionedDocNode] =
     {
     // if there is a RectBox or CurveBox that separates the space, use it
     val delimiters: Seq[DocNode] = node.children.collect({case x: DelimitingBox => x})
@@ -100,8 +113,9 @@ class SlicingDocPartitioner extends DocTransformer with Logging
     val verticalSplit =
       verticalDelimiter.map(d =>
                               {
-                              List(DocNode(node.id + ".l", node.children.filter(_.rectangle.get.isLeftOf(d.rectangle.get.left)), None, None, false, false), d,
-                                   DocNode(node.id + ".r", node.children.filter(_.rectangle.get.isRightOf(d.rectangle.get.right)), None, None, false, false))
+                              val newChildren = List(DocNode(node.id + ".l", node.children.filter(_.rectangle.get.isLeftOf(d.rectangle.get.left)), None, None), d,
+                                                     DocNode(node.id + ".r", node.children.filter(_.rectangle.get.isRightOf(d.rectangle.get.right)), None, None))
+                              new PartitionedDocNode(node.id, newChildren, node.localInfo, node.localErrors, 1000)
                               })
 
     verticalSplit match
@@ -112,8 +126,9 @@ class SlicingDocPartitioner extends DocTransformer with Logging
         val horizontalSplit =
           horizontalDelimiter.map(d =>
                                     {
-                                    List(DocNode(node.id + ".t", node.children.filter(_.rectangle.get.isAbove(d.rectangle.get.top)), None, None, false, false), d,
-                                         DocNode(node.id + ".b", node.children.filter(_.rectangle.get.isBelow(d.rectangle.get.bottom)), None, None, false, false))
+                                    val newChildren = List(DocNode(node.id + ".t", node.children.filter(_.rectangle.get.isAbove(d.rectangle.get.top)), None, None), d,
+                                                           DocNode(node.id + ".b", node.children.filter(_.rectangle.get.isBelow(d.rectangle.get.bottom)), None, None))
+                                    new PartitionedDocNode(node.id, newChildren, node.localInfo, node.localErrors, 1000)
                                     })
 
 
@@ -124,14 +139,14 @@ class SlicingDocPartitioner extends DocTransformer with Logging
 
   // wow this got ugly.
   // we may have already determined the double-spacing threshold at higher levels of the tree, so we have to pass it in.
-  def partitionByLayout(node: DocNode ): Option[Seq[DocNode]] =
+  def partitionByLayout(node: DocNode): Option[PartitionedDocNode] =
     {
     //******** Vertical Partition
     // for vertical partitions it's good enough to pick the largest, do a binary partition, and recurse
     val verticalPartition: Option[(Double, Double)] = Intervals.largestHole(Intervals.union(node.children.map(_.rectangle.get.horizontalInterval)), 5)
 
 
-    def verticalSplit: Option[List[DocNode ]] =
+    def verticalSplit: Option[PartitionedDocNode] = //List[DocNode ]
       {
       verticalPartition.map(d =>
                               {
@@ -146,34 +161,38 @@ class SlicingDocPartitioner extends DocTransformer with Logging
 
                               lazy val verticalPartitionBox = new RectBox(node.id + ".vert", vrect)
 
-                              List(new DocNode(node.id + ".l", node.children.filter(_.rectangle.get.isLeftOf(d._1)), None, None, false, false)
-                                   , verticalPartitionBox, new DocNode(node.id + ".r", node.children.filter(_.rectangle.get.isRightOf(d._2)), None, None, false, false) )
+                              val newChildren = List(new DocNode(node.id + ".l", node.children.filter(_.rectangle.get.isLeftOf(d._1)), None, None), // verticalPartitionBox,
+                                                     new DocNode(node.id + ".r", node.children.filter(_.rectangle.get.isRightOf(d._2)), None, None))
+
+                              new PartitionedDocNode(node.id, newChildren, node.localInfo, node.localErrors, vrect.width)
                               })
       }
 
-//******** Horizontal Partition
+    //******** Horizontal Partition
     // for horizontal partitions it's good enough to pick the largest, do a binary partition, and recurse
     val horizontalPartition: Option[(Double, Double)] = Intervals.largestHole(Intervals.union(node.children.map(_.rectangle.get.verticalInterval)), 5)
 
 
-    def horizontalSplit: Option[List[DocNode ]] =
+    def horizontalSplit: Option[PartitionedDocNode] =
       {
       horizontalPartition.map(d =>
-                              {
-                              lazy val vrect = new RectangleOnPage
                                 {
-                                val page = node.rectangle.get.page
-                                val bottom = d._1
-                                val left = node.rectangle.get.left
-                                val right = node.rectangle.get.right
-                                val top = d._2
-                                }
+                                lazy val hrect = new RectangleOnPage
+                                  {
+                                  val page = node.rectangle.get.page
+                                  val bottom = d._1
+                                  val left = node.rectangle.get.left
+                                  val right = node.rectangle.get.right
+                                  val top = d._2
+                                  }
 
-                              lazy val horizontalPartitionBox = new RectBox(node.id + ".vert", vrect)
+                                lazy val horizontalPartitionBox = new RectBox(node.id + ".vert", hrect)
 
-                              List(new DocNode(node.id + ".t", node.children.filter(_.rectangle.get.isAbove(d._1)), None, None, false, false)
-                                   , horizontalPartitionBox, new DocNode(node.id + ".b", node.children.filter(_.rectangle.get.isBelow(d._2)), None, None, false, false) )
-                              })
+                                val newChildren = List(new DocNode(node.id + ".t", node.children.filter(_.rectangle.get.isAbove(d._1)), None, None), // horizontalPartitionBox,
+                                                       new DocNode(node.id + ".b", node.children.filter(_.rectangle.get.isBelow(d._2)), None, None))
+
+                                new PartitionedDocNode(node.id, newChildren, node.localInfo, node.localErrors, hrect.height)
+                                })
       }
 
 
@@ -194,8 +213,10 @@ class SlicingDocPartitioner extends DocTransformer with Logging
       {
       verticalSplit
       }
-}}
-  /*
+    }
+  }
+
+/*
     //******** Horizontal Partition
     // horizontal partitions are trickier due to the need to detect double-spacing. Because this is context-dependent, we can't just make a binary tree.
     // instead, take the set of all holes, and select the largest size threshold such that there are not four holes within 90%.

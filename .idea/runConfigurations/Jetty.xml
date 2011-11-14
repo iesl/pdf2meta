@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Jetty" type="ScalaCompilationServerRunConfiguration" factoryName="Scala Compilation Server">
     <module name="webapp" />
-    <setting name="vmparams" value="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005" />
+    <setting name="vmparams" value="-Xdebug -Xss8M -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005" />
     <RunnerSettings RunnerId="Debug">
       <option name="DEBUG_PORT" value="60877" />
       <option name="TRANSPORT" value="0" />
@@ -12,7 +12,7 @@
     <ConfigurationWrapper RunnerId="Run" />
     <method>
       <option name="Make" enabled="false" />
-      <option name="SBT.BeforeRunTask" enabled="true" action="jetty-run" runInCurrentModule="false" />
+      <option name="SBT.BeforeRunTask" enabled="true" action="project pdf2meta-webapp" runInCurrentModule="true" />
     </method>
   </configuration>
 </component>

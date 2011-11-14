@@ -54,7 +54,7 @@ trait HasFontInfo extends TextContainer
 
 
 class DelimitingBox(id: String, val theRectangle: RectangleOnPage)
-        extends DocNode(id, Seq.empty, None, None, true, false)
+        extends DocNode(id, Seq.empty, None, None)
   {
   override def computeRectangle = Some(theRectangle)
   //  override def computePage = Some(thePage)

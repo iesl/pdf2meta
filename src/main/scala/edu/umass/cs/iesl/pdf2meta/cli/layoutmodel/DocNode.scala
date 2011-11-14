@@ -31,65 +31,68 @@ class DocNode(val id: String, override val children: Seq[DocNode])
 */
 object DocNode
   {
-  def apply(id: String, children: Seq[DocNode], localInfo: Option[Iterator[String]], localErrors: Option[Iterator[String]], isAtomic: Boolean, isMergeable: Boolean): DocNode =
+  def apply(id: String, children: Seq[DocNode], localInfo: Option[Iterator[String]], localErrors: Option[Iterator[String]]): DocNode = //, isMergeable: Boolean
     {
     /* if (children.exists({case x: TextContainer => true; case _ => false}))
           {new DocNode(id, children)}
         else */
 
-    new DocNode(id, children, localInfo, localErrors, isAtomic, isMergeable)
+    new DocNode(id, children, localInfo, localErrors)
     }
 
-  val begin = new DocNode("begin", Nil, None, None, false, false)
+  val begin = new DocNode("begin", Nil, None, None)
 
   //def apply(id: String, children: Seq[DocNode]) = DocNode(id, children, None, None);
   }
 
-/*object PartitionedDocNode
+object PartitionedDocNode
   {
-  def apply(id: String, children: Seq[DocNode], localInfo: Option[Iterator[String]], localErrors: Option[Iterator[String]]): DocNode =
+  // "strength" is how certain we are of this partition.  WE just use it for the width of the whitespace (and/or a bonus for containing a line, etc)
+  def apply(id: String, children: Seq[DocNode], localInfo: Option[Iterator[String]], localErrors: Option[Iterator[String]], strength: Double): DocNode =
     {
     /* if (children.exists({case x: TextContainer => true; case _ => false}))
           {new DocNode(id, children)}
         else */
 
-    new PartitionedDocNode(id, children, localInfo, localErrors)
+    new PartitionedDocNode(id, children, localInfo, localErrors, strength)
     }
 
   //def apply(id: String, children: Seq[DocNode]) = DocNode(id, children, None, None);
   }
-*/
+
 object AnnotatedDocNode
   {
-  def apply(id: String, children: Seq[DocNode], localInfo: Option[Iterator[String]], localErrors: Option[Iterator[String]], isAtomic: Boolean, isMergeable: Boolean,
-            annotations: Seq[String]): DocNode =
+  def apply(id: String, children: Seq[DocNode], localInfo: Option[Iterator[String]], localErrors: Option[Iterator[String]], annotations: Seq[String]): DocNode =
     {
     /* if (children.exists({case x: TextContainer => true; case _ => false}))
           {new DocNode(id, children)}
         else */
 
-    new AnnotatedDocNode(id, children, localInfo, localErrors, isAtomic, isMergeable, annotations)
+    new AnnotatedDocNode(id, children, localInfo, localErrors, annotations)
     }
 
   //def apply(id: String, children: Seq[DocNode]) = DocNode(id, children, None, None);
   }
 
 class AnnotatedDocNode(override val id: String, override val children: Seq[DocNode], override val localInfo: Option[Iterator[String]], override val localErrors: Option[Iterator[String]],
-                       override val isAtomic: Boolean, isMergeable: Boolean, val annotations: Seq[String])
-        extends DocNode(id, children, localInfo, localErrors, isAtomic, isMergeable)
+                       val annotations: Seq[String])
+        extends DocNode(id, children, localInfo, localErrors)
   {
 
   override def create(childrenA: Seq[DocNode]) =
     {
-    AnnotatedDocNode(id, childrenA, localInfo, localErrors, isAtomic, isMergeable, annotations)
+    if (childrenA.length == 1) childrenA(0)
+    else if (childrenA == children) this
+    else
+      AnnotatedDocNode(id, childrenA, localInfo, localErrors, annotations)
     }
 
-  override def makeAtomic =
-    {
-    if (isAtomic) this
-    else
-      AnnotatedDocNode(id, children, localInfo, localErrors, true, isMergeable, annotations)
-    }
+  /*  override def makeAtomic =
+      {
+      if (isAtomic) this
+      else
+        AnnotatedDocNode(id, children, localInfo, localErrors, true, annotations)
+      }*/
   }
 
 // these are now represented as optional members on DocNode
@@ -104,23 +107,47 @@ trait RectangularOnPage
   }
 */
 /**
- * A node whose children represent established partitions
+ * A node representing an established partitions
  */
-/*class PartitionedDocNode(override val id: String, override val children: Seq[DocNode], override val localInfo: Option[Iterator[String]], override val localErrors: Option[Iterator[String]])
-        extends DocNode(id, children, localInfo, localErrors, false)
+class PartitionedDocNode(override val id: String, override val children: Seq[DocNode], override val localInfo: Option[Iterator[String]], override val localErrors: Option[Iterator[String]],
+                         val strength: Double)
+        extends DocNode(id, children, localInfo, localErrors)
   {
+  // if this node is not a partition, then it can't contain any partitions either
+  def makeNonPartition: DocNode = DocNode(id, allLeaves, localInfo, localErrors)
+
 
   override def create(childrenA: Seq[DocNode]) =
     {
-    PartitionedDocNode(id, childrenA, localInfo, localErrors)
+    if (childrenA.length == 1) childrenA(0)
+    else if (childrenA == children) this
+    else
+      PartitionedDocNode(id, childrenA, localInfo, localErrors, strength)
     }
-  override def makeAtomic = this
+  //  override def makeAtomic = this
+  def applyThreshold(threshold: Double): DocNode =
+    {
+    if (strength > threshold)
+      {
+      this
+      }
+    else
+      {
+      // if this partition doesn't pass the threshold, then none of the children do either
+      DocNode(id, allLeaves, localInfo, localErrors)
+      }
+    }
   }
-*/
-class DocNode(val id: String, val children: Seq[DocNode], val localInfo: Option[Iterator[String]], val localErrors: Option[Iterator[String]], val isAtomic: Boolean, val isMergeable: Boolean)
+
+class DocNode(val id: String, val children: Seq[DocNode], val localInfo: Option[Iterator[String]], val localErrors: Option[Iterator[String]]) //, val isMergeable: Boolean)
         extends OrderedTreeNode[DocNode] with RectangularOnPage with TextBox with Logging
   {
+  def isLeaf = children.length == 0
+  def isSecretLeaf = secretChildren.length == 0
 
+// allow computing internal things based on a set of children that are not the same as the public ones
+// by default just use the same ones
+def secretChildren = children
 
   lazy val charSpanProportional: Map[DocNode, (Double, Double)] =
     {
@@ -130,7 +157,7 @@ class DocNode(val id: String, val children: Seq[DocNode], val localInfo: Option[
       (n, l.head._2 + n.text.length + 1) :: l
       }
 
-    val charEnds: List[(DocNode, Int)] = spanningAtoms.foldLeft(List[(DocNode, Int)]((DocNode.begin, 0)))(appendEnd).reverse
+    val charEnds: List[(DocNode, Int)] = allLeaves.foldLeft(List[(DocNode, Int)]((DocNode.begin, 0)))(appendEnd).reverse
 
     def selfzip(l: List[(DocNode, (Int, Int))], e: (DocNode, Int)): List[(DocNode, (Int, Int))] =
       {
@@ -152,7 +179,7 @@ class DocNode(val id: String, val children: Seq[DocNode], val localInfo: Option[
 
   def computeRectangle: Option[RectangleOnPage] =
     {
-    val childRects: Seq[Option[RectangleOnPage]] = children.map((x: DocNode) => x.rectangle)
+    val childRects: Seq[Option[RectangleOnPage]] = secretChildren.map((x: DocNode) => x.rectangle)
     if (childRects.exists(x => (x == None)))
       {
       None
@@ -166,7 +193,7 @@ class DocNode(val id: String, val children: Seq[DocNode], val localInfo: Option[
 
   lazy val errors: Option[Iterator[String]] =
     {
-    val r: Iterator[String] = children.map(_.errors).flatten.foldLeft[Iterator[String]](localErrors.getOrElse(Iterator.empty))((a: Iterator[String], b: Iterator[String]) =>
+    val r: Iterator[String] = secretChildren.map(_.errors).flatten.foldLeft[Iterator[String]](localErrors.getOrElse(Iterator.empty))((a: Iterator[String], b: Iterator[String]) =>
                                                                                                                                  {
                                                                                                                                  a ++
                                                                                                                                  b
@@ -177,7 +204,7 @@ class DocNode(val id: String, val children: Seq[DocNode], val localInfo: Option[
 
   lazy val info: Option[Iterator[String]] =
     {
-    val r: Iterator[String] = children.map(_.info).flatten.foldLeft[Iterator[String]](localInfo.getOrElse(Iterator.empty))((a: Iterator[String], b: Iterator[String]) =>
+    val r: Iterator[String] = secretChildren.map(_.info).flatten.foldLeft[Iterator[String]](localInfo.getOrElse(Iterator.empty))((a: Iterator[String], b: Iterator[String]) =>
                                                                                                                              {
                                                                                                                              a ++
                                                                                                                              b
@@ -233,9 +260,11 @@ def computePage: Option[Int] =
     }
 
 
-  def allLeaves: Seq[DocNode] = if (children.isEmpty) List(this) else children.flatMap(_.allLeaves)
+  def allLeaves: Seq[DocNode] = if (isLeaf) List(this) else children.flatMap(_.allLeaves)
 
-  // collect the shallowest set of nodes that are marked "atomic" and span the doc
+  def allSecretLeaves: Seq[DocNode] = if (isSecretLeaf) List(this) else secretChildren.flatMap(_.allSecretLeaves)
+
+  /*  // collect the shallowest set of nodes that are marked "atomic" and span the doc
   def spanningAtoms: List[DocNode] =
     {
     if (isAtomic)
@@ -274,12 +303,11 @@ def computePage: Option[Int] =
       f
       }
     }
-
-
+*/
   /*  def allDocNodes: scala.Seq[DocNode] =
-          {
-          allNodes.collect({case x: TextLine => None; case x: TextBox => None; case x: DocNode => Some(x)}).flatten
-          }*/
+            {
+            allNodes.collect({case x: TextLine => None; case x: TextBox => None; case x: DocNode => Some(x)}).flatten
+            }*/
   /*  def textBoxes: Seq[DocNode] =
     {
     allNodes.collect({
@@ -308,6 +336,17 @@ def computePage: Option[Int] =
     }
 
 
+  def allPartitions: scala.Seq[PartitionedDocNode] =
+    {
+    val all = allNodesDepthFirst
+    val result = all.collect({
+                             case x: PartitionedDocNode => x
+                             //                     case x: RectBox => throw new Error("RectBox is a DelimitingBox")
+                             })
+    result
+    }
+
+
   def textLines: scala.Seq[TextLine] =
     {
     val all = allNodesDepthFirst
@@ -328,31 +367,51 @@ def partitionedChildren : Seq[PartitionedDocNode] =
 
   def create(childrenA: Seq[DocNode]) =
     {
-    DocNode(id, childrenA, localInfo, localErrors, isAtomic, isMergeable)
+    if (childrenA.length == 1) childrenA(0)
+    else if (childrenA == children) this
+    else
+      DocNode(id, childrenA, localInfo, localErrors)
     }
-  def makeAtomic =
+  /*  def makeAtomic =
     {
     if (isAtomic) this
     else
-      DocNode(id, children, localInfo, localErrors, true, isMergeable)
+      DocNode(id, children, localInfo, localErrors, true)
     }
-
-  // join two mergeable atoms into one mergeable atom
+*/
+  // aggregate nodes into a group
   def :+(r: DocNode): DocNode =
     {
     require(!(this.isInstanceOf[AnnotatedDocNode] || r.isInstanceOf[AnnotatedDocNode]))
     //require(isMergeable && isAtomic)
     //require(r.isMergeable && r.isAtomic)
-
-    val atomic = isMergeable && r.isMergeable
+    //val atomic = isMergeable && r.isMergeable
 
     if (children.isEmpty)
       {
-      DocNode(id + "+" + r.id, List(this, r), None, None, atomic, true)
+      DocNode(id + "+" + r.id, List(this, r), None, None)
       }
     else
       {
-      DocNode(id + "+" + r.id, children :+ r, localInfo, localErrors, atomic, true)
+      DocNode(id + "+" + r.id, children :+ r, localInfo, localErrors)
+      }
+    }
+
+// aggregate nodes into a leaf group
+  def :++(r: DocNode): DocNode =
+    {
+    require(!(this.isInstanceOf[AnnotatedDocNode] || r.isInstanceOf[AnnotatedDocNode]))
+    //require(isMergeable && isAtomic)
+    //require(r.isMergeable && r.isAtomic)
+    //val atomic = isMergeable && r.isMergeable
+
+    if (children.isEmpty)
+      {
+      LeafDocNode(id + "+" + r.id, List(this, r), None, None)
+      }
+    else
+      {
+      LeafDocNode(id + "+" + r.id, children :+ r, localInfo, localErrors)
       }
     }
 
@@ -364,14 +423,19 @@ def partitionedChildren : Seq[PartitionedDocNode] =
   def printTree(prefix: String): String =
     {
     val buf = new StringBuilder(prefix)
-    buf.append(if (isMergeable) " MERGABLE " else " FIXED ")
+    //buf.append(if (isMergeable) " MERGABLE " else " FIXED ")
     this match
     {
       case x: DelimitingBox => buf.append("DELIMITER\n")
-      case x if x.isAtomic => buf.append("ATOM: " + this.spanText + "\n")
+      case x if x.isLeaf => buf.append("LEAF: " + this.spanText + "\n")
       case x =>
         {
-        buf.append("GROUP " + id + " : " + children.length + " children, " + allNodesDepthFirst.length + " nodes, " + spanningAtoms.length + " atoms, " + allLeaves.length + " leaves, " + delimiters +
+        this match
+        {
+          case y: PartitionedDocNode => buf.append("PARTITION (" + y.strength + ") ")
+          case y => buf.append("GROUP ")
+        }
+        buf.append(id + " : " + children.length + " children, " + allNodesDepthFirst.length + " nodes, " + allLeaves.length + " leaves, " + delimiters +
                    " delimiters\n")
 
         for (c <- children)
@@ -382,17 +446,35 @@ def partitionedChildren : Seq[PartitionedDocNode] =
     buf.toString()
     }
 
-  def filterDeep(filt: (DocNode) => Boolean): Option[DocNode] =
-    {
-    if (filt(this))
+  /**
+   * Filter the children of this node, recursively; preorder means any immediate children failing the filter don't get recursed.
+   * Note this node itself doesn't get filtered
+   */
+  def filterDeep(filt: (DocNode) => Boolean): DocNode = preOrderApply(n => Some(create(children.filter(filt)))).get
+  /*  def filterDeep(filt: (DocNode) => Boolean): Option[DocNode] =
       {
-      val newChildren = children.map(_.filterDeep(filt)).flatten
-      Some(create(newChildren))
-      }
-    else None
-    }
+      if (filt(this))
+        {
+        val newChildren = children.map(_.filterDeep(filt)).flatten
+        Some(create(newChildren))
+        }
+      else None
+      }*/
   }
 
+/**
+ * store the underlying children, but be a leaf on the main tree by reporting Nil children
+ */
+class LeafDocNode(override val id: String, override val secretChildren: Seq[DocNode], override val localInfo: Option[Iterator[String]], override val localErrors: Option[Iterator[String]])
+        extends DocNode(id, Seq.empty, localInfo, localErrors)
+
+object LeafDocNode
+  {
+   def apply(id: String, children: Seq[DocNode], localInfo: Option[Iterator[String]], localErrors: Option[Iterator[String]]): DocNode = //, isMergeable: Boolean
+    {
+    new LeafDocNode(id, children, localInfo, localErrors)
+    }
+  }
 
 
 

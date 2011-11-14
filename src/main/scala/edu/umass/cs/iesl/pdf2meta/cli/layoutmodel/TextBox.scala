@@ -16,28 +16,33 @@ trait TextBox extends HasFontInfo
       {text}
     else
       {
-      text.substring(0,37) + " ... " + text.substring(text.length - 37, text.length)
+      text.substring(0, 37) + " ... " + text.substring(text.length - 37, text.length)
       }
     }
 
   // todo make lazy
   def mkString(d: String): String =
     {
-    (for (x <- children.collect
+    (for (x <- secretChildren.collect
                {case x: HasFontInfo => x}) yield
       {x.text}).mkString(d)
     }
 
   lazy val allFonts: Seq[(FontWithHeight, Int)] =
     {
-    if (children.isEmpty)
+    if (secretChildren.isEmpty)
       {
       // Must be a RectBox or something, with no fonts in it
       Seq()
       }
+    /*  else if (isLeaf)
+                 {
+                 Seq((dominantFont.get,text.size))
+                 }*/
     else
       {
-      val leafFonts = for (leaf <- allLeaves if leaf.dominantFont.isDefined) yield (leaf.dominantFont.get, leaf.text.size)
+      val leafFonts = allSecretLeaves.filter(_.dominantFont.isDefined).map(leaf => (leaf.dominantFont.get, leaf.text.size))
+      //val leafFonts = for (leaf <- allLeaves if leaf.dominantFont.isDefined) yield (leaf.dominantFont.get, leaf.text.size)
       Util.histogramAccumulate(leafFonts).toSeq
       }
     }
@@ -61,7 +66,7 @@ trait TextBox extends HasFontInfo
 
   lazy val allTextLineWidths: Seq[(Double, Int)] =
     {
-    if (children.isEmpty)
+    if (secretChildren.isEmpty)
       {
       // Must be a RectBox or something, with no fonts in it
       Seq()
@@ -129,7 +134,7 @@ trait TextBox extends HasFontInfo
       };
 
     fontBlocks.map({
-                   case ((key, blocks), index) => DocNode(id + "." + index, blocks, None, None, true, true)
+                   case ((key, blocks), index) => DocNode(id + "." + index, blocks, None, None)
                    })
 
     // the regrouped boxes are still in order, but now only TextBoxes are provided

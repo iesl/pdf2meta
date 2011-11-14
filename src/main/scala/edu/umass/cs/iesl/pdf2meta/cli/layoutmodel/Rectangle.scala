@@ -256,11 +256,19 @@ object RectangleOnPage extends Logging
         val rect = Rectangle.encompassing(rects, padding)
         rect match
         {
-          case None => None
+          case None =>
+            {
+            logger.warn("Can't create rectangle encompassing None underlying")
+            None
+            }
           case Some(r) => RectangleOnPage(pages(0), r)
         }
         }
-      case _ => None
+      case _ =>
+        {
+        logger.warn("Can't create rectangle spanning multiple pages")
+        None
+        }
     }
     }
 

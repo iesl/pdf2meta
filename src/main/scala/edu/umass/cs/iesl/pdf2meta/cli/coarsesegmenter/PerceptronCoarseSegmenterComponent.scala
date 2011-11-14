@@ -36,7 +36,7 @@ trait PerceptronCoarseSegmenterComponent extends CoarseSegmenter with Logging
 
       // assign node-local features.  Note the text boxes may be in a hierarchy, but we don't take that into account; we just classify the "atomic" ones
 
-      for (box <- doc.spanningAtoms; feat <- features)
+      for (box <- doc.allLeaves; feat <- features)
         {
         /* box.text match
         {
@@ -64,7 +64,7 @@ trait PerceptronCoarseSegmenterComponent extends CoarseSegmenter with Logging
       // could propagate neighbor effects here?
       // how to do positional / ordering effects?
       // this is why we have to classify all boxes at once instead of per page
-      for (box <- doc.spanningAtoms) // classify page.allNodes??
+      for (box <- doc.allLeaves) // classify page.allNodes??
         {
         val featuresPerBox: MutableWeightedSet[Feature] = featureMap(box)
         //logger.debug("scores(" + box.toString + ").incrementBy(" + sc.name + ", " + sc(featuresPerBox) + ")")
@@ -109,7 +109,7 @@ trait PerceptronCoarseSegmenterComponent extends CoarseSegmenter with Logging
                     }
                     }*/
 
-        new ClassifiedRectangles(doc.spanningAtoms.map(scoreBox))
+        new ClassifiedRectangles(doc.allLeaves.map(scoreBox))
         }
 
 

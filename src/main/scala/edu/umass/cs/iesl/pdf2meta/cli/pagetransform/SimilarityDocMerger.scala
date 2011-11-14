@@ -6,8 +6,19 @@ import com.weiglewilczek.slf4s.Logging
 /**
  * Group consecutive children that have appropriate similarity
  */
-abstract class SimilarityDocMerger extends DocTransformer with Logging
+abstract class SimilarityDocMerger extends PreOrderDocTransformer with Logging
   {
+
+
+ def applyLocalOnly(node: DocNode) =
+  {
+  val intermediateChildrenR: List[DocNode] = node.children.foldLeft(List[DocNode]())(merge)
+      val intermediateChildren: List[DocNode] = intermediateChildrenR.reverse
+  Some(node.create(intermediateChildren))
+
+  }
+
+/*
   def apply(rect: DocNode): DocNode =
     {
     if (rect.children.length == 0)
@@ -52,16 +63,15 @@ abstract class SimilarityDocMerger extends DocTransformer with Logging
           }
       result
       }
-    }
 
-
-  def merge(precontext: List[DocNode], r: DocNode): List[DocNode] =
+    }*/
+def merge(precontext: List[DocNode], r: DocNode): List[DocNode] =
     {
     precontext match
     {
       case Nil => List(r)
-      case h :: t => if (h.isMergeable && r.isMergeable && similar(h, r))
-                       {(h :+ r) :: t}
+      case h :: t => if (similar(h, r))  //h.isMergeable && r.isMergeable &&
+                       {(h :++ r) :: t}
                      else
                        {r :: precontext}
     }
@@ -96,7 +106,7 @@ class ParagraphMerger extends SimilarityDocMerger with Logging
         }
 
 
-        val sameColumn = b.isBelow(a.top) && ((a.left - b.left).abs < 5) // && ((a.right - b.right).abs < 5)
+        val sameColumn = (a.page == b.page) && b.isBelow(a.top) && ((a.left - b.left).abs < 5) // && ((a.right - b.right).abs < 5)
         // includes hanging indent
         val sameColumnWithIndent = b.isBelow(a.top) && ((a.left - b.left).abs < 20) && ((a.right - b.right).abs < 5)
 
@@ -127,7 +137,7 @@ class LineMerger extends SimilarityDocMerger
           case _ => false
         }*/
         // allow overlap
-        val sameLine = b.isRightOf(a.left) && ((a.top - b.top).abs < 3) && ((a.bottom - b.bottom).abs < 3)
+        val sameLine = (a.page == b.page) && b.isRightOf(a.left) && ((a.top - b.top).abs < 3) && ((a.bottom - b.bottom).abs < 3)
 
         //sameFont &&
         sameLine
@@ -155,7 +165,7 @@ class SidewaysLineMerger extends SimilarityDocMerger
               case _ => false
             }
 */
-          val sameColumn = b.isBelow(a.top) && ((a.left - b.left).abs < 5)
+          val sameColumn = (a.page == b.page) && b.isBelow(a.top) && ((a.left - b.left).abs < 5)
 
           // sameFont &&
           sameColumn
@@ -186,9 +196,9 @@ class SidewaysLineMerger extends SimilarityDocMerger
     precontext match
     {
       case Nil => List(r)
-      case h :: t => if (h.isMergeable && r.isMergeable && similar(h, r))
+      case h :: t => if (similar(h, r))  //h.isMergeable && r.isMergeable &&
                        {
-                       val merged = AnnotatedDocNode(h.id + "+" + r.id, h.children :+ r, h.localInfo, h.localErrors, true, true, Seq("sideways"))
+                       val merged = AnnotatedDocNode(h.id + "+" + r.id, h.children :+ r, h.localInfo, h.localErrors, Seq("sideways"))
                        merged :: t
                        }
                      else

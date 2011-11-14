@@ -137,7 +137,7 @@ class PdfMiner extends XmlExtractor with Logging with Function1[Workspace, DocNo
           lf match
           {
             case Nil => None;
-            case _ => Some(new DocNode(textboxid, lf, None, None, false, true))
+            case _ => Some(new DocNode(textboxid, lf, None, None))
           }
           }
         var rectid = 0
@@ -171,7 +171,7 @@ class PdfMiner extends XmlExtractor with Logging with Function1[Workspace, DocNo
         new DocNode(pageid, (//topOfPageRect :: bottomOfPageRect ::
                             textboxes.flatten.toList :::
                             rects.flatten.toList :::
-                            curves.flatten.toList ::: figures.flatten.toList), None, None, false, false)
+                            curves.flatten.toList ::: figures.flatten.toList), None, None)
           {
           override lazy val rectangle: Option[RectangleOnPage] = RectangleOnPage(thePage, pageRect)
           //        override lazy val page = Some(pagenum)
@@ -202,6 +202,6 @@ class PdfMiner extends XmlExtractor with Logging with Function1[Workspace, DocNo
       ((lastPage :+ bottomOfPageRect) :: r.tail.toList).reverse
       }
 
-    DocNode(w.filename, allPagesWithEmptyEndNode, Some(List(command, output).iterator), None, false, false)
+    DocNode(w.filename, allPagesWithEmptyEndNode, Some(List(command, output).iterator), None)
     }
   }

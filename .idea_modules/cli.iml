@@ -7,6 +7,9 @@
         <option name="compilerLibraryName" value="scala-2.9.1" />
       </configuration>
     </facet>
+    <facet type="Python" name="Python">
+      <configuration sdkName="Python 2.6.1 (/System/Library/Frameworks/Python.framework/Versions/2.6/bin/python2.6)" />
+    </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/../cli/target/scala-2.9.1.final/classes" />
@@ -44,6 +47,7 @@
     <orderEntry type="library" name="org.scala-lang_scala-compiler_2.9.1" level="project" />
     <orderEntry type="library" scope="TEST" name="org.scalatest_scalatest_2.9.0_1.6.1" level="project" />
     <orderEntry type="library" name="org.scalaj_scalaj-collection_2.9.0-1_1.1" level="project" />
+    <orderEntry type="library" name="Python 2.6.1 (/System/Library/Frameworks/Python.framework/Versions/2.6/bin/python2.6) interpreter library" level="application" />
   </component>
   <component name="org.twodividedbyzero.idea.findbugs">
     <option name="_detectors">

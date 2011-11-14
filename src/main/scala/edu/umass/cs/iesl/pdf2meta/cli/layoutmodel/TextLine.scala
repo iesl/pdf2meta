@@ -4,7 +4,7 @@ import collection.Seq
 import edu.umass.cs.iesl.pdf2meta.cli.util.Util
 
 class TextLine(override val id: String, val theText: String, fonts: Seq[String], rectangles: List[RectangleOnPage])
-        extends DocNode(id, Seq.empty, None, None, true, true)
+        extends DocNode(id, Seq.empty, None, None)
   {
 
   override def mkString(d: String) = theText
