@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Jetty2" type="ScalaScriptConsoleRunConfiguration" factoryName="Scala Console">
+    <module name="pdf2meta-webapp" />
+    <setting name="vmparams" value="-Xdebug -Xss8M -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005" />
+    <setting name="consoleArgs" value="" />
+    <setting name="workingDirectory" value="$PROJECT_DIR$" />
+    <RunnerSettings RunnerId="Run" />
+    <ConfigurationWrapper RunnerId="Run" />
+    <method />
+  </configuration>
+</component>

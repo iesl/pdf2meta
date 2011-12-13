@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="org.apache.aries.blueprint_org.apache.aries.blueprint_0.3.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib_managed/bundles/org.apache.aries.blueprint/org.apache.aries.blueprint/org.apache.aries.blueprint-0.3.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib_managed/srcs/org.apache.aries.blueprint/org.apache.aries.blueprint/org.apache.aries.blueprint-0.3.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

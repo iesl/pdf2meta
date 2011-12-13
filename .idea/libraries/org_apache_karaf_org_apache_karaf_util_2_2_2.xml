@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="org.apache.karaf_org.apache.karaf.util_2.2.2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib_managed/jars/org.apache.karaf/org.apache.karaf.util/org.apache.karaf.util-2.2.2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/lib_managed/docs/org.apache.karaf/org.apache.karaf.util/org.apache.karaf.util-2.2.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib_managed/srcs/org.apache.karaf/org.apache.karaf.util/org.apache.karaf.util-2.2.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

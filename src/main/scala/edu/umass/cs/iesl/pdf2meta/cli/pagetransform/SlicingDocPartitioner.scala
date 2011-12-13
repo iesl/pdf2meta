@@ -164,7 +164,7 @@ class SlicingDocPartitioner extends PreOrderDocTransformer with Logging
                               val newChildren = List(new DocNode(node.id + ".l", node.children.filter(_.rectangle.get.isLeftOf(d._1)), None, None), // verticalPartitionBox,
                                                      new DocNode(node.id + ".r", node.children.filter(_.rectangle.get.isRightOf(d._2)), None, None))
 
-                              new PartitionedDocNode(node.id, newChildren, node.localInfo, node.localErrors, vrect.width)
+                              new PartitionedDocNode(node.id, newChildren, node.localInfo, node.localErrors, 1000)  // , vrect.width)  // always honor vertical partitions
                               })
       }
 

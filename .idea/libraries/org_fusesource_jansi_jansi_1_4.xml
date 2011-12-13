@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="org.fusesource.jansi_jansi_1.4">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib_managed/jars/org.fusesource.jansi/jansi/jansi-1.4.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/lib_managed/docs/org.fusesource.jansi/jansi/jansi-1.4-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib_managed/srcs/org.fusesource.jansi/jansi/jansi-1.4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -29,7 +29,7 @@ trait PipelineComponent extends ((Workspace) => MetadataModel)
       val doc = xmlExtractor(w)
       val regrouped = docTransformer(doc)
       val segments: ClassifiedRectangles = coarseSegmenter(regrouped)
-      segments.toMetadataModel
+      segments
       }
     }
 

@@ -31,9 +31,9 @@ object AnnotatedDocNode
     }
   }
 
-class AnnotatedDocNode(override val id: String, override val children: Seq[DocNode], override val localInfo: Option[Iterator[String]], override val localErrors: Option[Iterator[String]],
+class AnnotatedDocNode(override val id: String, override val secretChildren: Seq[DocNode], override val localInfo: Option[Iterator[String]], override val localErrors: Option[Iterator[String]],
                        val annotations: Seq[String])
-        extends DocNode(id, children, localInfo, localErrors)
+        extends LeafDocNode(id, secretChildren, localInfo, localErrors)
   {
 
   override def create(childrenA: Seq[DocNode]) =
@@ -57,9 +57,14 @@ class PartitionedDocNode(override val id: String, override val children: Seq[Doc
                          val strength: Double)
         extends DocNode(id, children, localInfo, localErrors)
   {
-  // if this node is not a partition, then it can't contain any partitions either
-  def makeNonPartition: DocNode = DocNode(id, allLeaves, localInfo, localErrors)
+  // even if this node is not a partition, it may contain nested partitions due to horizontal/vertical alternation
+  // so do no flattening at all; just remove the "partition" designation.
+  //we can always flatten as a separate step if desired.
+  def makeNonPartition: DocNode = new DocNode(id, children, localInfo, localErrors) { override val secretChildren =  PartitionedDocNode.this.secretChildren }
 
+  // if a weak partition contains a strong partition, then the weak one must be legitimate; so just give it the higher strength value
+  // this is done the brute-force way because the contained partitions are not necessarily immediate children
+  lazy val maxContainedStrength = strength.max(allPartitions.map(_.strength).max)
 
   override def create(childrenA: Seq[DocNode]) =
     {
@@ -89,9 +94,9 @@ class DocNode(val id: String, val children: Seq[DocNode], val localInfo: Option[
   def isLeaf = children.length == 0
   def isSecretLeaf = secretChildren.length == 0
 
-// allow computing internal things based on a set of children that are not the same as the public ones
-// by default just use the same ones
-def secretChildren = children
+  // allow computing internal things based on a set of children that are not the same as the public ones
+  // by default just use the same ones
+  def secretChildren = children
 
   lazy val charSpanProportional: Map[DocNode, (Double, Double)] =
     {
@@ -139,10 +144,10 @@ def secretChildren = children
   lazy val errors: Option[Iterator[String]] =
     {
     val r: Iterator[String] = secretChildren.map(_.errors).flatten.foldLeft[Iterator[String]](localErrors.getOrElse(Iterator.empty))((a: Iterator[String], b: Iterator[String]) =>
-                                                                                                                                 {
-                                                                                                                                 a ++
-                                                                                                                                 b
-                                                                                                                                 })
+                                                                                                                                       {
+                                                                                                                                       a ++
+                                                                                                                                       b
+                                                                                                                                       })
     if (r.isEmpty) None else Some(r)
     }
 
@@ -150,10 +155,10 @@ def secretChildren = children
   lazy val info: Option[Iterator[String]] =
     {
     val r: Iterator[String] = secretChildren.map(_.info).flatten.foldLeft[Iterator[String]](localInfo.getOrElse(Iterator.empty))((a: Iterator[String], b: Iterator[String]) =>
-                                                                                                                             {
-                                                                                                                             a ++
-                                                                                                                             b
-                                                                                                                             })
+                                                                                                                                   {
+                                                                                                                                   a ++
+                                                                                                                                   b
+                                                                                                                                   })
     if (r.isEmpty) None else Some(r)
     }
 
@@ -233,7 +238,7 @@ def secretChildren = children
   def :+(r: DocNode): DocNode =
     {
     require(!(this.isInstanceOf[AnnotatedDocNode] || r.isInstanceOf[AnnotatedDocNode]))
-     if (children.isEmpty)
+    if (children.isEmpty)
       {
       DocNode(id + "+" + r.id, List(this, r), None, None)
       }
@@ -243,7 +248,7 @@ def secretChildren = children
       }
     }
 
-// aggregate nodes into a leaf group
+  // aggregate nodes into a leaf group
   def :++(r: DocNode): DocNode =
     {
     require(!(this.isInstanceOf[AnnotatedDocNode] || r.isInstanceOf[AnnotatedDocNode]))
@@ -287,7 +292,6 @@ def secretChildren = children
    * Note this node itself doesn't get filtered
    */
   def filterDeep(filt: (DocNode) => Boolean): DocNode = preOrderApply(n => Some(create(children.filter(filt)))).get
-
   }
 
 /**
@@ -298,7 +302,7 @@ class LeafDocNode(override val id: String, override val secretChildren: Seq[DocN
 
 object LeafDocNode
   {
-   def apply(id: String, children: Seq[DocNode], localInfo: Option[Iterator[String]], localErrors: Option[Iterator[String]]): DocNode = //, isMergeable: Boolean
+  def apply(id: String, children: Seq[DocNode], localInfo: Option[Iterator[String]], localErrors: Option[Iterator[String]]): DocNode = //, isMergeable: Boolean
     {
     new LeafDocNode(id, children, localInfo, localErrors)
     }

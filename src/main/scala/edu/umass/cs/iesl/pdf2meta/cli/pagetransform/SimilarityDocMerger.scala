@@ -91,11 +91,14 @@ class LineMerger extends SimilarityDocMerger
           case (Some(af), Some(bf)) => af.equalsWithinOneQuantum(bf)
           case _ => false
         }*/
+        val aOneLine = an.dominantFont.map(a.height <= _.height * 1.5).getOrElse(false)
+        val bOneLine = bn.dominantFont.map(b.height <= _.height * 1.5).getOrElse(false)
+
         // allow overlap
         val sameLine = (a.page == b.page) && b.isRightOf(a.left) && ((a.top - b.top).abs < 3) && ((a.bottom - b.bottom).abs < 3)
 
         //sameFont &&
-        sameLine
+        aOneLine && bOneLine && sameLine
         }
       case _ => false
     }

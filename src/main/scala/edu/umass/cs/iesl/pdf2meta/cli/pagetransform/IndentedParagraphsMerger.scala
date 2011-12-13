@@ -70,8 +70,8 @@ class IndentedParagraphsMerger extends PostOrderDocTransformer
         // how about: blocks are mergeable if there is some non-zero font size in common
         val minimalFontAgreement: Boolean =
           {
-          val aFontSizes = a.allFonts.map(_._2)
-          val bFontSizes = nextNode.allFonts.map(_._2)
+          val aFontSizes = a.allFonts.map(_._1.height)
+          val bFontSizes = nextNode.allFonts.map(_._1.height)
 
           // note font sizes are already quantized
           !aFontSizes.intersect(bFontSizes).filterNot(_ == 0.0).isEmpty

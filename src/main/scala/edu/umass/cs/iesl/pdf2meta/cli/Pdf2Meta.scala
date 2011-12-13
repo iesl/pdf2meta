@@ -28,7 +28,7 @@ class Pdf2Meta
     val infilename = args(1);
 
     // really quick & dirty command line parse
-    val w = new FileWorkspace(new JFile(infilename))
+    //val w = new FileWorkspace(new JFile(infilename))
 
     command match
     {
@@ -42,6 +42,6 @@ class Pdf2Meta
       case _ => Pdf2Meta.usage()
     }
 
-    val m = WiredPipeline.pipeline(w)
+    //val m = WiredPipeline.pipeline(w)
     }
   }

@@ -12,6 +12,9 @@
     <inspection_tool class="AbstractMethodWithMissingImplementations" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="AccessToNonThreadSafeStaticFieldFromInstance" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="nonThreadSafeTypes" value="java.text.DateFormat,java.util.Calendar" />
+      <option name="nonThreadSafeClasses">
+        <value />
+      </option>
     </inspection_tool>
     <inspection_tool class="AccessToStaticFieldLockedOnInstance" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="AmbiguousMethodCall" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -57,13 +60,22 @@
     <inspection_tool class="AwaitWithoutCorrespondingSignal" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="BadExceptionCaught" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="exceptionsString" value="java.lang.NullPointerException,java.lang.IllegalMonitorStateException,java.lang.ArrayIndexOutOfBoundsException" />
+      <option name="exceptions">
+        <value />
+      </option>
     </inspection_tool>
     <inspection_tool class="BadExceptionDeclared" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="exceptionsString" value="java.lang.Throwable,java.lang.Exception,java.lang.Error,java.lang.RuntimeException,java.lang.NullPointerException,java.lang.ClassCastException,java.lang.ArrayIndexOutOfBoundsException" />
+      <option name="exceptions">
+        <value />
+      </option>
       <option name="ignoreTestCases" value="false" />
     </inspection_tool>
     <inspection_tool class="BadExceptionThrown" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="exceptionsString" value="java.lang.Throwable,java.lang.Exception,java.lang.Error,java.lang.RuntimeException,java.lang.NullPointerException,java.lang.ClassCastException,java.lang.ArrayIndexOutOfBoundsException" />
+      <option name="exceptions">
+        <value />
+      </option>
     </inspection_tool>
     <inspection_tool class="BadOddness" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="BigDecimalEquals" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -81,9 +93,11 @@
     <inspection_tool class="CallToNativeMethodWhileLocked" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="CallToSimpleGetterInClass" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoreGetterCallsOnOtherObjects" value="false" />
+      <option name="onlyReportPrivateGetter" value="false" />
     </inspection_tool>
     <inspection_tool class="CallToSimpleSetterInClass" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoreSetterCallsOnOtherObjects" value="false" />
+      <option name="onlyReportPrivateSetter" value="false" />
     </inspection_tool>
     <inspection_tool class="CallToStringConcatCanBeReplacedByOperator" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="CastConflictsWithInstanceof" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -96,6 +110,7 @@
     <inspection_tool class="ChainedEquality" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ChainedMethodCall" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="m_ignoreFieldInitializations" value="true" />
+      <option name="m_ignoreThisSuperCalls" value="true" />
     </inspection_tool>
     <inspection_tool class="ChannelResource" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="insideTryAllowed" value="false" />
@@ -230,7 +245,12 @@
     <inspection_tool class="EjbErrorInspection" level="ERROR" enabled="false" />
     <inspection_tool class="EjbQlInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="EjbWarningInspection" level="WARNING" enabled="false" />
-    <inspection_tool class="EmptyClass" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="EmptyClass" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignorableAnnotations">
+        <value />
+      </option>
+      <option name="ignoreClassWithParameterization" value="false" />
+    </inspection_tool>
     <inspection_tool class="EmptyInitializer" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="EmptySynchronizedStatement" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="EnumSwitchStatementWhichMissesCases" enabled="true" level="WARNING" enabled_by_default="true">
@@ -460,6 +480,7 @@
     <inspection_tool class="MissingDeprecatedAnnotation" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="MissingOverrideAnnotation" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoreObjectMethods" value="true" />
+      <option name="ignoreAnonymousClassMethods" value="false" />
     </inspection_tool>
     <inspection_tool class="MissortedModifiers" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="m_requireAnnotationsFirst" value="true" />
@@ -515,6 +536,9 @@
     </inspection_tool>
     <inspection_tool class="NonReproducibleMathCall" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="NonSerializableFieldInSerializableClass" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignorableAnnotations">
+        <value />
+      </option>
       <option name="ignoreAnonymousInnerClasses" value="false" />
       <option name="superClassString" value="java.awt.Component" />
     </inspection_tool>
@@ -598,6 +622,9 @@
     <inspection_tool class="PublicConstructorInNonPublicClass" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PublicField" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoreEnums" value="false" />
+      <option name="ignorableAnnotations">
+        <value />
+      </option>
     </inspection_tool>
     <inspection_tool class="PublicFieldAccessedInSynchronizedContext" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PublicInnerClass" enabled="true" level="WARNING" enabled_by_default="true">
@@ -605,6 +632,9 @@
     </inspection_tool>
     <inspection_tool class="PublicMethodNotExposedInInterface" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="onlyWarnIfContainingClassImplementsAnInterface" value="false" />
+      <option name="ignorableAnnotations">
+        <value />
+      </option>
     </inspection_tool>
     <inspection_tool class="PublicStaticArrayField" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="PublicStaticCollectionField" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -678,9 +708,7 @@
     <inspection_tool class="SimplifiableAnnotation" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="SimplifiableIfStatement" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="Singleton" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="SizeReplaceableByIsEmpty" enabled="true" level="WARNING" enabled_by_default="true">
-      <option name="ignoreNegations" value="false" />
-    </inspection_tool>
+    <inspection_tool class="SizeReplaceableByIsEmpty" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="SleepWhileHoldingLock" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="SocketResource" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="insideTryAllowed" value="false" />
@@ -788,7 +816,6 @@
       <option name="m_allowConstructorAsInitializer" value="false" />
       <option name="m_onlyLookAtBlocks" value="false" />
     </inspection_tool>
-    <inspection_tool class="TrailingSpacesInProperty" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="TransientFieldInNonSerializableClass" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="TransientFieldNotInitialized" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="TrivialStringConcatenation" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -811,7 +838,7 @@
     <inspection_tool class="UnconditionalWait" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UndeclaredTests" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnnecessarilyQualifiedInnerClassAccess" enabled="true" level="WARNING" enabled_by_default="true">
-      <option name="ignoreReferencesToForeignInnerClasses" value="false" />
+      <option name="ignoreReferencesNeedingImport" value="false" />
     </inspection_tool>
     <inspection_tool class="UnnecessarilyQualifiedStaticUsage" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="m_ignoreStaticFieldAccesses" value="false" />
@@ -868,7 +895,6 @@
       <option name="m_ignoreTestCases" value="false" />
     </inspection_tool>
     <inspection_tool class="UnusedLibrary" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="UnusedProperty" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UpperCaseFieldNameNotConstant" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UseOfAWTPeerClass" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UseOfAnotherObjectsPrivateField" enabled="true" level="WARNING" enabled_by_default="true">

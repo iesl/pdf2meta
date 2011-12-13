@@ -44,7 +44,7 @@ class WeakPartitionRemover extends DocTransformer with Logging
       {
       node match
       {
-        case x: PartitionedDocNode if x.strength < strengthThreshold.get => Some(x.makeNonPartition)
+        case x: PartitionedDocNode if x.maxContainedStrength < strengthThreshold.get => Some(x.makeNonPartition)
         case x => Some(x)
       }
       }

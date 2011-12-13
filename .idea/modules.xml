@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea_modules/cli.iml" filepath="$PROJECT_DIR$/.idea_modules/cli.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea_modules/pdf2meta-cli.iml" filepath="$PROJECT_DIR$/.idea_modules/pdf2meta-cli.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea_modules/pdf2meta-webapp.iml" filepath="$PROJECT_DIR$/.idea_modules/pdf2meta-webapp.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea_modules/project.iml" filepath="$PROJECT_DIR$/.idea_modules/project.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea_modules/webapp.iml" filepath="$PROJECT_DIR$/.idea_modules/webapp.iml" />
     </modules>
   </component>
 </project>

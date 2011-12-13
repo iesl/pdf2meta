@@ -32,12 +32,12 @@ case class ClassifiedRectangle(node: DocNode, featureWeights: WeightedSet[Featur
   def discarded = label.map(_.equalsIgnoreCase("discard")).getOrElse(false)
   }
 
-class ClassifiedRectangles(val raw: Seq[ClassifiedRectangle])
+class ClassifiedRectangles(val raw: Seq[ClassifiedRectangle]) extends MetadataModel
   {
 
   def legit = raw.filter(_.label.map(s => !s.equalsIgnoreCase("discard")).getOrElse(true))
   def discarded = raw.filter(_.discarded)
-  val delimiters = raw.map(_.node).filter({case x : DelimitingBox => true; case _ => false})
+  val delimiters = raw.map(_.node).filter({case x: DelimitingBox => true; case _ => false})
 
   def onPage(page: Page) =
     {
@@ -48,15 +48,15 @@ class ClassifiedRectangles(val raw: Seq[ClassifiedRectangle])
                                         }))
     }
 
-  def toMetadataModel: MetadataModel =
-    {
-    new MetadataModel
-      {
-      val body = raw.filter(_.label != "body").flatMap(_.label).mkString(" ")
-      val title = raw.filter(_.label != "title").flatMap(_.label).mkString(" ")
-      val paperabstract = raw.filter(_.label != "abstract").flatMap(_.label).mkString(" ")
-      val referenceStrings = List("not implemented") //raw.filter(_._2 != "references").flatMap(_._2).mkString(" ")
-      val authors = List.empty //"not implemented" //raw.filter(_._2 != "authors").flatMap(_._2).mkString(" ")
-      }
-    }
+
+  val docid = "bogus"
+  val sourcefile = "bogus"
+  val body = raw.filter(_.label != "body").flatMap(_.label).mkString(" ")
+  val title = raw.filter(_.label != "title").flatMap(_.label).mkString(" ")
+  val paperAbstract = raw.filter(_.label != "abstract").flatMap(_.label).mkString(" ")
+  val referenceStrings = Nil //raw.filter(_._2 != "references").flatMap(_._2).mkString(" ")
+  val referenceIds = Nil
+  val venue = None
+  val authors = Nil //"not implemented" //raw.filter(_._2 != "authors").flatMap(_._2).mkString(" ")
+  val year = None
   }

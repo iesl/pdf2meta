@@ -496,7 +496,7 @@ object StandardScoringModel extends ScoringModel with Logging
          ScoringFunction("authors", firstname -> 2, noLastName -> -100, nearBeginning -> 1.5, nearPageTop -> .5, largeFont -> .5, dominantFont -> -1, highlyPunctuated -> 2,
                          lengthBetween(10, 1000) -> 1, initials -> 5, digits -> -10, longColumnWidth -> 2),
          ScoringFunction("affiliations", cities -> 1, states -> 1, nearBeginning -> 1.4, dominantFont -> -1, highlyPunctuated -> 2, lengthBetween(10, 1000) -> 1, university -> 5),
-         ScoringFunction("contactinfo", correspondence -> 3, email -> 3, dominantFont -> -1, highlyPunctuated -> 2, lengthBetween(10, 1000) -> 1),
+         ScoringFunction("contactinfo", correspondence -> 3, email -> 10, dominantFont -> -1, highlyPunctuated -> 2, lengthBetween(10, 1000) -> 1),
          ScoringFunction("abstract", abstractText -> 10, nearBeginning -> 2, nearPageTop -> .5, largeFont -> .2, dominantFont -> -1, highlyPunctuated -> -2, lengthBetween(100, 5000) -> 1,
                          initials -> -5, longColumnWidth -> 2),
          ScoringFunction("caption", figureText -> 10, nearBeginning -> -1, smallFont -> 1, dominantFont -> -1, lengthBetween(100, 5000) -> 1, startsWithDelimiting -> .5),
