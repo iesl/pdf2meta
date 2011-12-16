@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="edu.umass.cs.iesl_scalacommons_2.9.1_0.1-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib_managed/jars/edu.umass.cs.iesl/scalacommons_2.9.1/scalacommons_2.9.1-0.1-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/lib_managed/docs/edu.umass.cs.iesl/scalacommons_2.9.1/scalacommons_2.9.1-0.1-SNAPSHOT-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib_managed/srcs/edu.umass.cs.iesl/scalacommons_2.9.1/scalacommons_2.9.1-0.1-SNAPSHOT-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
