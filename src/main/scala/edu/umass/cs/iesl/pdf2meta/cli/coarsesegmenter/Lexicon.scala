@@ -1,7 +1,7 @@
 package edu.umass.cs.iesl.pdf2meta.cli.coarsesegmenter
 
-import edu.umass.cs.iesl.pdf2meta.cli.util.Util
 import java.io.InputStream
+import edu.umass.cs.iesl.scalacommons.IOUtils
 
 object Lexicon
   {
@@ -26,7 +26,7 @@ class Lexicon(s: InputStream)
   {
   val (lexTokens, lexTokensLC) =
     {
-    val text: String = Util.loadText(s)
+    val text: String = IOUtils.loadText(s)
     val lexTokensLC: Map[String, Boolean] = text.toLowerCase.split("\n").map(x => (x -> true)).toMap
     val lexTokens: Map[String, Boolean] = text.split("\n").map(x => (x -> true)).toMap
     (lexTokens, lexTokensLC)

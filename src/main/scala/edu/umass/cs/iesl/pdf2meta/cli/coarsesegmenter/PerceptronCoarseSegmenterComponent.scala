@@ -1,10 +1,9 @@
 package edu.umass.cs.iesl.pdf2meta.cli.coarsesegmenter
 
 import com.weiglewilczek.slf4s.Logging
-import edu.umass.cs.iesl.pdf2meta.cli.util.{WeightedSet, MutableWeightedSet}
-
 import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.DocNode
 import collection.mutable.HashMap
+import edu.umass.cs.iesl.scalacommons.collections.{WeightedSet, MutableWeightedSet}
 
 trait PerceptronCoarseSegmenterComponent extends CoarseSegmenter with Logging
   {

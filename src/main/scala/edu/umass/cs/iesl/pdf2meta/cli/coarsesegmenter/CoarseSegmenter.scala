@@ -1,8 +1,8 @@
 package edu.umass.cs.iesl.pdf2meta.cli.coarsesegmenter
 
 import edu.umass.cs.iesl.pdf2meta.cli.metadatamodel.MetadataModel
-import edu.umass.cs.iesl.pdf2meta.cli.util.WeightedSet
 import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.{DelimitingBox, Page, DocNode}
+import edu.umass.cs.iesl.scalacommons.collections.WeightedSet
 
 
 trait CoarseSegmenter extends Function1[DocNode, ClassifiedRectangles]

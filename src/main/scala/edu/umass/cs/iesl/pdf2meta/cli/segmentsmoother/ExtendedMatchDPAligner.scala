@@ -2,8 +2,7 @@ package edu.umass.cs.iesl.pdf2meta.cli.segmentsmoother
 
 import com.weiglewilczek.slf4s.Logging
 import collection.Seq
-import edu.umass.cs.iesl.pdf2meta.cli.util.Memoize1
-import edu.umass.cs.iesl.pdf2meta.cli.segmentsmoother.{SequenceAligner, LengthDPCell, DPCell}
+import edu.umass.cs.iesl.scalacommons.Memoize1
 
 trait SequenceAligner[S, L] extends ((Seq[S], Seq[L]) => (Double, Seq[(Option[S], Option[L])]))
 

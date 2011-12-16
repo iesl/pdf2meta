@@ -1,10 +1,9 @@
 package edu.umass.cs.iesl.pdf2meta.cli
 
-import config.{WiredExtractOnlyPipeline, WiredPipeline}
+import config.WiredExtractOnlyPipeline
 import layoutmodel.DocNode
 import tools.nsc.io.JFile
-import util.FileWorkspace
-
+import edu.umass.cs.iesl.scalacommons.FileWorkspace
 
 object Pdf2Meta
   {

@@ -3,53 +3,48 @@ import Keys._
 import com.github.retronym.SbtOneJar
 
 //import ScalaxbKeys._
-object BuildSettings
-  {
+object BuildSettings {
   val buildOrganization = "edu.umass.cs.iesl"
   val buildScalaVersion = "2.9.1"
   val buildVersion = "0.1-SNAPSHOT"
 
   val buildSettings = Defaults.defaultSettings ++
-                      Seq(organization := buildOrganization, scalaVersion := buildScalaVersion, version := buildVersion, parallelExecution := true, retrieveManaged := true,
-                          autoCompilerPlugins := true, externalResolvers <<= resolvers map
-                                                                             {rs =>
-                                                                               {
-                                                                               Resolver.withDefaultResolvers(rs, mavenCentral = true, scalaTools = true)
-                                                                               }
-                                                                             }, moduleConfigurations ++= Resolvers.moduleConfigurations, javacOptions ++= Seq("-Xlint:unchecked"),
-                          publishTo := Some(Resolvers.IESLSnapshotRepo), publishArtifact in(Compile, packageDoc) := false, credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
-                          scalacOptions ++= Seq("-deprecation", "-unchecked", "-Xcheckinit", "-encoding", "utf8"), shellPrompt := ShellPrompt.buildShellPrompt, exportJars := true)
-  }
+    Seq(organization := buildOrganization, scalaVersion := buildScalaVersion, version := buildVersion, parallelExecution := true, retrieveManaged := true,
+      autoCompilerPlugins := true, externalResolvers <<= resolvers map {
+        rs => {
+          Resolver.withDefaultResolvers(rs, mavenCentral = true, scalaTools = true)
+        }
+      }, moduleConfigurations ++= Resolvers.moduleConfigurations, javacOptions ++= Seq("-Xlint:unchecked"),
+      publishTo := Some(Resolvers.IESLSnapshotRepo), publishArtifact in(Compile, packageDoc) := false, credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
+      scalacOptions ++= Seq("-deprecation", "-unchecked", "-Xcheckinit", "-encoding", "utf8"), shellPrompt := ShellPrompt.buildShellPrompt, exportJars := true)
+}
 
-object ShellPrompt
-  {
+object ShellPrompt {
 
-  object devnull extends ProcessLogger
-    {
-    def info(s: => String)
-      {}
-    def error(s: => String)
-      {}
+  object devnull extends ProcessLogger {
+    def info(s: => String) {}
+
+    def error(s: => String) {}
+
     def buffer[T](f: => T): T = f
-    }
+  }
 
   val current = """\*\s+([^\s]+)""".r
 
   def gitBranches = ("git branch --no-color" lines_! devnull mkString)
+
   def hgBranch = ("hg branch" lines_! devnull mkString)
 
-  val buildShellPrompt =
-    {(state: State) =>
-      {
+  val buildShellPrompt = {
+    (state: State) => {
       val currBranch = hgBranch
       val currProject = Project.extract(state).currentProject.id
       "%s:%s:%s> ".format(currBranch, currProject, BuildSettings.buildVersion)
-      }
     }
   }
+}
 
-object Resolvers
-  {
+object Resolvers {
   val AkkaRepo = "Akka Repository" at "http://scalablesolutions.se/akka/repository"
   val CasbahRepo = "Casbah Repo" at "http://repo.bumnetworks.com/releases"
   val CasbahRepoReleases = "Casbah Release Repo" at "http://repo.bumnetworks.com/releases"
@@ -77,30 +72,30 @@ object Resolvers
   val LocalM2 = "Local Maven Repository" at "file://" + Path.userHome.absolutePath + "/.m2/repository"
 
   val moduleConfigurations = Seq(ModuleConfiguration("ch.qos.logback", sbt.DefaultMavenRepository), ModuleConfiguration("com.atomikos", sbt.DefaultMavenRepository),
-                                 ModuleConfiguration("com.novus", CasbahRepo), ModuleConfiguration("com.novus", CasbahRepoReleases), ModuleConfiguration("com.sun.jdmk", SunJDMKRepo),
-                                 ModuleConfiguration("com.sun.jersey", JavaNetRepo), ModuleConfiguration("com.sun.jersey.contribs", JavaNetRepo), ModuleConfiguration("com.sun.jmx", SunJDMKRepo),
-                                 ModuleConfiguration("com.weiglewilczek.slf4s", ScalaToolsReleases), ModuleConfiguration("javax.jms", SunJDMKRepo), ModuleConfiguration("jgroups", JBossRepo),
-                                 ModuleConfiguration("net.debasishg", ScalaToolsReleases), ModuleConfiguration("org.apache.hadoop.zookeeper", ZookeeperRepo),
-                                 ModuleConfiguration("org.atmosphere", SonatypeSnapshotRepo), ModuleConfiguration("org.clapper", ScalaToolsReleases),
-                                 ModuleConfiguration("org.codeahus.groovy", CodehausRepo), ModuleConfiguration("org.eclipse.jetty", sbt.DefaultMavenRepository),
-                                 ModuleConfiguration("org.glassfish.grizzly", "Glassfish" at "http://maven.mojolly.com/content/repositories/glassfish-repo/"),
-                                 ModuleConfiguration("org.guiceyfruit", GuiceyFruitRepo), ModuleConfiguration("org.jboss", JBossRepo), ModuleConfiguration("org.jboss.netty", JBossRepo),
-                                 //ModuleConfiguration("org.jboss.netty", JBossRepo),
-                                 ModuleConfiguration("org.multiverse", CodehausRepo), ModuleConfiguration("org.scala-tools", "time", CasbahSnapshotRepo),
-                                 ModuleConfiguration("org.scalatest", ScalaToolsReleases), ModuleConfiguration("org.scalaz", ScalaToolsReleases),
-                                 ModuleConfiguration("com.codecommit", ScalaToolsReleases), ModuleConfiguration("cc.factorie", LocalM2), ModuleConfiguration("com.davidsoergel", DavidSoergelRepo)
-                                 // ModuleConfiguration("cc.factorie", IESLSnapshotRepo),
-                                 // ModuleConfiguration("cc.factorie", LocalIvy),
-                                 // ModuleConfiguration("cc.rexa2", LocalIvy)
-                                 // ModuleConfiguration("cc.rexa2", LocalM2),
-                                 // ModuleConfiguration("cc.rexa2", IESLSnapshotRepo),
-                                 // ModuleConfiguration("cc.rexa2", IESLRepo)
+    ModuleConfiguration("com.novus", CasbahRepo), ModuleConfiguration("com.novus", CasbahRepoReleases), ModuleConfiguration("com.sun.jdmk", SunJDMKRepo),
+    ModuleConfiguration("com.sun.jersey", JavaNetRepo), ModuleConfiguration("com.sun.jersey.contribs", JavaNetRepo), ModuleConfiguration("com.sun.jmx", SunJDMKRepo),
+    ModuleConfiguration("com.weiglewilczek.slf4s", ScalaToolsReleases), ModuleConfiguration("javax.jms", SunJDMKRepo), ModuleConfiguration("jgroups", JBossRepo),
+    ModuleConfiguration("net.debasishg", ScalaToolsReleases), ModuleConfiguration("org.apache.hadoop.zookeeper", ZookeeperRepo),
+    ModuleConfiguration("org.atmosphere", SonatypeSnapshotRepo), ModuleConfiguration("org.clapper", ScalaToolsReleases),
+    ModuleConfiguration("org.codeahus.groovy", CodehausRepo), ModuleConfiguration("org.eclipse.jetty", sbt.DefaultMavenRepository),
+    ModuleConfiguration("org.glassfish.grizzly", "Glassfish" at "http://maven.mojolly.com/content/repositories/glassfish-repo/"),
+    ModuleConfiguration("org.guiceyfruit", GuiceyFruitRepo), ModuleConfiguration("org.jboss", JBossRepo), ModuleConfiguration("org.jboss.netty", JBossRepo),
+    //ModuleConfiguration("org.jboss.netty", JBossRepo),
+    ModuleConfiguration("org.multiverse", CodehausRepo), ModuleConfiguration("org.scala-tools", "time", CasbahSnapshotRepo),
+    ModuleConfiguration("org.scalatest", ScalaToolsReleases), ModuleConfiguration("org.scalaz", ScalaToolsReleases),
+    ModuleConfiguration("com.codecommit", ScalaToolsReleases), ModuleConfiguration("cc.factorie", LocalM2), ModuleConfiguration("com.davidsoergel", DavidSoergelRepo)
+    // ModuleConfiguration("cc.factorie", IESLSnapshotRepo),
+    // ModuleConfiguration("cc.factorie", LocalIvy),
+    // ModuleConfiguration("cc.rexa2", LocalIvy)
+    // ModuleConfiguration("cc.rexa2", LocalM2),
+    // ModuleConfiguration("cc.rexa2", IESLSnapshotRepo),
+    // ModuleConfiguration("cc.rexa2", IESLRepo)
+    , ModuleConfiguration("edu.umass.cs.iesl", IESLSnapshotRepo),
+    ModuleConfiguration("edu.umass.cs.iesl", IESLRepo)
+  )
+}
 
-                                )
-  }
-
-object Dependencies
-  {
+object Dependencies {
 
   val backchatLibraryVersion = "0.3.3-SNAPSHOT"
   val akkaVersion = "1.1.2"
@@ -121,6 +116,7 @@ object Dependencies
   val tikaVersion = "0.8"
   val scalatraVersion = "2.0.0-SNAPSHOT"
   val grizzlyVersion = "2.1.1"
+
   def isBackchatSnapshot = backchatLibraryVersion.endsWith("-SNAPSHOT")
 
   val objenesis = "org.objenesis" % "objenesis" % "1.2"
@@ -181,12 +177,13 @@ object Dependencies
 
 
   val jetty = "org.mortbay.jetty" % "jetty" % "6.1.22" % "container"
-  val dsutils = "com.davidsoergel" % "dsutils" % "1.03"
-  val karafConsole = "org.apache.karaf.shell" % "org.apache.karaf.shell.console" % "2.2.4"
-  }
+  //val dsutils = "com.davidsoergel" % "dsutils" % "1.03"
+  // val karafConsole = "org.apache.karaf.shell" % "org.apache.karaf.shell.console" % "2.2.4"
 
-object Pdf2MetaBuild extends Build
-  {
+  val scalacommons = "edu.umass.cs.iesl" %% "scalacommons" % "0.1-SNAPSHOT" changing()
+}
+
+object Pdf2MetaBuild extends Build {
 
   val buildShellPrompt = ShellPrompt.buildShellPrompt
 
@@ -195,83 +192,77 @@ object Pdf2MetaBuild extends Build
 
   val cliDeps = Seq() //karafConsole
   val commonDeps = Seq(//  casbahCore,
-                       //  casbahCommons,
-                       //  casbahQuery,
-                       slf4s, logbackClassic, logbackCore, scalaTest, junit4,
-                       //    factorie,
-                       scalazCore, scalaj,
-                       //    luceneAnalyzers,
-                       //    luceneCore,
-                       //    luceneQueries,
-                       //    luceneQueryparser,
-                       antiXML, iocore, iofile,
-                       //jetty,
-                       dsutils, scalaCompiler)
+    //  casbahCommons,
+    //  casbahQuery,
+    slf4s, logbackClassic, logbackCore, scalaTest, junit4,
+    //    factorie,
+    scalazCore, scalaj,
+    //    luceneAnalyzers,
+    //    luceneCore,
+    //    luceneQueries,
+    //    luceneQueryparser,
+    antiXML, iocore, iofile,
+    //jetty,
+    //dsutils,
+    scalacommons, scalaCompiler)
 
   val webDeps = Seq(liftWebkit, liftMapper, liftWizard,
-                    //liftMongoDB,
-                    jetty, "javax.servlet" % "servlet-api" % "2.5" % "provided->default")
+    //liftMongoDB,
+    jetty, "javax.servlet" % "servlet-api" % "2.5" % "provided->default")
 
   val printClasspath = TaskKey[File]("print-class-path")
 
-  def printCp =
-    {
-    (target, fullClasspath in Compile, compile in Compile) map
-    {(out, cp, analysis) =>
-      {
-      println(cp.files.map(_.getName).mkString("\n"))
-      println("----")
-      println(analysis.relations.allBinaryDeps.toSeq.mkString("\n"))
-      println("----")
-      println(out)
-      out
+  def printCp = {
+    (target, fullClasspath in Compile, compile in Compile) map {
+      (out, cp, analysis) => {
+        println(cp.files.map(_.getName).mkString("\n"))
+        println("----")
+        println(analysis.relations.allBinaryDeps.toSeq.mkString("\n"))
+        println("----")
+        println(out)
+        out
       }
     }
+  }
+
+  lazy val overrideSettings = {
+    lazy val publishSetting = publishTo <<= (version) {
+      version: String => {
+        def repo(name: String) = name at "http://iesl.cs.umass.edu:8081/nexus/content/repositories/" + name
+        val isSnapshot = version.trim.endsWith("SNAPSHOT")
+        val repoName = if (isSnapshot) "snapshots" else "releases"
+        Some(repo(repoName))
+      }
     }
 
-  lazy val overrideSettings =
-    {
-    lazy val publishSetting = publishTo <<= (version)
-                                            {version: String =>
-                                              {
-                                              def repo(name: String) = name at "http://iesl.cs.umass.edu:8081/nexus/content/repositories/" + name
-                                              val isSnapshot = version.trim.endsWith("SNAPSHOT")
-                                              val repoName = if (isSnapshot) "snapshots" else "releases"
-                                              Some(repo(repoName))
-                                              }
-                                            }
-
-    lazy val credentialsSetting = credentials +=
-                                  {
-                                  Seq("build.publish.user", "build.publish.password").map(k => Option(System.getProperty(k))) match
-                                  {
-                                    case Seq(Some(user), Some(pass)) =>
-                                      Credentials("Sonatype Nexus Repository Manager", "iesl.cs.umass.edu", user, pass)
-                                    case _ =>
-                                      Credentials(Path.userHome / ".ivy2" / ".credentials")
-                                  }
-                                  }
+    lazy val credentialsSetting = credentials += {
+      Seq("build.publish.user", "build.publish.password").map(k => Option(System.getProperty(k))) match {
+        case Seq(Some(user), Some(pass)) =>
+          Credentials("Sonatype Nexus Repository Manager", "iesl.cs.umass.edu", user, pass)
+        case _ =>
+          Credentials(Path.userHome / ".ivy2" / ".credentials")
+      }
+    }
 
     //Defaults.defaultSettings ++
     Seq(publishSetting, credentialsSetting)
-    }
+  }
 
 
-  lazy val webapp: Project =
-    {
+  lazy val webapp: Project = {
     import com.github.siasia.WebPlugin;
 
     // seq(com.github.siasia.WebPlugin.webSettings: _*)
     seq(WebPlugin.webSettings: _*)
     Project(id = "pdf2meta-webapp", base = file("webapp"), dependencies = Seq(cli),
-            settings = buildSettings ++ WebPlugin.webSettings ++ Seq(libraryDependencies := commonDeps ++ webDeps) ++ overrideSettings
-                      )
-    }
+      settings = buildSettings ++ WebPlugin.webSettings ++ Seq(libraryDependencies := commonDeps ++ webDeps) ++ overrideSettings
+    )
+  }
 
   lazy val cli: Project = Project(id = "pdf2meta-"
-                                       + "cli", base = file("cli"), settings = buildSettings ++ Seq(libraryDependencies := commonDeps ++ cliDeps) ++ SbtOneJar.oneJarSettings ++ overrideSettings ++
-                                                                               Seq(mainClass in SbtOneJar.oneJar := Some("edu.umass.cs.iesl.pdf2meta.XmlAbstracts")))
-  }
+    + "cli", base = file("cli"), settings = buildSettings ++ Seq(libraryDependencies := commonDeps ++ cliDeps) ++ SbtOneJar.oneJarSettings ++ overrideSettings ++
+    Seq(mainClass in SbtOneJar.oneJar := Some("edu.umass.cs.iesl.pdf2meta.XmlAbstracts")))
+}
 
 
 

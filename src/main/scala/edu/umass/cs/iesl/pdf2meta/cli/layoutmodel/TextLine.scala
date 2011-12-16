@@ -1,7 +1,7 @@
 package edu.umass.cs.iesl.pdf2meta.cli.layoutmodel
 
 import collection.Seq
-import edu.umass.cs.iesl.pdf2meta.cli.util.Util
+import edu.umass.cs.iesl.scalacommons.{ListUtils, StatsUtils}
 
 class TextLine(override val id: String, val theText: String, fonts: Seq[String], rectangles: List[RectangleOnPage])
         extends DocNode(id, Seq.empty, None, None)
@@ -46,7 +46,7 @@ class TextLine(override val id: String, val theText: String, fonts: Seq[String],
     if (allFonts.isEmpty) None
     else
       {
-      val fontCounts = Util.histogramAccumulate(allFonts)
+      val fontCounts = StatsUtils.histogramAccumulate(allFonts)
 
       Some(fontCounts.toSeq.sortWith((a, b) => a._2 > b._2).head._1)
       }
@@ -99,7 +99,7 @@ class TextLine(override val id: String, val theText: String, fonts: Seq[String],
       // make a separate TextBox containing just those
       // characters, with a newly computed bounding box.
       // any characters in font-blocks <= 5 characters are included in the following block
-      val runs = Util.collapseShortRuns(Util.contiguousRuns(allFonts.map(_._1).toList)(x => x), 5)
+      val runs = ListUtils.collapseShortRuns(ListUtils.contiguousRuns(allFonts.map(_._1).toList)(x => x), 5)
       runsToTextLines(runs)
       // keep these in the preexisting order
       }

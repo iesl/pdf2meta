@@ -1,8 +1,8 @@
 package edu.umass.cs.iesl.pdf2meta.cli.layoutmodel
 
 import collection.Seq
-import edu.umass.cs.iesl.pdf2meta.cli.util.OrderedTreeNode
 import com.weiglewilczek.slf4s.Logging
+import edu.umass.cs.iesl.scalacommons.OrderedTreeNode
 
 object DocNode
   {

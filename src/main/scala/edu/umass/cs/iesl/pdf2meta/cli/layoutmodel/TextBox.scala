@@ -1,7 +1,7 @@
 package edu.umass.cs.iesl.pdf2meta.cli.layoutmodel
 
 import collection.Seq
-import edu.umass.cs.iesl.pdf2meta.cli.util.Util
+import edu.umass.cs.iesl.scalacommons.{ListUtils, StatsUtils}
 
 trait TextBox extends HasFontInfo
   {
@@ -38,7 +38,7 @@ trait TextBox extends HasFontInfo
       {
       assert(!isSecretLeaf)
       val leafFonts = allSecretLeaves.filter(_.dominantFont.isDefined).map(leaf => (leaf.dominantFont.get, leaf.text.size))
-      Util.histogramAccumulate(leafFonts).toSeq
+      StatsUtils.histogramAccumulate(leafFonts).toSeq
       }
     }
 
@@ -70,7 +70,7 @@ trait TextBox extends HasFontInfo
       {
       // round up to the nearest 10; this is just a rough estimate of column width
       val lineWidthsWithLength = textLines.map(t => (t.rectangle.map(r => ((r.width / 10.0).ceil * 10.0)).getOrElse(0.0), t.text.length))
-      Util.histogramAccumulate(lineWidthsWithLength).toSeq
+      StatsUtils.histogramAccumulate(lineWidthsWithLength).toSeq
       }
     }
 
@@ -120,7 +120,7 @@ trait TextBox extends HasFontInfo
         (x.dominantFont.get.fontid, x.rectangle.get.left) // ignore the font height
         })
 
-      val runs: List[((String, Double), List[DocNode])] = Util.contiguousRuns(sortedChildren.toList)(fontAndLeftMatch)
+      val runs: List[((String, Double), List[DocNode])] = ListUtils.contiguousRuns(sortedChildren.toList)(fontAndLeftMatch)
       runs.zipWithIndex
       };
 

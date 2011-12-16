@@ -6,8 +6,8 @@ import com.weiglewilczek.slf4s.Logging
 import scala.Function1
 import scala.sys.process.{Process, ProcessIO}
 import java.util.Date
-import edu.umass.cs.iesl.pdf2meta.cli.util.{Util, Workspace}
 import tools.nsc.io.JFile
+import edu.umass.cs.iesl.scalacommons.{Workspace, IOUtils}
 
 object PdfMiner
   {
@@ -17,7 +17,7 @@ object PdfMiner
     val py = getClass.getResourceAsStream("/rexapdfminer.py")
     val tempPythonFile = new JFile(tempPythonLocation)
     tempPythonFile.getParentFile.mkdirs()
-    Util.copy(py, tempPythonFile)
+    IOUtils.copy(py, tempPythonFile)
     tempPythonFile.setExecutable(true)
     tempPythonLocation
     }

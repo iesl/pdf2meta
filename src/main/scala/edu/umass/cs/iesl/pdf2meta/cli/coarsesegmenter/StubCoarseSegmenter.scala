@@ -1,7 +1,7 @@
 package edu.umass.cs.iesl.pdf2meta.cli.coarsesegmenter
 
 import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.DocNode
-import edu.umass.cs.iesl.pdf2meta.cli.util.WeightedSet
+import edu.umass.cs.iesl.scalacommons.collections.WeightedSet
 
 class StubCoarseSegmenter extends CoarseSegmenter
   {

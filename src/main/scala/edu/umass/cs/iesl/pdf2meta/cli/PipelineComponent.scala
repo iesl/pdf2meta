@@ -5,9 +5,9 @@ import extract.XmlExtractor
 import layoutmodel.DocNode
 import metadatamodel.MetadataModel
 import pagetransform.DocTransformer
-import util.Workspace
 import java.util.Date
 import com.weiglewilczek.slf4s.Logging
+import edu.umass.cs.iesl.scalacommons.Workspace
 
 trait PipelineComponent extends ((Workspace) => MetadataModel)
   {

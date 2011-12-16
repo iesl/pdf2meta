@@ -1,9 +1,9 @@
 package edu.umass.cs.iesl.pdf2meta.cli.pagetransform
 
 import collection.Seq
-import edu.umass.cs.iesl.pdf2meta.cli.util.Intervals
 import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel._
 import com.weiglewilczek.slf4s.Logging
+import edu.umass.cs.iesl.scalacommons.Intervals
 
 class SlicingDocPartitioner extends PreOrderDocTransformer with Logging
   {
