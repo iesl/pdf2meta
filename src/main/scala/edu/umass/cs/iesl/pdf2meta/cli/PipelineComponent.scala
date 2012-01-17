@@ -3,13 +3,13 @@ package edu.umass.cs.iesl.pdf2meta.cli
 import coarsesegmenter.{CoarseSegmenter, ClassifiedRectangles}
 import extract.XmlExtractor
 import layoutmodel.DocNode
-import metadatamodel.MetadataModel
 import pagetransform.DocTransformer
 import java.util.Date
 import com.weiglewilczek.slf4s.Logging
 import edu.umass.cs.iesl.scalacommons.Workspace
+import edu.umass.cs.iesl.bibmogrify.model.CitationMention
 
-trait PipelineComponent extends ((Workspace) => MetadataModel)
+trait PipelineComponent extends ((Workspace) => CitationMention)
   {
   // when dependencies have no further dependencies, we can just ask for them directly instead of making an extra "component" layer
   val xmlExtractor: XmlExtractor
@@ -22,9 +22,9 @@ trait PipelineComponent extends ((Workspace) => MetadataModel)
   // one way of satisfying that dependency (in fact, the only way since "Pipeline" is not an independent interface)
   // is to instantiate this inner class in the mixed class
   // the trick is this can refer to members of the other components directly (e.g., docTransformer) because they're in the same namespace after mixing.
-  class Pipeline extends ((Workspace) => MetadataModel)
+  class Pipeline extends ((Workspace) => CitationMention)
     {
-    def apply(w: Workspace): MetadataModel =
+    def apply(w: Workspace): CitationMention =
       {
       val doc = xmlExtractor(w)
       val regrouped = docTransformer(doc)
@@ -33,7 +33,7 @@ trait PipelineComponent extends ((Workspace) => MetadataModel)
       }
     }
 
-  def apply(w: Workspace): MetadataModel = pipeline.apply(w)
+  def apply(w: Workspace): CitationMention  = pipeline.apply(w)
   }
 
 trait ExtractOnlyPipelineComponent extends ((Workspace) => DocNode)

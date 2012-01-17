@@ -1,6 +1,6 @@
 package edu.umass.cs.iesl.pdf2meta
 
-import cli.metadatamodel.{Venue, Author, MetadataModel, SimpleMetadataModel}
+import cli.metadatamodel.{Venue, Author,  SimpleMetadataModel}
 import scala.xml.factory.XMLLoader
 import javax.xml.parsers.SAXParser
 import com.weiglewilczek.slf4s.Logging
@@ -9,7 +9,9 @@ import xml.{Text, NodeSeq, Elem}
 import scala.actors.Actor._
 import actors.{IScheduler, Actor}
 import actors.scheduler.DaemonScheduler
+import edu.umass.cs.iesl.bibmogrify.model.CitationMention
 
+@deprecated
 object XmlAbstracts
   {
 
@@ -24,9 +26,10 @@ object XmlAbstracts
     }
   }
 
+@deprecated
 class XmlAbstractException(s: String) extends Exception(s)
 
-
+@deprecated
 class XmlAbstracts extends Logging
   {
 
@@ -126,7 +129,7 @@ class XmlAbstracts extends Logging
     }
 
 
-  def nxmlToMetadataModel(filename: String): MetadataModel =
+  def nxmlToMetadataModel(filename: String): CitationMention =
     {
     lazy val xml = XMLIgnoreDTD.loadFile(filename)
     val meta = xml \ "front" \ "article-meta"

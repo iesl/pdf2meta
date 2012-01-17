@@ -28,7 +28,7 @@
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/commons-httpclient-3.1.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/io_2.9.1-0.11.1.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/incremental-compiler_2.9.1-0.11.1.jar!/" />
-          <root url="jar://$USER_HOME$/.ivy2/cache/scala_2.9.1/sbt_0.11.1/com.github.retronym/sbt-onejar/jars/sbt-onejar-0.6.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/com.github.siasia/xsbt-web-plugin_2.9.1/jars/xsbt-web-plugin_2.9.1-0.11.1-0.2.10.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/jline-0.9.94.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/scala_2.9.1/sbt_0.11.1/org.scalaxb/sbt-scalaxb/jars/sbt-scalaxb-0.6.6.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/cache_2.9.1-0.11.1.jar!/" />
@@ -45,8 +45,8 @@
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/lib/jansi.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/lib/scala-compiler.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/sbt_2.9.1-0.11.1.jar!/" />
-          <root url="jar://$USER_HOME$/.ivy2/cache/com.github.siasia/xsbt-web-plugin_2.9.1/jars/xsbt-web-plugin_2.9.1-0.11.1-0.2.9.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/jsch-0.1.31.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/scala_2.9.1/sbt_0.11.1/com.eed3si9n/sbt-assembly/jars/sbt-assembly-0.7.2.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/collections_2.9.1-0.11.1.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/run_2.9.1-0.11.1.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/testing_2.9.1-0.11.1.jar!/" />

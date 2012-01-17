@@ -59,6 +59,10 @@ trait TextBox extends HasFontInfo
     }
     }
 
+  lazy val dominantFontHeight = {
+    dominantFont.map(_.height).getOrElse(9.0)
+  }
+
   lazy val allTextLineWidths: Seq[(Double, Int)] =
     {
     if (secretChildren.isEmpty)

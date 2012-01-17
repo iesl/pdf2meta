@@ -1,8 +1,8 @@
 package edu.umass.cs.iesl.pdf2meta.cli.coarsesegmenter
 
-import edu.umass.cs.iesl.pdf2meta.cli.metadatamodel.MetadataModel
 import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.{DelimitingBox, Page, DocNode}
 import edu.umass.cs.iesl.scalacommons.collections.WeightedSet
+import edu.umass.cs.iesl.bibmogrify.model._
 
 
 trait CoarseSegmenter extends Function1[DocNode, ClassifiedRectangles]
@@ -32,7 +32,7 @@ case class ClassifiedRectangle(node: DocNode, featureWeights: WeightedSet[Featur
   def discarded = label.map(_.equalsIgnoreCase("discard")).getOrElse(false)
   }
 
-class ClassifiedRectangles(val raw: Seq[ClassifiedRectangle]) extends MetadataModel
+class ClassifiedRectangles(val raw: Seq[ClassifiedRectangle]) // extends CitationMention
   {
 
   def legit = raw.filter(_.label.map(s => !s.equalsIgnoreCase("discard")).getOrElse(true))
@@ -60,3 +60,16 @@ class ClassifiedRectangles(val raw: Seq[ClassifiedRectangle]) extends MetadataMo
   val authors = Nil //"not implemented" //raw.filter(_._2 != "authors").flatMap(_._2).mkString(" ")
   val year = None
   }
+
+object ClassifiedRectangles
+{
+  implicit def classifiedRectanglesToCitationMention : (ClassifiedRectangles) => CitationMention = cr =>
+  {
+    new CitationMention {
+      override val title = cr.title
+      override val doctype = JournalArticle
+      override val abstractText: Option[String] = Some(cr.paperAbstract)
+      override val bodyText: Option[String] = Some(cr.body)
+    }
+  }
+}

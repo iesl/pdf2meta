@@ -25,10 +25,10 @@ from pdfminer.pdftypes import LITERALS_DCT_DECODE
 from pdfminer.utils import apply_matrix_pt, mult_matrix
 from pdfminer.utils import enc, bbox2str
 #, create_bmp
-# from rexapdfminer import RexaXMLConverter    
+# from rexapdfminer import RexaXMLConverter
 
 # order preserving uniq-ify
-def unique(seq, ident=None): 
+def unique(seq, ident=None):
     if ident is None: ident = lambda x: x
     seen, result = set(), []
     for item in seq:
@@ -76,7 +76,7 @@ class RexaXMLConverter(PDFConverter):
         #   to mimic wide word spacing and newlines at textline endings
         if tagname == 'anon': d = {'tag': 'char', 'bbox': (0,0,0,0), 'fontname': '?'}
         if tagname == 'undefcodepoint': d = {'tag': 'char'}
-        
+
         if orientation:
             d.update(orientation=orientation)
 
@@ -86,28 +86,28 @@ class RexaXMLConverter(PDFConverter):
             pass
 
         d.update([(k,v) for k,v in item.__dict__.items() if k in self.interesting_attributes])
-        
+
         return d
 
     def tagname(self, obj):
-        """ transform class name e.g.,  LTTextLine -> textline """ 
+        """ transform class name e.g.,  LTTextLine -> textline """
         return type(obj).__name__[2:].lower()
 
     def link_to_parent(self, node):
-        """ attach node to tree w/parent at stack.top()""" 
+        """ attach node to tree w/parent at stack.top()"""
         parent = self.top()
         node['parent'] = parent
         parent.setdefault('children', []).append(node)
-        
+
     def link_to_taglist(self, node):
         """ store all nodes of a given tagname into a list """
         self.taglists.setdefault(node['tag'], []).append(node)
-        
+
     def visit(self, item):
         """
         Depth 1st traversal turning pdfminer tree of items into tree of python dicts
         Also appends nodes to lists according to node['tag'] value
-        """ 
+        """
         node = self.ltitem2dict(item)
         self.link_to_parent(node)
         self.link_to_taglist(node)
@@ -131,7 +131,7 @@ class RexaXMLConverter(PDFConverter):
 
     def format_dict_fuller(self, node):
         return node['tag'] +': '+ ' '.join(["%s: %s" % (k,v) for (k,v) in node.items()]), None, None
-    
+
 
     def format_dict_xml(self, node):
         """ return triple of formatted xml sections: begin-tag, text-content, end-tag """
@@ -151,14 +151,14 @@ class RexaXMLConverter(PDFConverter):
             'undefcodepoint'  : (None, None, None),
             }
         preformat, midformat, postformat = tagformats[node['tag']]
-        
+
         pre  = preformat.format(**node) if preformat else None
         mid  = midformat.format(**node) if midformat else None
         post = postformat.format(**node) if postformat else None
         return pre, mid, post
 
     def print_tree(self, node, level=0, formatter=format_dict_abbrev):
-        """ write out tree using provided formatter (xml or dict..)""" 
+        """ write out tree using provided formatter (xml or dict..)"""
         indent = (u'  ' * level)
         pre, mid, post = formatter(node)
         if pre: self.writeln("%s%s" % (indent, pre))
@@ -176,7 +176,7 @@ class RexaXMLConverter(PDFConverter):
         if 'parent' in node:
             return self.ancestor(node['parent'], tagname)
         return None
-        
+
     def bubbleup_chars(self):
         for char in self.taglists['char']:
             # print("char", char)
@@ -200,7 +200,7 @@ class RexaXMLConverter(PDFConverter):
         for tag in "textline textbox page rect polygon line figure curve".split(' '):
             reformat_bbox(tag)
 
-        
+
     def normalize_text_usecharnodes(self):
         """
         Pdfminer inserts extra spaces into textlines to simulate
@@ -209,7 +209,7 @@ class RexaXMLConverter(PDFConverter):
         See normalize_text_usetextline() to format the text with extra spaces.
         """
         for textline in self.taglists['textline']:
-            text = ''.join(textline['chars']) 
+            text = ''.join(textline['chars'])
             bboxes = textline['bboxes']
             fonts = textline['fontnames']
             while text and text[-1] in " ":
@@ -220,7 +220,7 @@ class RexaXMLConverter(PDFConverter):
             textline["text"] = text
             textline['bboxes'] = bboxes
             textline['fontnames'] = fonts
-        
+
     def normalize_text_usetextline(self):
         for textline in self.taglists['textline']:
             text = textline["text"]
@@ -325,23 +325,26 @@ def pdfminer2txt(pdf):
 
 def create_output_path(pdfpath, outdir):
     pdfroot, pdffile = path.split(pdfpath)
-    pdfdir = pdfpath + ".d"
-    pdfminerdir = path.join(pdfdir, "pdfminer")
-    pdfminerdir = path.join(outdir, pdfminerdir)
-    try:
-        os.makedirs(pdfminerdir)
-    except OSError:
-        print "error creating output dirs"
-        exit(1)
-    return path.join(pdfminerdir, pdffile + ".pdfminer.xml")
-    
+    #pdfdir = pdfpath + ".d"
+    #pdfminerdir = path.join(pdfdir, "pdfminer")
+    #pdfminerdir = path.join(outdir, pdfminerdir)
+    #try:
+    #    os.makedirs(pdfminerdir)
+    #except OSError:
+    #    print "error creating output dirs"
+    #    exit(1)
+    pdfminerdir = os.getcwd()
+    result = path.join(pdfminerdir, pdffile + ".pdfminer.xml")
+    print "writing PDFMiner output to ", result
+    return result
+
 def main():
     opts, args = parse_args()
     pdf = opts.filename
     output_path = create_output_path(pdf, opts.outdir)
     print "extracting", pdf, 'to', output_path
     extracttext(pdf, output_path)
-    
+
 def extracttext(pdffile, outfile):
     debug = 0
     password = ''
@@ -353,7 +356,7 @@ def extracttext(pdffile, outfile):
     scale = 1
     showpageno = True
     laparams = LAParams()
-    # 
+    #
     CMapDB.debug = debug
     PDFResourceManager.debug = debug
     PDFDocument.debug = debug
@@ -378,4 +381,4 @@ def extracttext(pdffile, outfile):
 
 if __name__ == '__main__':
     main()
-    
+

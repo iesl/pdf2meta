@@ -1,6 +1,6 @@
 import sbt._
 import Keys._
-import com.github.retronym.SbtOneJar
+//import com.github.retronym.SbtOneJar
 
 //import ScalaxbKeys._
 object BuildSettings {
@@ -181,6 +181,7 @@ object Dependencies {
   // val karafConsole = "org.apache.karaf.shell" % "org.apache.karaf.shell.console" % "2.2.4"
 
   val scalacommons = "edu.umass.cs.iesl" %% "scalacommons" % "0.1-SNAPSHOT" changing()
+  val bibmogrify = "edu.umass.cs.iesl" %% "bibmogrify" % "0.1-SNAPSHOT" changing()
 }
 
 object Pdf2MetaBuild extends Build {
@@ -204,7 +205,7 @@ object Pdf2MetaBuild extends Build {
     antiXML, iocore, iofile,
     //jetty,
     //dsutils,
-    scalacommons, scalaCompiler)
+    scalacommons, bibmogrify, scalaCompiler)
 
   val webDeps = Seq(liftWebkit, liftMapper, liftWizard,
     //liftMongoDB,
@@ -259,9 +260,12 @@ object Pdf2MetaBuild extends Build {
     )
   }
 
+ //++ SbtOneJar.oneJarSettings
+
   lazy val cli: Project = Project(id = "pdf2meta-"
-    + "cli", base = file("cli"), settings = buildSettings ++ Seq(libraryDependencies := commonDeps ++ cliDeps) ++ SbtOneJar.oneJarSettings ++ overrideSettings ++
-    Seq(mainClass in SbtOneJar.oneJar := Some("edu.umass.cs.iesl.pdf2meta.XmlAbstracts")))
+    + "cli", base = file("cli"), settings = buildSettings ++ Seq(libraryDependencies := commonDeps ++ cliDeps) ++ overrideSettings
+	// ++ Seq(mainClass in SbtOneJar.oneJar := Some("edu.umass.cs.iesl.pdf2meta.XmlAbstracts"))
+	)
 }
 
 

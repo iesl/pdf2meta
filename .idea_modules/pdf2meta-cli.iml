@@ -25,7 +25,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="com.weiglewilczek.slf4s_slf4s_2.9.1_1.0.7" level="project" />
     <orderEntry type="library" name="org.scala-lang_scala-library_2.9.1" level="project" />
-    <orderEntry type="library" name="org.slf4j_slf4j-api_1.6.1" level="project" />
     <orderEntry type="library" name="ch.qos.logback_logback-classic_0.9.24" level="project" />
     <orderEntry type="library" name="ch.qos.logback_logback-core_0.9.24" level="project" />
     <orderEntry type="library" name="junit_junit_4.4" level="project" />
@@ -44,6 +43,19 @@
     <orderEntry type="library" name="log4j_log4j_1.2.13" level="project" />
     <orderEntry type="library" name="com.intellij_annotations_7.0.3" level="project" />
     <orderEntry type="library" name="org.scala-lang_scala-compiler_2.9.1" level="project" />
+    <orderEntry type="library" name="edu.umass.cs.iesl_bibmogrify_2.9.1_0.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="net.liftweb_lift-json_2.9.1_2.4-M5" level="project" />
+    <orderEntry type="library" name="com.thoughtworks.paranamer_paranamer_2.3" level="project" />
+    <orderEntry type="library" name="org.scala-lang_scalap_2.9.1" level="project" />
+    <orderEntry type="library" name="org.clapper_classutil_2.9.1_0.4.3" level="project" />
+    <orderEntry type="library" name="asm_asm_3.3" level="project" />
+    <orderEntry type="library" name="asm_asm-commons_3.3" level="project" />
+    <orderEntry type="library" name="asm_asm-tree_3.3" level="project" />
+    <orderEntry type="library" name="asm_asm-util_3.3" level="project" />
+    <orderEntry type="library" name="org.clapper_grizzled-scala_2.9.1_1.0.8" level="project" />
+    <orderEntry type="library" name="jline_jline_0.9.94" level="project" />
+    <orderEntry type="library" name="org.clapper_grizzled-slf4j_2.9.1_0.6.5" level="project" />
+    <orderEntry type="library" name="org.slf4j_slf4j-api_1.6.2" level="project" />
     <orderEntry type="library" scope="TEST" name="org.scalatest_scalatest_2.9.0_1.6.1" level="project" />
   </component>
 </module>

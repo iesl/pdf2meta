@@ -1,6 +1,10 @@
 package edu.umass.cs.iesl.pdf2meta.cli.metadatamodel
 
+import edu.umass.cs.iesl.bibmogrify.model._
+import java.net.URL
 
+/*
+@deprecated
 trait MetadataModel
   {
   val sourcefile: String
@@ -33,21 +37,61 @@ object SimpleMetadataModel
   {
   val oneLineHeaders = "sourcefile\tdocid\tyear\tauthors\ttitle\tabstract\treferenceids"
   }
-
+*/
 // case classes?
-case class SimpleMetadataModel(sourcefile: String, docid: String, //pubmedid?
-                               year: Option[Int], title: String, authors: Seq[Author], paperAbstract: String, body: String, referenceStrings: List[String], referenceIds: List[String],
-                               venue: Option[Venue]) extends MetadataModel
+class SimpleMetadataModel(sourcefile: URL, idauth: IdentifierAuthority, docid: String, //pubmedid?
+                          pubyear: Option[Int], override val title: String, override val authors: Seq[AuthorInRole], paperAbstract: String, body: String, referenceStrings: List[String], referenceIds: List[String],
+                          override val containedIn: Option[ContainmentInfo]) extends CitationMention {
+  override val doctype: DocType = JournalArticle
+  // val docSubtype: Option[String] = None // for journal articles: Letter; Application Note; Research Article, etc.  For grants: R01, K99, etc.
+  //val title: String = title
+  //val authors: Seq[AuthorInRole] = Nil
+  // val otherContributors: Seq[OtherContributorInRole] = Nil
+  //  val language: Option[Language] = None
+  override val identifiers: Seq[Identifier] = Seq(new Identifier {
+    val authority = idauth
+    val value = docid
+  })
+  override val locations: Seq[Location] = Seq(new Location() {
+    val url = sourcefile;
+    val hashes = Nil
+  })
+  // val supplementaryLocations: Seq[Location] = Nil // where to find supplementary material, databases, etc.
+  //val containedIn: Option[ContainmentInfo] = None // journal, book, proceedings, etc.
+  // val publisher: Option[Institution] = None // likely blank when there is containedIn, i.e. paper -> journal -> publisher
+  override val dates: Seq[CitationEvent] = Seq(new CitationEvent {
+    val date = Some(new PartialDate {
+      val month = None
+      val year = pubyear
+      val day = None
+    })
+    val eventType = Published
+  })
+  // val grants: Seq[GrantInfo] = Nil
 
+  // val references: Seq[CitationMention] = Nil // could include context here
+  // val keywords: Seq[Keyword] = Nil
 
+  override val abstractText: Option[String] = Some(paperAbstract)
+  // val introText: Option[String] = None
+  // val bodyText: Option[String] = None
+
+  // val notes: Seq[String] = Nil
+
+  //  val refMarker: Option[String] = None // within-document ID
+}
+
+/*
 case class Venue(journalTitle: String, journalNlmTaID: String, journalPPubISSN: String, journalEPubISSN: String, publisher: Publisher)
 
 case class Publisher(name: String, location: String)
 
+@deprecated
 case class Author(firstName: Option[String], initials: Option[String], lastName: String, affiliation: Option[String], email: Option[String])
   {
   override def toString = firstName.map(_ + " ").getOrElse("") + lastName
   }
+*/
 
 /*
  docid (sufficient to find the original source)

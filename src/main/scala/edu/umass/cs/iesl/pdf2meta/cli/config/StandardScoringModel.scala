@@ -202,7 +202,7 @@ object StandardScoringModel extends ScoringModel with Logging
     {
       case None => 0
       case Some(x) =>
-        if (x.height > doc.dominantFont.get.height) 1
+        if (x.height > doc.dominantFontHeight) 1
         else 0
     }
     })
@@ -212,7 +212,7 @@ object StandardScoringModel extends ScoringModel with Logging
     box.dominantFont match
     {
       case None => 0
-      case Some(x) => linearBetween(doc.dominantFont.get.height * 1.2, doc.dominantFont.get.height * 1.8)(x.height)
+      case Some(x) => linearBetween(doc.dominantFontHeight * 1.2, doc.dominantFontHeight * 1.8)(x.height)
     }
     })
 
@@ -222,20 +222,24 @@ object StandardScoringModel extends ScoringModel with Logging
     {
       case None => 0
       case Some(x) =>
-        if (x.height < doc.dominantFont.get.height) 1
+        if (x.height < doc.dominantFontHeight) 1
         else 0
     }
     })
 
   val dominantFont = ContextFeature("dominantFont", (doc: DocNode, box: DocNode) =>
     {
+    doc.dominantFont.map(dominant =>
+        box.dominantFont.map(local => if (local == dominant) 1.0 else 0.0).getOrElse(0.0)).getOrElse(0.0)
+  /*
     box.dominantFont match
     {
       case None => 0
       case Some(x) =>
         if (x == doc.dominantFont.get) 1
         else 0
-    }
+    }*/
+
     })
 
 
