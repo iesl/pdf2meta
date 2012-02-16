@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="commons-lang_commons-lang_2.5">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lib_managed/jars/commons-lang/commons-lang/commons-lang-2.5.jar!/" />
+      <root url="jar://$USER_HOME$/.ivy2/cache/commons-lang/commons-lang/jars/commons-lang-2.5.jar!/"></root>
     </CLASSES>
     <JAVADOC>
-      <root url="jar://$PROJECT_DIR$/lib_managed/docs/commons-lang/commons-lang/commons-lang-2.5-javadoc.jar!/" />
+      <root url="jar://$USER_HOME$/.ivy2/cache/commons-lang/commons-lang/docs/commons-lang-2.5-javadoc.jar!/"></root>
     </JAVADOC>
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/lib_managed/srcs/commons-lang/commons-lang/commons-lang-2.5-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.ivy2/cache/commons-lang/commons-lang/srcs/commons-lang-2.5-sources.jar!/"></root>
     </SOURCES>
   </library>
 </component>

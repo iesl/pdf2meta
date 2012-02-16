@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="com.thoughtworks.paranamer_paranamer_2.3">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lib_managed/jars/com.thoughtworks.paranamer/paranamer/paranamer-2.3.jar!/" />
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.thoughtworks.paranamer/paranamer/jars/paranamer-2.3.jar!/"></root>
     </CLASSES>
     <JAVADOC>
-      <root url="jar://$PROJECT_DIR$/lib_managed/docs/com.thoughtworks.paranamer/paranamer/paranamer-2.3-javadoc.jar!/" />
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.thoughtworks.paranamer/paranamer/docs/paranamer-2.3-javadoc.jar!/"></root>
     </JAVADOC>
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/lib_managed/srcs/com.thoughtworks.paranamer/paranamer/paranamer-2.3-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.thoughtworks.paranamer/paranamer/srcs/paranamer-2.3-sources.jar!/"></root>
     </SOURCES>
   </library>
 </component>

@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="com.github.scala-incubator.io_scala-io-file_2.9.1_0.2.0">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lib_managed/jars/com.github.scala-incubator.io/scala-io-file_2.9.1/scala-io-file_2.9.1-0.2.0.jar!/" />
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.github.scala-incubator.io/scala-io-file_2.9.1/jars/scala-io-file_2.9.1-0.2.0.jar!/"></root>
     </CLASSES>
     <JAVADOC>
-      <root url="jar://$PROJECT_DIR$/lib_managed/docs/com.github.scala-incubator.io/scala-io-file_2.9.1/scala-io-file_2.9.1-0.2.0-javadoc.jar!/" />
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.github.scala-incubator.io/scala-io-file_2.9.1/docs/scala-io-file_2.9.1-0.2.0-javadoc.jar!/"></root>
     </JAVADOC>
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/lib_managed/srcs/com.github.scala-incubator.io/scala-io-file_2.9.1/scala-io-file_2.9.1-0.2.0-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.github.scala-incubator.io/scala-io-file_2.9.1/srcs/scala-io-file_2.9.1-0.2.0-sources.jar!/"></root>
     </SOURCES>
   </library>
 </component>

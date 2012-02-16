@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="net.sourceforge.collections_collections-generic_4.01">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lib_managed/jars/net.sourceforge.collections/collections-generic/collections-generic-4.01.jar!/" />
+      <root url="jar://$USER_HOME$/.ivy2/cache/net.sourceforge.collections/collections-generic/jars/collections-generic-4.01.jar!/"></root>
     </CLASSES>
     <JAVADOC>
-      <root url="jar://$PROJECT_DIR$/lib_managed/docs/net.sourceforge.collections/collections-generic/collections-generic-4.01-javadoc.jar!/" />
+      <root url="jar://$USER_HOME$/.ivy2/cache/net.sourceforge.collections/collections-generic/docs/collections-generic-4.01-javadoc.jar!/"></root>
     </JAVADOC>
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/lib_managed/srcs/net.sourceforge.collections/collections-generic/collections-generic-4.01-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.ivy2/cache/net.sourceforge.collections/collections-generic/srcs/collections-generic-4.01-sources.jar!/"></root>
     </SOURCES>
   </library>
 </component>

@@ -7,9 +7,9 @@ import pagetransform.DocTransformer
 import java.util.Date
 import com.weiglewilczek.slf4s.Logging
 import edu.umass.cs.iesl.scalacommons.Workspace
-import edu.umass.cs.iesl.bibmogrify.model.CitationMention
+import edu.umass.cs.iesl.bibmogrify.model.StructuredCitation
 
-trait PipelineComponent extends ((Workspace) => CitationMention)
+trait PipelineComponent extends ((Workspace) => StructuredCitation)
   {
   // when dependencies have no further dependencies, we can just ask for them directly instead of making an extra "component" layer
   val xmlExtractor: XmlExtractor
@@ -22,9 +22,9 @@ trait PipelineComponent extends ((Workspace) => CitationMention)
   // one way of satisfying that dependency (in fact, the only way since "Pipeline" is not an independent interface)
   // is to instantiate this inner class in the mixed class
   // the trick is this can refer to members of the other components directly (e.g., docTransformer) because they're in the same namespace after mixing.
-  class Pipeline extends ((Workspace) => CitationMention)
+  class Pipeline extends ((Workspace) => StructuredCitation)
     {
-    def apply(w: Workspace): CitationMention =
+    def apply(w: Workspace): StructuredCitation =
       {
       val doc = xmlExtractor(w)
       val regrouped = docTransformer(doc)
@@ -33,7 +33,7 @@ trait PipelineComponent extends ((Workspace) => CitationMention)
       }
     }
 
-  def apply(w: Workspace): CitationMention  = pipeline.apply(w)
+  def apply(w: Workspace): StructuredCitation  = pipeline.apply(w)
   }
 
 trait ExtractOnlyPipelineComponent extends ((Workspace) => DocNode)

@@ -3,10 +3,12 @@ package edu.umass.cs.iesl.pdf2meta.cli
 import config.{WiredExtractOnlyPipeline, WiredPipeline}
 import layoutmodel.DocNode
 import tools.nsc.io.JFile
-import edu.umass.cs.iesl.bibmogrify.CitationStreamReader
 import com.weiglewilczek.slf4s.Logging
 import java.net.URL
 import edu.umass.cs.iesl.scalacommons.{StreamWorkspace, FileWorkspace}
+import edu.umass.cs.iesl.bibmogrify.model.StructuredCitation
+import edu.umass.cs.iesl.bibmogrify.pipeline.Transformer
+import edu.umass.cs.iesl.bibmogrify.NamedPlugin
 
 object Pdf2Meta {
 
@@ -41,7 +43,7 @@ class Pdf2Meta {
   }
 }
 
-object PdfReader extends CitationStreamReader with Logging {
+object PdfReader extends Transformer[URL, StructuredCitation] with NamedPlugin with Logging {
 
   val name = "pdf"
 

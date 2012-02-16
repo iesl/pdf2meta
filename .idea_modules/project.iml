@@ -1,79 +1,77 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<module type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager" inherit-compiler-output="false">
-    <output url="file://$MODULE_DIR$/../project/target/scala_2.9.1" />
-    <output-test url="file://$MODULE_DIR$/../project/target/scala_2.9.1" />
-    <exclude-output />
-    <content url="file://$MODULE_DIR$/../project">
-      <sourceFolder url="file://$MODULE_DIR$/../project" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../project/plugins" isTestSource="false" />
-      <excludeFolder url="file://$MODULE_DIR$/../project/boot" />
-      <excludeFolder url="file://$MODULE_DIR$/../project/plugins/project/target" />
-      <excludeFolder url="file://$MODULE_DIR$/../project/plugins/target" />
-      <excludeFolder url="file://$MODULE_DIR$/../project/target" />
+<module version="4" type="JAVA_MODULE">
+  <component name="NewModuleRootManager">
+    <output url="file:///Users/lorax/iesl/pdf2meta/project/target/scala_2.9.1"></output>
+    <output-test url="file:///Users/lorax/iesl/pdf2meta/project/target/scala_2.9.1"></output-test>
+    <exclude-output></exclude-output>
+    <content url="file:///Users/lorax/iesl/pdf2meta/project">
+      <sourceFolder url="file:///Users/lorax/iesl/pdf2meta/project" isTestSource="false"></sourceFolder>
+      <sourceFolder url="file:///Users/lorax/iesl/pdf2meta/project/plugins" isTestSource="false"></sourceFolder>
+      <excludeFolder url="file:///Users/lorax/iesl/pdf2meta/project/boot"></excludeFolder>
+      <excludeFolder url="file:///Users/lorax/iesl/pdf2meta/project/target"></excludeFolder>
+      <excludeFolder url="file:///Users/lorax/iesl/pdf2meta/project/plugins/target"></excludeFolder>
+      <excludeFolder url="file:///Users/lorax/iesl/pdf2meta/project/plugins/project/target"></excludeFolder>
     </content>
-    <orderEntry type="inheritedJdk" />
-    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="inheritedJdk"></orderEntry>
+    <orderEntry type="sourceFolder" forTests="false"></orderEntry>
     <orderEntry type="module-library">
       <library name="sbt-and-plugins">
         <CLASSES>
-          <root url="file://$MODULE_DIR$/../project/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1" />
-          <root url="jar://$MODULE_DIR$/../project/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/xsbti/interface-0.11.1.jar!/" />
-          <root url="file://$USER_HOME$/.sbt/plugins/target/scala-2.9.1/sbt-0.11.1/classes" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/logging_2.9.1-0.11.1.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/actions_2.9.1-0.11.1.jar!/" />
-          <root url="jar://$USER_HOME$/.ivy2/cache/org.slf4j/slf4j-api/jars/slf4j-api-1.6.1.jar!/" />
-          <root url="jar://$USER_HOME$/.ivy2/cache/commons-io/commons-io/jars/commons-io-2.0.1.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/task-system_2.9.1-0.11.1.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/commons-httpclient-3.1.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/io_2.9.1-0.11.1.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/incremental-compiler_2.9.1-0.11.1.jar!/" />
-          <root url="jar://$USER_HOME$/.ivy2/cache/com.github.siasia/xsbt-web-plugin_2.9.1/jars/xsbt-web-plugin_2.9.1-0.11.1-0.2.10.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/jline-0.9.94.jar!/" />
-          <root url="jar://$USER_HOME$/.ivy2/cache/scala_2.9.1/sbt_0.11.1/org.scalaxb/sbt-scalaxb/jars/sbt-scalaxb-0.6.6.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/cache_2.9.1-0.11.1.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/tracking_2.9.1-0.11.1.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/commons-logging-1.0.4.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/commons-codec-1.2.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/ivy_2.9.1-0.11.1.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/xsbti/interface-0.11.1.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/main_2.9.1-0.11.1.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/completion_2.9.1-0.11.1.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/control_2.9.1-0.11.1.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/process_2.9.1-0.11.1.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/launcher-interface_2.9.1-0.11.1.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/lib/jansi.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/lib/scala-compiler.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/sbt_2.9.1-0.11.1.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/jsch-0.1.31.jar!/" />
-          <root url="jar://$USER_HOME$/.ivy2/cache/scala_2.9.1/sbt_0.11.1/com.eed3si9n/sbt-assembly/jars/sbt-assembly-0.7.2.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/collections_2.9.1-0.11.1.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/run_2.9.1-0.11.1.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/testing_2.9.1-0.11.1.jar!/" />
-          <root url="jar://$USER_HOME$/.ivy2/cache/scala_2.9.1/sbt_0.11.1/com.github.mpeltonen/sbt-idea/jars/sbt-idea-0.11.0.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/persist_2.9.1-0.11.1.jar!/" />
-          <root url="jar://$USER_HOME$/.ivy2/cache/com.weiglewilczek.slf4s/slf4s_2.9.1/jars/slf4s_2.9.1-1.0.7.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/tasks_2.9.1-0.11.1.jar!/" />
-          <root url="jar://$USER_HOME$/.ivy2/cache/ch.qos.logback/logback-classic/jars/logback-classic-0.9.29.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/test-interface-0.5.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/lib/scala-library.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/ivy-2.2.0.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/compile_2.9.1-0.11.1.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/classpath_2.9.1-0.11.1.jar!/" />
-          <root url="jar://$USER_HOME$/.ivy2/cache/ch.qos.logback/logback-core/jars/logback-core-0.9.29.jar!/" />
-          <root url="jar://$USER_HOME$/.ivy2/cache/com.github.scopt/scopt_2.9.1/jars/scopt_2.9.1-1.1.2.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/lib/jline.jar!/" />
-          <root url="jar://$USER_HOME$/.ivy2/cache/org.scalaxb/scalaxb_2.9.1/jars/scalaxb_2.9.1-0.6.6.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/sbinary_2.9.0-0.4.0.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/api_2.9.1-0.11.1.jar!/" />
-          <root url="jar://$USER_HOME$/.ivy2/cache/com.github.siasia/plugin-commons_2.9.1/jars/plugin-commons_2.9.1-0.11.1-0.1.jar!/" />
-          <root url="jar://$USER_HOME$/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.1/classfile_2.9.1-0.11.1.jar!/" />
+          <root url="file:///Users/lorax/iesl/pdf2meta/project/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2"></root>
+          <root url="jar:///Users/lorax/iesl/pdf2meta/project/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/xsbti/interface-0.11.2.jar!/"></root>
+          <root url="file:///Users/lorax/.sbt/plugins/target/scala-2.9.1/sbt-0.11.2/classes"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/collections_2.9.1-0.11.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.ivy2/cache/org.slf4j/slf4j-api/jars/slf4j-api-1.6.1.jar!/"></root>
+          <root url="jar:///Users/lorax/.ivy2/cache/commons-io/commons-io/jars/commons-io-2.0.1.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/main_2.9.1-0.11.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/api_2.9.1-0.11.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.ivy2/cache/com.github.siasia/xsbt-web-plugin_2.9.1/jars/xsbt-web-plugin_2.9.1-0.11.2-0.2.10.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/commons-httpclient-3.1.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/classfile_2.9.1-0.11.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/compile_2.9.1-0.11.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/jline-0.9.94.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/persist_2.9.1-0.11.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.ivy2/cache/scala_2.9.1/sbt_0.11.2/org.scalaxb/sbt-scalaxb/jars/sbt-scalaxb-0.6.6.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/logging_2.9.1-0.11.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/commons-logging-1.0.4.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/incremental-compiler_2.9.1-0.11.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/commons-codec-1.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/io_2.9.1-0.11.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/completion_2.9.1-0.11.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/run_2.9.1-0.11.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/lib/jansi.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/lib/scala-compiler.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/testing_2.9.1-0.11.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/actions_2.9.1-0.11.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/jsch-0.1.31.jar!/"></root>
+          <root url="jar:///Users/lorax/.ivy2/cache/scala_2.9.1/sbt_0.11.2/com.eed3si9n/sbt-assembly/jars/sbt-assembly-0.7.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/tracking_2.9.1-0.11.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/process_2.9.1-0.11.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.ivy2/cache/scala_2.9.1/sbt_0.11.2/com.github.mpeltonen/sbt-idea/jars/sbt-idea-0.11.0.jar!/"></root>
+          <root url="jar:///Users/lorax/.ivy2/cache/com.weiglewilczek.slf4s/slf4s_2.9.1/jars/slf4s_2.9.1-1.0.7.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/cache_2.9.1-0.11.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.ivy2/cache/ch.qos.logback/logback-classic/jars/logback-classic-0.9.29.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/test-interface-0.5.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/lib/scala-library.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/ivy-2.2.0.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/task-system_2.9.1-0.11.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.ivy2/cache/ch.qos.logback/logback-core/jars/logback-core-0.9.29.jar!/"></root>
+          <root url="jar:///Users/lorax/.ivy2/cache/com.github.siasia/plugin-commons_2.9.1/jars/plugin-commons_2.9.1-0.11.2-0.1.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/sbt_2.9.1-0.11.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.ivy2/cache/com.github.scopt/scopt_2.9.1/jars/scopt_2.9.1-1.1.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/control_2.9.1-0.11.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/launcher-interface_2.9.1-0.11.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/lib/jline.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/ivy_2.9.1-0.11.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.ivy2/cache/org.scalaxb/scalaxb_2.9.1/jars/scalaxb_2.9.1-0.6.6.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/sbinary_2.9.0-0.4.0.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/tasks_2.9.1-0.11.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/xsbti/interface-0.11.2.jar!/"></root>
+          <root url="jar:///Users/lorax/.sbt/boot/scala-2.9.1/org.scala-tools.sbt/sbt/0.11.2/classpath_2.9.1-0.11.2.jar!/"></root>
         </CLASSES>
-        <JAVADOC />
-        <SOURCES />
+        <JAVADOC> </JAVADOC>
+        <SOURCES> </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="library" name="scala-2.9.1" level="project" />
+    <orderEntry level="project" name="scala-2.9.1" type="library"></orderEntry>
   </component>
 </module>
-

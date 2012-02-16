@@ -45,7 +45,9 @@ class PdfMiner extends XmlExtractor with Logging with Function1[Workspace, DocNo
       logger.debug("PdfMiner took " + ((endTime.getTime - startTime.getTime)) + " milliseconds")
       val out = outSB toString()
       val err = errSB toString()
-      logger.warn(err)
+      if (!err.isEmpty) {
+        logger.warn(err)
+      }
       logger.debug(out)
       out
     }

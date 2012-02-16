@@ -1,10 +1,10 @@
 <component name="libraryTable">
   <library name="com.intellij_annotations_7.0.3">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lib_managed/jars/com.intellij/annotations/annotations-7.0.3.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib_managed/jars/com.intellij/annotations/annotations-7.0.3.jar!/" />
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.intellij/annotations/jars/annotations-7.0.3.jar!/"></root>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.intellij/annotations/jars/annotations-7.0.3.jar!/"></root>
     </CLASSES>
-    <JAVADOC />
-    <SOURCES />
+    <JAVADOC> </JAVADOC>
+    <SOURCES> </SOURCES>
   </library>
 </component>

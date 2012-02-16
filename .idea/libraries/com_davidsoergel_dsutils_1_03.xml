@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="com.davidsoergel_dsutils_1.03">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lib_managed/jars/com.davidsoergel/dsutils/dsutils-1.03.jar!/" />
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.davidsoergel/dsutils/jars/dsutils-1.03.jar!/"></root>
     </CLASSES>
     <JAVADOC>
-      <root url="jar://$PROJECT_DIR$/lib_managed/docs/com.davidsoergel/dsutils/dsutils-1.03-javadoc.jar!/" />
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.davidsoergel/dsutils/docs/dsutils-1.03-javadoc.jar!/"></root>
     </JAVADOC>
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/lib_managed/srcs/com.davidsoergel/dsutils/dsutils-1.03-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.davidsoergel/dsutils/srcs/dsutils-1.03-sources.jar!/"></root>
     </SOURCES>
   </library>
 </component>

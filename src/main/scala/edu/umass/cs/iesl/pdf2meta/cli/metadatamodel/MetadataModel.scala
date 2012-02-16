@@ -40,17 +40,17 @@ object SimpleMetadataModel
 */
 // case classes?
 class SimpleMetadataModel(sourcefile: URL, idauth: IdentifierAuthority, docid: String, //pubmedid?
-                          pubyear: Option[Int], override val title: String, override val authors: Seq[AuthorInRole], paperAbstract: String, body: String, referenceStrings: List[String], referenceIds: List[String],
-                          override val containedIn: Option[ContainmentInfo]) extends CitationMention {
-  override val doctype: DocType = JournalArticle
+                          pubyear: Option[Int], override val title: Option[String], override val authors: Seq[AuthorInRole], paperAbstract: String, body: String, referenceStrings: List[String], referenceIds: List[String],
+                          override val containedIn: Option[ContainmentInfo]) extends StructuredCitation {
+  override val doctype: Option[DocType] = None //JournalArticle
   // val docSubtype: Option[String] = None // for journal articles: Letter; Application Note; Research Article, etc.  For grants: R01, K99, etc.
   //val title: String = title
   //val authors: Seq[AuthorInRole] = Nil
   // val otherContributors: Seq[OtherContributorInRole] = Nil
   //  val language: Option[Language] = None
   override val identifiers: Seq[Identifier] = Seq(new Identifier {
-    val authority = idauth
-    val value = docid
+    override val authority = Some(idauth)
+    override val value = docid
   })
   override val locations: Seq[Location] = Seq(new Location() {
     val url = sourcefile;
