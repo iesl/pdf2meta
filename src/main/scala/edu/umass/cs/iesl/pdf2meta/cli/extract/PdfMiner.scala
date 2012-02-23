@@ -24,7 +24,7 @@ object PdfMiner {
 class PdfMiner extends XmlExtractor with Logging with Function1[Workspace, DocNode] {
 
   def apply(w: Workspace): DocNode = {
-    lazy val command = PdfMiner.executable + " --file " + w.file
+    lazy val command = PdfMiner.executable + " --file " + w.file  // python + " " +
     lazy val output = {
       logger.debug("Starting PdfMiner...")
       val startTime = new Date
