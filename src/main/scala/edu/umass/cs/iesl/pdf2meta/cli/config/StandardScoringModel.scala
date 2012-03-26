@@ -461,7 +461,7 @@ object StandardScoringModel extends ScoringModel with Logging
   val correspondence = contains("CorrespondenceTerms", "whom correspondence")
   val metadataText = contains("MetadataTerms", "ISSN|issn|\bDOI\b|\bdoi\b|[Cc]opyright")
   val abstractText = startsWith("AbstractTerms", "Abstract")
-  val referencesText = startsWith("ReferencesTerms", "References")
+  val referencesText = contains("ReferencesTerms", "References|Literature|Cited")
   val http = contains("http", "http://")
   val figureText = startsWith("FigureTerms", "(Figure|Fig\\.|Table)")
   val headingText = startsWith("HeadingTerms", "Introduction|Background|Results|Materials|Methods|Discussion|Conclusion")

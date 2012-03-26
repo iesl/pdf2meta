@@ -4,6 +4,11 @@ import collection.Seq
 import com.weiglewilczek.slf4s.Logging
 import edu.umass.cs.iesl.scalacommons.OrderedTreeNode
 
+trait RectangularOnPage
+{
+  def rectangle: Option[RectangleOnPage]
+}
+
 object DocNode
   {
   def apply(id: String, children: Seq[DocNode], localInfo: Option[Iterator[String]], localErrors: Option[Iterator[String]]): DocNode = //, isMergeable: Boolean
@@ -14,79 +19,6 @@ object DocNode
   val begin = new DocNode("begin", Nil, None, None)
   }
 
-object PartitionedDocNode
-  {
-  // "strength" is how certain we are of this partition.  We just use it for the width of the whitespace (and/or a bonus for containing a line, etc)
-  def apply(id: String, children: Seq[DocNode], localInfo: Option[Iterator[String]], localErrors: Option[Iterator[String]], strength: Double): DocNode =
-    {
-    new PartitionedDocNode(id, children, localInfo, localErrors, strength)
-    }
-  }
-
-object AnnotatedDocNode
-  {
-  def apply(id: String, children: Seq[DocNode], localInfo: Option[Iterator[String]], localErrors: Option[Iterator[String]], annotations: Seq[String]): DocNode =
-    {
-    new AnnotatedDocNode(id, children, localInfo, localErrors, annotations)
-    }
-  }
-
-class AnnotatedDocNode(override val id: String, override val secretChildren: Seq[DocNode], override val localInfo: Option[Iterator[String]], override val localErrors: Option[Iterator[String]],
-                       val annotations: Seq[String])
-        extends LeafDocNode(id, secretChildren, localInfo, localErrors)
-  {
-
-  override def create(childrenA: Seq[DocNode]) =
-    {
-    if (childrenA.length == 1) childrenA(0)
-    else if (childrenA == children) this
-    else
-      AnnotatedDocNode(id, childrenA, localInfo, localErrors, annotations)
-    }
-  }
-
-trait RectangularOnPage
-  {
-  def rectangle: Option[RectangleOnPage]
-  }
-
-/**
- * A node representing an established partitions
- */
-class PartitionedDocNode(override val id: String, override val children: Seq[DocNode], override val localInfo: Option[Iterator[String]], override val localErrors: Option[Iterator[String]],
-                         val strength: Double)
-        extends DocNode(id, children, localInfo, localErrors)
-  {
-  // even if this node is not a partition, it may contain nested partitions due to horizontal/vertical alternation
-  // so do no flattening at all; just remove the "partition" designation.
-  //we can always flatten as a separate step if desired.
-  def makeNonPartition: DocNode = new DocNode(id, children, localInfo, localErrors) { override val secretChildren =  PartitionedDocNode.this.secretChildren }
-
-  // if a weak partition contains a strong partition, then the weak one must be legitimate; so just give it the higher strength value
-  // this is done the brute-force way because the contained partitions are not necessarily immediate children
-  lazy val maxContainedStrength = strength.max(allPartitions.map(_.strength).max)
-
-  override def create(childrenA: Seq[DocNode]) =
-    {
-    if (childrenA.length == 1) childrenA(0)
-    else if (childrenA == children) this
-    else
-      PartitionedDocNode(id, childrenA, localInfo, localErrors, strength)
-    }
-
-  def applyThreshold(threshold: Double): DocNode =
-    {
-    if (strength > threshold)
-      {
-      this
-      }
-    else
-      {
-      // if this partition doesn't pass the threshold, then none of the children do either
-      DocNode(id, allLeaves, localInfo, localErrors)
-      }
-    }
-  }
 
 class DocNode(val id: String, val children: Seq[DocNode], val localInfo: Option[Iterator[String]], val localErrors: Option[Iterator[String]]) //, val isMergeable: Boolean)
         extends OrderedTreeNode[DocNode] with RectangularOnPage with TextBox with Logging
@@ -183,7 +115,7 @@ class DocNode(val id: String, val children: Seq[DocNode], val localInfo: Option[
     this :: f
     }
 
-
+// { if(this.isInstanceOf[WhitespaceBox]) Nil else List(this) }
   def allLeaves: Seq[DocNode] = if (isLeaf) List(this) else children.flatMap(_.allLeaves)
 
   def allSecretLeaves: Seq[DocNode] = if (isSecretLeaf) List(this) else secretChildren.flatMap(_.allSecretLeaves)
@@ -198,6 +130,18 @@ class DocNode(val id: String, val children: Seq[DocNode], val localInfo: Option[
                              })
     result
     }
+
+
+
+  def whitespaceBoxes: scala.Seq[WhitespaceBox] =
+  {
+    val all = allNodesDepthFirst
+    val result = all.collect({
+      case x: WhitespaceBox => x
+      //                     case x: RectBox => throw new Error("RectBox is a DelimitingBox")
+    })
+    result
+  }
 
 
   def allPartitions: scala.Seq[PartitionedDocNode] =
@@ -268,12 +212,14 @@ class DocNode(val id: String, val children: Seq[DocNode], val localInfo: Option[
     this match
     {
       case x: DelimitingBox => buf.append("DELIMITER\n")
+      case x: WhitespaceBox => buf.append("WHITESPACE: " + this.rectangle.get.width + " x " + this.rectangle.get.height + "\n")
       case x if x.isLeaf => buf.append("LEAF: " + this.spanText + "\n")
       case x =>
         {
         this match
         {
-          case y: PartitionedDocNode => buf.append("PARTITION (" + y.strength + ") ")
+          case y: WhitespacePartitionedDocNode => buf.append("WHITESPACE PARTITION (" + y.strength + ") ")
+          case y: LinePartitionedDocNode => buf.append("LINE PARTITION (" + y.strength + ") ")
           case y => buf.append("GROUP ")
         }
         buf.append(id + " : " + children.length + " children, " + allNodesDepthFirst.length + " nodes, " + allLeaves.length + " leaves, " + delimiters +
@@ -293,22 +239,6 @@ class DocNode(val id: String, val children: Seq[DocNode], val localInfo: Option[
    */
   def filterDeep(filt: (DocNode) => Boolean): DocNode = preOrderApply(n => Some(create(children.filter(filt)))).get
   }
-
-/**
- * store the underlying children, but be a leaf on the main tree by reporting Nil children
- */
-class LeafDocNode(override val id: String, override val secretChildren: Seq[DocNode], override val localInfo: Option[Iterator[String]], override val localErrors: Option[Iterator[String]])
-        extends DocNode(id, Seq.empty, localInfo, localErrors)
-
-object LeafDocNode
-  {
-  def apply(id: String, children: Seq[DocNode], localInfo: Option[Iterator[String]], localErrors: Option[Iterator[String]]): DocNode = //, isMergeable: Boolean
-    {
-    new LeafDocNode(id, children, localInfo, localErrors)
-    }
-  }
-
-
 
 
 

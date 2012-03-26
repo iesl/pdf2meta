@@ -134,7 +134,7 @@ trait Rectangle
   }
 
 
-private class RealRectangle(val left: Double, val bottom: Double, val right: Double, val top: Double) extends Rectangle
+case class RealRectangle(override val left: Double, override val bottom: Double, override val right: Double, override val top: Double) extends Rectangle
   {
   require(top >= bottom)
   require(right >= left)

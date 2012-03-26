@@ -23,8 +23,8 @@ object IndentedParagraphsMerger
 
 /**
  * Find a hanging-indent situation.
- * The strategy is to make a list of nodes that could possibly be the start of a references section, because the node the following node starts either at the same X coordinate or indented from there.
- * Each such node get stored with the indentation level.
+ * The strategy is to make a list of nodes that could possibly be the start of a references section, because the following node starts either at the same X coordinate or indented from there.
+ * Each such node gets stored with the indentation level.
  * Then we find strings of consecutive nodes with the same indent distance (to cover the case that references continue in the next column or on the next page).
  */
 class IndentedParagraphsMerger extends PostOrderDocTransformer
