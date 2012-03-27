@@ -72,14 +72,16 @@ class SimpleMetadataModel(sourcefile: URL, idauth: IdentifierAuthority, docid: S
   // val references: Seq[CitationMention] = Nil // could include context here
   // val keywords: Seq[Keyword] = Nil
 
-  override val abstractText: Option[String] = Some(paperAbstract)
-  // val introText: Option[String] = None
-  // val bodyText: Option[String] = None
+  override val abstractText: Iterable[TextWithLanguage] = paperAbstract match {
+    case "" => None
+    case a => Some(new TextWithLanguage(None, a)) }
+    // val introText: Option[String] = None
+    // val bodyText: Option[String] = None
 
-  // val notes: Seq[String] = Nil
+    // val notes: Seq[String] = Nil
 
-  //  val refMarker: Option[String] = None // within-document ID
-}
+    //  val refMarker: Option[String] = None // within-document ID
+  }
 
 /*
 case class Venue(journalTitle: String, journalNlmTaID: String, journalPPubISSN: String, journalEPubISSN: String, publisher: Publisher)

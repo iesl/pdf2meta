@@ -66,7 +66,7 @@ class ClassifiedRectangles(val raw: Seq[ClassifiedRectangle]) {
   }
   val paperAbstract = getSections("abstract").map(_.node.text).mkString(" ")
   val authors = getSections("authors").map(_.node.text).mkString(" ")
-  val referenceStrings : Seq[String] = {
+  val referenceStrings: Seq[String] = {
     val refSections = getSections("references");
     // ** need to split
     val individualReferences = refSections.flatMap(_.node.secretChildren) // hope that these were previously distinguished by layout
@@ -78,8 +78,7 @@ class ClassifiedRectangles(val raw: Seq[ClassifiedRectangle]) {
   val venue = None
   val year = None
 
-  private def getSections(l:String) : Seq[ClassifiedRectangle] =
-  {
+  private def getSections(l: String): Seq[ClassifiedRectangle] = {
     raw.filter(_.label.map(_.equals(l)).getOrElse(false))
   }
 }
@@ -91,7 +90,10 @@ object ClassifiedRectangles {
     new StructuredCitation {
       override val title: Option[String] = cr.title
       override val doctype: Option[DocType] = JournalArticle
-      override val abstractText: Option[String] = Some(cr.paperAbstract)
+      override val abstractText: Iterable[TextWithLanguage] = cr.paperAbstract match {
+        case "" => None
+        case a => Some(new TextWithLanguage(None, a))
+      }
       override val bodyText: Seq[BodyTextSection] = Seq(new UndifferentiatedBodyTextSection(cr.body))
       override val authors = {
         val a = cr.authors.split("and|,").map(fullname => new AuthorInRole(new Person() {
