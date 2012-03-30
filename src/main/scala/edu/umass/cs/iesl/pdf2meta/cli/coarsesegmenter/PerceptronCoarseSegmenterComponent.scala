@@ -28,7 +28,7 @@ trait PerceptronCoarseSegmenterComponent extends CoarseSegmenter with Logging
 
       val features = scoringFunctions.map(_.requiresFeatures).flatten.toSet
 
-      // assign node-local features.  Note the text boxes may be in a hierarchy, but we don't take that into account; we just classify the "atomic" ones
+      // assign node-local features.  Note the text boxes may be in a hierarchy, but we don't take that into account; we just classify the leaves (but not any secret leaves below those)
 
       for (box <- doc.allLeaves; feat <- features)
         {

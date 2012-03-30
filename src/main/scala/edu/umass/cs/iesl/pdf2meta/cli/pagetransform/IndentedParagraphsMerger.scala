@@ -22,10 +22,18 @@ object IndentedParagraphsMerger
   }
 
 /**
- * Find a hanging-indent situation.
+ * Find a hanging-indent situation, as well as combining normal lines into paragraphs and columns.
+ *
  * The strategy is to make a list of nodes that could possibly be the start of a references section, because the following node starts either at the same X coordinate or indented from there.
  * Each such node gets stored with the indentation level.
  * Then we find strings of consecutive nodes with the same indent distance (to cover the case that references continue in the next column or on the next page).
+ *
+ * Note this expects to operate on individual lines, not paragraph groups
+ * However the lines may still contain multiple nodes based on LineMerger.
+ *
+ * We'd like to end up with each reference as an individual node (perhaps with a "hangingindent" annotation),
+ * but with these also in larger groups, e.g. columns, for better classification.  OK, so we merge as much as possible and declare the result "leaves";
+ * but these have secret children with annotations that we can pull out later
  */
 class IndentedParagraphsMerger extends PostOrderDocTransformer
   {
@@ -131,10 +139,10 @@ class IndentedParagraphsMerger extends PostOrderDocTransformer
         case (im, mergeNodes) if mergeNodes.length == 1 => mergeNodes.head
         case (im, mergeNodes) =>
           {
-          // declare the merged node atomic iff all of the children were atoms
-          val nonAtomicChildren: List[DocNode] = mergeNodes.filter(!_.isLeaf)
-          val allChildrenAtomic: Boolean = nonAtomicChildren.length == 0
-          if (allChildrenAtomic)
+          // declare the merged node a leaf iff all of the children were leaves
+          val nonLeafChildren: List[DocNode] = mergeNodes.filter(!_.isLeaf)
+          val allChildrenLeaves: Boolean = nonLeafChildren.length == 0
+          if (allChildrenLeaves)
             {
             LeafDocNode((mergeNodes map (_.id)).mkString("+"), mergeNodes, None, None)
             }

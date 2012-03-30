@@ -9,9 +9,9 @@ trait AlignedPerceptronCoarseSegmenterComponent
   val perceptronPhase: CoarseSegmenter
   val segmentSmoother: SegmentSmoother
 
-  def apply(atoms: DocNode) =
+  def apply(tree: DocNode) =
     {
-    val localClassified: ClassifiedRectangles = perceptronPhase.apply(atoms)
+    val localClassified: ClassifiedRectangles = perceptronPhase.apply(tree)
     val alignmentClassified: ClassifiedRectangles = segmentSmoother.apply(localClassified)
     alignmentClassified
     }
