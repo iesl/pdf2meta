@@ -1,7 +1,7 @@
 package edu.umass.cs.iesl.pdf2meta.cli
 
 import coarsesegmenter.{CoarseSegmenter, ClassifiedRectangles}
-import extract.XmlExtractor
+import extract.PdfExtractor
 import layoutmodel.DocNode
 import pagetransform.DocTransformer
 import java.util.Date
@@ -12,7 +12,7 @@ import edu.umass.cs.iesl.bibmogrify.model.StructuredCitation
 trait PipelineComponent extends ((Workspace) => StructuredCitation)
   {
   // when dependencies have no further dependencies, we can just ask for them directly instead of making an extra "component" layer
-  val xmlExtractor: XmlExtractor
+  val pdfExtractor: PdfExtractor
   val docTransformer: DocTransformer
   val coarseSegmenter: CoarseSegmenter
 
@@ -26,7 +26,7 @@ trait PipelineComponent extends ((Workspace) => StructuredCitation)
     {
     def apply(w: Workspace): StructuredCitation =
       {
-      val doc = xmlExtractor(w)
+      val doc = pdfExtractor(w)
       val regrouped = docTransformer(doc)
       val segments: ClassifiedRectangles = coarseSegmenter(regrouped)
       segments
@@ -38,7 +38,7 @@ trait PipelineComponent extends ((Workspace) => StructuredCitation)
 
 trait ExtractOnlyPipelineComponent extends ((Workspace) => DocNode)
   {
-  val xmlExtractor: XmlExtractor
+  val pdfExtractor: PdfExtractor
   val docTransformer: DocTransformer
 
   val pipeline: Pipeline
@@ -47,7 +47,7 @@ trait ExtractOnlyPipelineComponent extends ((Workspace) => DocNode)
     {
     def apply(w: Workspace): DocNode =
       {
-      val doc = xmlExtractor(w)
+      val doc = pdfExtractor(w)
       val regrouped = docTransformer(doc)
       regrouped
       }
@@ -58,7 +58,7 @@ trait ExtractOnlyPipelineComponent extends ((Workspace) => DocNode)
 
 trait WebPipelineComponent extends ((Workspace) => (DocNode, ClassifiedRectangles)) with Logging
   {
-  val xmlExtractor: XmlExtractor
+  val pdfExtractor: PdfExtractor
   val docTransformer: DocTransformer
   val coarseSegmenter: CoarseSegmenter
 
@@ -72,7 +72,7 @@ trait WebPipelineComponent extends ((Workspace) => (DocNode, ClassifiedRectangle
       val startTime = new Date
       logger.debug("Running XML extraction...")
 
-      val doc = xmlExtractor(w)
+      val doc = pdfExtractor(w)
 
       logger.debug("XML extraction done ")
       val extractTime = new Date()

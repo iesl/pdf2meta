@@ -20,11 +20,17 @@ libraryDependencies += "org.scala-tools.testing" %% "scalacheck" % "1.9" % "test
 
 libraryDependencies += "org.clapper" %% "classutil" % "0.4.3"
 
+libraryDependencies += "org.apache.pdfbox" % "pdfbox" % "1.6.0" exclude("commons-logging", "commons-logging")
+
+libraryDependencies += "org.slf4j" % "jcl-over-slf4j" % "1.6.4"
+
 resolvers += "David Soergel Repo" at "http://dev.davidsoergel.com/artifactory/repo"
 
 resolvers += "IESL Repo" at "https://dev-iesl.cs.umass.edu/content/repositories/releases"
 
 resolvers += "IESL Snapshot Repo" at "https://dev-iesl.cs.umass.edu/nexus/content/repositories/snapshots"
+
+seq(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
 
 seq(assemblySettings: _*)
 

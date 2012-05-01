@@ -17,10 +17,10 @@ class RectangularReadingOrderTest extends Spec with ShouldMatchers with Generato
   val compareRectanglesSolid = PrivateMethod[Option[Int]]('compareRectanglesSolid)
 
   val rectangleGen: Gen[Rectangle] = for {
-    b <- Gen.choose(0.0, 1000.0)
-    l <- Gen.choose(0.0, 1000.0)
-    r <- Gen.choose(l, 1000.0)
-    t <- Gen.choose(b, 1000.0)
+    b <- Gen.choose(0.0f, 1000.0f)
+    l <- Gen.choose(0.0f, 1000.0f)
+    r <- Gen.choose(l, 1000.0f)
+    t <- Gen.choose(b, 1000.0f)
   } yield new Rectangle() {
       val bottom = b
       val right = r

@@ -1,244 +1,202 @@
 package edu.umass.cs.iesl.pdf2meta.cli.layoutmodel
 
-import collection.Seq
+import scala.collection.Seq
 import com.weiglewilczek.slf4s.Logging
 import edu.umass.cs.iesl.scalacommons.OrderedTreeNode
+import scala.Predef._
+import scala._
 
 trait RectangularOnPage
-{
-  def rectangle: Option[RectangleOnPage]
-}
+	{
+	def rectangle: Option[RectangleOnPage]
 
-object DocNode
-  {
-  def apply(id: String, children: Seq[DocNode], localInfo: Option[Iterator[String]], localErrors: Option[Iterator[String]]): DocNode = //, isMergeable: Boolean
-    {
-    new DocNode(id, children, localInfo, localErrors)
-    }
+	// allow backing off to a "core" of the content for ordering when it's ambiguous using the full rectangle
+	def coreRectangle: Option[RectangleOnPage] = rectangle
+	}
 
-  val begin = new DocNode("begin", Nil, None, None)
-  }
+abstract class DocNode(val id: String, val localInfo: Option[Iterator[String]], val localErrors: Option[Iterator[String]]) extends
+OrderedTreeNode[DocNode] with RectangularOnPage with TextBox with Logging
+	{
+	def getPages: Seq[PageNode] =
+		{
+		// perf can prune when a page is found
+		val all = allNodesDepthFirst
+		val result = all.collect({
+		                         case x: PageNode => x
+		                         //                     case x: RectBox => throw new Error("RectBox is a DelimitingBox")
+		                         })
+		result
+		}
 
+	lazy val errors: Option[Iterator[String]] = localErrors
 
-class DocNode(val id: String, val children: Seq[DocNode], val localInfo: Option[Iterator[String]], val localErrors: Option[Iterator[String]]) //, val isMergeable: Boolean)
-        extends OrderedTreeNode[DocNode] with RectangularOnPage with TextBox with Logging
-  {
-  def isLeaf = children.length == 0
-  def isSecretLeaf = secretChildren.length == 0
+	lazy val info: Option[Iterator[String]] = localInfo
 
-  // allow computing internal things based on a set of children that are not the same as the public ones
-  // by default just use the same ones
-  def secretChildren = children
+	def allNodesBreadthFirst: List[DocNode] = List(this)
 
-  lazy val charSpanProportional: Map[DocNode, (Double, Double)] =
-    {
-    def appendEnd(l: List[(DocNode, Int)], n: DocNode): List[(DocNode, Int)] =
-      {
-      // add one to the length to account for the space that gets added between adjacent nodes, at TextContainer.text
-      (n, l.head._2 + n.text.length + 1) :: l
-      }
+	def allNodesDepthFirst: List[DocNode] = List(this)
 
-    val charEnds: List[(DocNode, Int)] = allLeaves.foldLeft(List[(DocNode, Int)]((DocNode.begin, 0)))(appendEnd).reverse
+	def printTree(prefix: String): String
 
-    def selfzip(l: List[(DocNode, (Int, Int))], e: (DocNode, Int)): List[(DocNode, (Int, Int))] =
-      {
-      (e._1, (l.head._2._2, e._2)) :: l
-      }
-    val charBeginEnds: List[(DocNode, (Int, Int))] = charEnds.foldLeft(List[(DocNode, (Int, Int))]((DocNode.begin, (0, 0))))(selfzip).reverse
-    val total = text.length.toDouble
-    val proportional = charBeginEnds.map((x: (DocNode, (Int, Int))) => (x._1, (x._2._1 / total, x._2._2 / total)))
-    proportional.toMap
-    }
+	def leaves: Seq[LeafNode]
 
+	lazy val charSpanProportional: Map[LeafNode, (Float, Float)] =
+		{
+		def appendEnd(l: List[(LeafNode, Int)], n: LeafNode): List[(LeafNode, Int)] =
+			{
+			// add one to the length to account for the space that gets added between adjacent nodes, at TextContainer.text
+			(n, l.head._2 + n.text.length + 1) :: l
+			}
 
-  // a rectangle may be None if the node has children on multiple pages.
-  // todo this may not be the best way to handle this situation, as we frequently do foobar.rectangle.get.height or whatever,
-  // which is error-prone, and handling Options in every case is a hassle.
-  lazy val rectangle: Option[RectangleOnPage] = computeRectangle
+		val charEnds: List[(LeafNode, Int)] = leaves.foldLeft(List[(LeafNode, Int)]((LeafNode.begin, 0)))(appendEnd).reverse
 
-  // allow backing off to a "core" of the content for ordering when it's ambiguous using the full rectangle
-  def coreRectangle = rectangle
+		def selfzip(l: List[(LeafNode, (Int, Int))], e: (LeafNode, Int)): List[(LeafNode, (Int, Int))] =
+			{
+			(e._1, (l.head._2._2, e._2)) :: l
+			}
+		val charBeginEnds: List[(LeafNode, (Int, Int))] = charEnds.foldLeft(List[(LeafNode, (Int, Int))]((LeafNode.begin, (0, 0))))(selfzip).reverse
+		val total = text.length.toFloat
+		val proportional = charBeginEnds.map((x: (LeafNode, (Int, Int))) => (x._1, (x._2._1 / total, x._2._2 / total)))
+		proportional.toMap
+		}
 
-  def computeRectangle: Option[RectangleOnPage] =
-    {
-    val childRects: Seq[Option[RectangleOnPage]] = secretChildren.map((x: DocNode) => x.rectangle)
-    if (childRects.exists(x => (x == None)))
-      {
-      None
-      }
-    else
-      {
-      RectangleOnPage.encompassing(childRects.flatten, 0)
-      }
-    }
+	//def allSecretLeaves: Seq[DocNode] = if (isSecretLeaf) List(this) else secretChildren.flatMap(_.allSecretLeaves)
+	def delimitingBoxes: Seq[DelimitingBox] =
+		{
+		val all = allNodesDepthFirst
+		val result = all.collect({
+		                         case x: DelimitingBox => x
+		                         //                     case x: RectBox => throw new Error("RectBox is a DelimitingBox")
+		                         })
+		result
+		}
 
+	def whitespaceBoxes: Seq[WhitespaceBox] =
+		{
+		val all = allNodesDepthFirst
+		val result = all.collect({
+		                         case x: WhitespaceBox => x
+		                         //                     case x: RectBox => throw new Error("RectBox is a DelimitingBox")
+		                         })
+		result
+		}
 
-  lazy val errors: Option[Iterator[String]] =
-    {
-    val r: Iterator[String] = secretChildren.map(_.errors).flatten.foldLeft[Iterator[String]](localErrors.getOrElse(Iterator.empty))((a: Iterator[String], b: Iterator[String]) =>
-                                                                                                                                       {
-                                                                                                                                       a ++
-                                                                                                                                       b
-                                                                                                                                       })
-    if (r.isEmpty) None else Some(r)
-    }
+	def allPartitions: Seq[PartitionedDocNode] =
+		{
+		val all = allNodesDepthFirst
+		val result = all.collect({
+		                         case x: PartitionedDocNode => x
+		                         //                     case x: RectBox => throw new Error("RectBox is a DelimitingBox")
+		                         })
+		result
+		}
 
+	def textLines: Seq[TextLine] =
+		{
+		val all = allNodesDepthFirst
+		val result = all.collect({
+		                         case x: TextLine => x
+		                         //                     case x: RectBox => throw new Error("RectBox is a DelimitingBox")
+		                         })
+		result
+		}
 
-  lazy val info: Option[Iterator[String]] =
-    {
-    val r: Iterator[String] = secretChildren.map(_.info).flatten.foldLeft[Iterator[String]](localInfo.getOrElse(Iterator.empty))((a: Iterator[String], b: Iterator[String]) =>
-                                                                                                                                   {
-                                                                                                                                   a ++
-                                                                                                                                   b
-                                                                                                                                   })
-    if (r.isEmpty) None else Some(r)
-    }
+	// for debugging
+	val delimiters = delimitingBoxes.length
 
-  /**
-   * recursively collect all nodes in breadth-first order
-   * excludes the root, but we don't care
-   */
-  def allNodesBreadthFirst: List[DocNode] =
-    {
-    val childNodeLists: List[List[DocNode]] = children.map(_.allNodesBreadthFirst).toList
-    val f: List[DocNode] = childNodeLists.flatten
-    children.toList ::: f
-    }
+	/**
+	 * create a leaf node, but keep the detailed contents; also drop empty nodes
+	 * @return
+	 */
+	def bounceRetainingChildren(separator: String = " "): DocNode =
+		{
+		if (delimitingBoxes.isEmpty)
+			{
+			new DerivedNode(this)
+				{override val text = derivedFrom.mkString(separator)}
+			}
+		else this // can't bounce a node with delimiters inside
+		}
 
-  /**
-   * recursively collect all nodes in preorder depth-first order
-   */
-  def allNodesDepthFirst: List[DocNode] =
-    {
-    val childNodeLists: List[List[DocNode]] = children.map(_.allNodesDepthFirst).toList
-    val f: List[DocNode] = childNodeLists.flatten
-    this :: f
-    }
+	/*
+	   // aggregate nodes into a leaf group
+	   def :++(r: DocNode): DocNode =
+		   {
+		   //require(!(this.isInstanceOf[AnnotationNode] || r.isInstanceOf[AnnotationNode]))
+		   // current children and secretChildren are all combined into secretChildren, because we're making Leaf nodes
+		   if (children.isEmpty)
+			   {
+			   InternalDocNode(id + "+" + r.id, List(this, r), None, None, true)
+			   }
+		   else
+			   {
+			   InternalDocNode(id + "+" + r.id, children :+ r, localInfo, localErrors, true)
+			   }
+		   }
+		   */
+	}
 
-// { if(this.isInstanceOf[WhitespaceBox]) Nil else List(this) }
-  def allLeaves: Seq[DocNode] = if (isLeaf) List(this) else children.flatMap(_.allLeaves)
+object LeafNode
+	{
+	val begin = new LeafNode("begin", None, None, None)
+	}
 
-  def allSecretLeaves: Seq[DocNode] = if (isSecretLeaf) List(this) else secretChildren.flatMap(_.allSecretLeaves)
+class LeafNode(override val id: String, override val localInfo: Option[Iterator[String]], override val localErrors: Option[Iterator[String]],
+               override val rectangle: Option[RectangleOnPage])
+		extends DocNode(id, localInfo, localErrors)
+	{
+	def children = Nil
 
+	/**maybe a preorder traversal expands a node
+	 *
+	 * @param childrenA
+	 * @return
+	 */
+	def create(childrenA: Seq[DocNode]) =
+		{
+		if (childrenA.length == 1) childrenA(0)
+		else if (childrenA == children) this
+		else
+			InternalDocNode(id, childrenA, localInfo, localErrors)
+		}
 
-  def delimitingBoxes: scala.Seq[DelimitingBox] =
-    {
-    val all = allNodesDepthFirst
-    val result = all.collect({
-                             case x: DelimitingBox => x
-                             //                     case x: RectBox => throw new Error("RectBox is a DelimitingBox")
-                             })
-    result
-    }
+	def printTree(prefix: String): String =
+		{
+		if (spanText.length > 1)
+			{
+			val buf = new StringBuilder(prefix)
+			buf.append("LEAF: " + spanText + "\n")
 
+			buf.toString()
+			}
+		else ""
+		}
 
+	def leaves: Seq[LeafNode] = List(this)
+	}
 
-  def whitespaceBoxes: scala.Seq[WhitespaceBox] =
-  {
-    val all = allNodesDepthFirst
-    val result = all.collect({
-      case x: WhitespaceBox => x
-      //                     case x: RectBox => throw new Error("RectBox is a DelimitingBox")
-    })
-    result
-  }
+class DerivedNode(val derivedFrom: DocNode) extends LeafNode(derivedFrom.id, derivedFrom.localInfo, derivedFrom.localErrors, derivedFrom.rectangle)
+	{
+	//override val text          = derivedFrom.mkString("")
+	override val coreRectangle = derivedFrom.coreRectangle
 
+	override lazy val allFonts              = derivedFrom.allFonts
+	override lazy val allTextLineWidths     = derivedFrom.allTextLineWidths
+	override lazy val dominantFont          = derivedFrom.dominantFont
+	override lazy val dominantFontHeight    = derivedFrom.dominantFontHeight
+	override lazy val dominantTextLineWidth = derivedFrom.dominantTextLineWidth
 
-  def allPartitions: scala.Seq[PartitionedDocNode] =
-    {
-    val all = allNodesDepthFirst
-    val result = all.collect({
-                             case x: PartitionedDocNode => x
-                             //                     case x: RectBox => throw new Error("RectBox is a DelimitingBox")
-                             })
-    result
-    }
+	override def mkString(d: String) = text
 
+	override def partitionByFont(boxorder: Ordering[RectangularOnPage]) = Seq(this)
 
-  def textLines: scala.Seq[TextLine] =
-    {
-    val all = allNodesDepthFirst
-    val result = all.collect({
-                             case x: TextLine => x
-                             //                     case x: RectBox => throw new Error("RectBox is a DelimitingBox")
-                             })
-    result
-    }
+	// aggregate nodes into a group
+	//override def :+(r: DocNode): DocNode = (derivedFrom :+ r).bounceRetainingChildren()
+	override def bounceRetainingChildren(separator: String) = this // ignore request for alternate separator
+	}
 
-
-  // for debugging
-  val delimiters = delimitingBoxes.length
-
-  def create(childrenA: Seq[DocNode]) =
-    {
-    if (childrenA.length == 1) childrenA(0)
-    else if (childrenA == children) this
-    else
-      DocNode(id, childrenA, localInfo, localErrors)
-    }
-
-
-  // aggregate nodes into a group
-  def :+(r: DocNode): DocNode =
-    {
-    require(!(this.isInstanceOf[AnnotatedDocNode] || r.isInstanceOf[AnnotatedDocNode]))
-    if (children.isEmpty)
-      {
-      DocNode(id + "+" + r.id, List(this, r), None, None)
-      }
-    else
-      {
-      DocNode(id + "+" + r.id, children :+ r, localInfo, localErrors)
-      }
-    }
-
-  // aggregate nodes into a leaf group
-  def :++(r: DocNode): DocNode =
-    {
-    require(!(this.isInstanceOf[AnnotatedDocNode] || r.isInstanceOf[AnnotatedDocNode]))
-
-    if (children.isEmpty)
-      {
-      LeafDocNode(id + "+" + r.id, List(this, r), None, None)
-      }
-    else
-      {
-      LeafDocNode(id + "+" + r.id, children :+ r, localInfo, localErrors)
-      }
-    }
-  def printTree(prefix: String): String =
-    {
-    val buf = new StringBuilder(prefix)
-    this match
-    {
-      case x: DelimitingBox => buf.append("DELIMITER\n")
-      case x: WhitespaceBox => buf.append("WHITESPACE: " + this.rectangle.get.width + " x " + this.rectangle.get.height + "\n")
-      case x if x.isLeaf => buf.append("LEAF: " + this.spanText + "\n")
-      case x =>
-        {
-        this match
-        {
-          case y: WhitespacePartitionedDocNode => buf.append("WHITESPACE PARTITION (" + y.strength + ") ")
-          case y: LinePartitionedDocNode => buf.append("LINE PARTITION (" + y.strength + ") ")
-          case y => buf.append("GROUP ")
-        }
-        buf.append(id + " : " + children.length + " children, " + allNodesDepthFirst.length + " nodes, " + allLeaves.length + " leaves, " + delimiters +
-                   " delimiters\n")
-
-        for (c <- children)
-          {buf.append(c.printTree(prefix + "   |"))}
-        }
-    }
-
-    buf.toString()
-    }
-
-  /**
-   * Filter the children of this node, recursively; preorder means any immediate children failing the filter don't get recursed.
-   * Note this node itself doesn't get filtered
-   */
-  def filterDeep(filt: (DocNode) => Boolean): DocNode = preOrderApply(n => Some(create(children.filter(filt)))).get
-  }
+class AnnotationNode(val derivedFrom: DocNode, val annotations: Seq[String])
+		extends LeafNode(derivedFrom.id, derivedFrom.localInfo, derivedFrom.localErrors, derivedFrom.rectangle)
 
 
 

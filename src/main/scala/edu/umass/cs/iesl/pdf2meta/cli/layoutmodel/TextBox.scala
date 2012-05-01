@@ -22,22 +22,22 @@ trait TextBox extends HasFontInfo
   // todo make lazy
   def mkString(d: String): String =
     {
-    (for (x <- secretChildren.collect
+    (for (x <- children.collect
                {case x: HasFontInfo => x}) yield
       {x.text}).mkString(d)
     }
 
   lazy val allFonts: Seq[(FontWithHeight, Int)] =
     {
-    if (secretChildren.isEmpty)
+    if (children.isEmpty)
       {
       // Must be a RectBox or something, with no fonts in it
       Seq()
       }
     else
       {
-      assert(!isSecretLeaf)
-      val leafFonts = allSecretLeaves.filter(_.dominantFont.isDefined).map(leaf => (leaf.dominantFont.get, leaf.text.size))
+     // assert(!isSecretLeaf)
+      val leafFonts = leaves.filter(_.dominantFont.isDefined).map(leaf => (leaf.dominantFont.get, leaf.text.size))
       StatsUtils.histogramAccumulate(leafFonts).toSeq
       }
     }
@@ -60,12 +60,12 @@ trait TextBox extends HasFontInfo
     }
 
   lazy val dominantFontHeight = {
-    dominantFont.map(_.height).getOrElse(9.0)
+    dominantFont.map(_.height).getOrElse(9.0f)
   }
 
-  lazy val allTextLineWidths: Seq[(Double, Int)] =
+  lazy val allTextLineWidths: Seq[(Float, Int)] =
     {
-    if (secretChildren.isEmpty)
+    if (children.isEmpty)
       {
       // Must be a RectBox or something, with no fonts in it
       Seq()
@@ -73,19 +73,19 @@ trait TextBox extends HasFontInfo
     else
       {
       // round up to the nearest 10; this is just a rough estimate of column width
-      val lineWidthsWithLength = textLines.map(t => (t.rectangle.map(r => ((r.width / 10.0).ceil * 10.0)).getOrElse(0.0), t.text.length))
+      val lineWidthsWithLength = textLines.map(t => (t.rectangle.map(r => ((r.width / 10.0f).ceil * 10.0f)).getOrElse(0.0f), t.text.length))
       StatsUtils.histogramAccumulate(lineWidthsWithLength).toSeq
       }
     }
 
-  lazy val dominantTextLineWidth: Option[Double] =
+  lazy val dominantTextLineWidth: Option[Float] =
     {
     textLines.length match
     {
       case 0 => None
       case _ =>
         {
-        val sortedTextLineWidths: Seq[(Double, Int)] = allTextLineWidths.toSeq.sortWith((a, b) => a._2 > b._2)
+        val sortedTextLineWidths: Seq[(Float, Int)] = allTextLineWidths.toSeq.sortWith((a, b) => a._2 > b._2)
         if (sortedTextLineWidths.isEmpty)
           {
           None
@@ -116,20 +116,20 @@ trait TextBox extends HasFontInfo
     // merge if the blocks sort adjacently AND are in the same column
     // we don't want blocks in two columns to merge because the encompassing box will be interpreted wrongly wrt
     // ordering one level up
-    type FontAndLeft = (FontWithHeight, Double)
-    val fontBlocks: List[(((String, Double), List[DocNode]), Int)] =
+    type FontAndLeft = (FontWithHeight, Float)
+    val fontBlocks: List[(((String, Float), List[DocNode]), Int)] =
       {
-      val fontAndLeftMatch: (DocNode => (String, Double)) = ((x: DocNode) =>
+      val fontAndLeftMatch: (DocNode => (String, Float)) = ((x: DocNode) =>
         {
         (x.dominantFont.get.fontid, x.rectangle.get.left) // ignore the font height
         })
 
-      val runs: List[((String, Double), List[DocNode])] = ListUtils.contiguousRuns(sortedChildren.toList)(fontAndLeftMatch)
+      val runs: List[((String, Float), List[DocNode])] = ListUtils.contiguousRuns(sortedChildren.toList)(fontAndLeftMatch)
       runs.zipWithIndex
       };
 
     fontBlocks.map({
-                   case ((key, blocks), index) => DocNode(id + "." + index, blocks, None, None)
+                   case ((key, blocks), index) => InternalDocNode(id + "." + index, blocks, None, None)
                    })
 
     // the regrouped boxes are still in order, but now only TextBoxes are provided

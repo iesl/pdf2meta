@@ -1,0 +1,65 @@
+package edu.umass.cs.iesl.pdf2meta.cli.pagetransform
+
+import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.{BeforeAndAfter, Spec}
+import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.Rectangle
+import util.Random
+import collection.mutable
+
+/**
+ * @author <a href="mailto:dev@davidsoergel.com">David Soergel</a>
+ * @version $Id$
+ */
+class WhitespaceDocPartitionerTest extends Spec with ShouldMatchers with BeforeAndAfter
+	{
+
+	val p                                              = new WhitespaceDocPartitioner
+	val qualityFunction: (Rectangle) => Double         = (x: Rectangle) => x.area
+	val pivotPicker    : (Set[Rectangle]) => Rectangle = (s: Set[Rectangle]) => s.toSeq(Random.nextInt(s.size))
+
+	//perf?
+	def configuredFindWhitespace(bound: Rectangle, allObstacles: Set[Rectangle]) = p.find_whitespace(qualityFunction, pivotPicker)(bound, allObstacles)
+
+	val bound     = Rectangle(0, 0, 100, 100).get
+	val obstacles = mutable.Set() ++ Set(Rectangle(10, 10, 20, 20), Rectangle(40, 40, 50, 80)).flatten
+
+	describe("A fully-above fully-left-of rectangle")
+	{
+	it("works at all")
+	{
+	val w = configuredFindWhitespace(bound, obstacles.toSet)
+	w.get.area should be === 5000
+	}
+
+	it("works repeatedly")
+	{
+	val w = configuredFindWhitespace(bound, obstacles.toSet).get
+	w.area should be === 5000
+	obstacles += w
+
+	val w2 = configuredFindWhitespace(bound, obstacles.toSet).get
+	w2.area should be === 3200
+	obstacles += w2
+
+	val w3 = configuredFindWhitespace(bound, obstacles.toSet).get
+	w3.area should be === 600
+	obstacles += w3
+
+	val w4 = configuredFindWhitespace(bound, obstacles.toSet).get
+	w4.area should be === 200
+	obstacles += w4
+
+	val w5 = configuredFindWhitespace(bound, obstacles.toSet).get
+	w5.area should be === 200
+	obstacles += w5
+
+	val w6 = configuredFindWhitespace(bound, obstacles.toSet).get
+	w6.area should be === 200
+	obstacles += w6
+
+
+	val w7 = configuredFindWhitespace(bound, obstacles.toSet)
+	w7 should be === None
+	}
+	}
+	}

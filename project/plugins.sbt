@@ -14,4 +14,7 @@ libraryDependencies <+= sbtVersion(v => "com.github.siasia" %% "xsbt-web-plugin"
 
 addSbtPlugin("org.scalaxb" % "sbt-scalaxb" % "0.6.6")
 
-addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.7.2") 
+addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.7.2")
+
+addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.5.2")
+

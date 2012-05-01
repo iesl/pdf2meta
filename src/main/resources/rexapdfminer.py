@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys, os
+import sys, os, re
 from os import path
 import codecs, locale
 
@@ -43,7 +43,8 @@ class RexaXMLConverter(PDFConverter):
         PDFConverter.__init__(self, rsrcmgr, codecs.getwriter(locale.getpreferredencoding())(outfp), codec=codec, pageno=pageno, laparams=laparams)
         self.document_root = {'tag': 'pages'}
         self.stack = []
-        self.taglists = dict([(t, []) for t in "pages page textbox textline textbox page rect polygon line figure curve textgrouplrtb textgrouptbrl".split()])
+        self.taglists = dict([(t, []) for t in "char pages page textbox textline textbox page rect polygon line figure curve textgrouplrtb textgrouptbrl".split
+        ()])
         self.hasrun = False
         self.interesting_attributes = 'tag index id bbox rotate pageid text size sizes orientation fontname fontnames fontstyles fonts bboxes length height width'.split(' ')
         self.open()
@@ -241,9 +242,11 @@ class RexaXMLConverter(PDFConverter):
             textline['bboxes'] = bboxes
             textline['fontnames'] = fonts
 
+
     def encode_text(self):
         for textline in self.taglists['textline']:
-            textline["text"] = enc(textline["text"])
+            textline["text"] = subst_control_chars(enc(textline["text"]))
+
 
     def include_textline_stats(self):
         for textline in self.taglists['textline']:
@@ -299,6 +302,13 @@ class RexaXMLConverter(PDFConverter):
         self.writeln(u'<?xml version="1.0" encoding="%s" ?>' % self.codec)
         self.print_tree(self.document_root, formatter=self.format_dict_xml)
 
+
+# http://stackoverflow.com/questions/92438/stripping-non-printable-characters-from-a-string-in-python
+control_chars = ''.join(map(unichr, range(0,32) + range(127,160)))
+control_char_re = re.compile('[%s]' % re.escape(control_chars))
+
+def subst_control_chars(s):
+	return control_char_re.sub(' ', s)
 
 def parse_args():
     from optparse import OptionParser

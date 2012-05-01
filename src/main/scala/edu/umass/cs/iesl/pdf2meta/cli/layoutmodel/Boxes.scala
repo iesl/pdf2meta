@@ -3,13 +3,13 @@ package edu.umass.cs.iesl.pdf2meta.cli.layoutmodel
 import collection.Seq
 
 trait TextContainer {
-  final def text: String = mkString(" ")
+  def text: String = mkString(" ")
 
   def mkString(d: String): String
 }
 
-class FontWithHeight(val fontid: String, rawheight: Double) {
-  val height = (rawheight * 10.0).round / 10.0
+class FontWithHeight(val fontid: String, rawheight: Float) {
+  val height = (rawheight * 10.0f).round / 10.0f
 
   override def equals(p1: Any) = {
     p1 match {
@@ -28,9 +28,9 @@ class FontWithHeight(val fontid: String, rawheight: Double) {
   }
 
 
-  def sizeEqualsWithinOneQuantum(p1: FontWithHeight): Boolean = sizeEqualsWithin(0.1)(p1)
+  def sizeEqualsWithinOneQuantum(p1: FontWithHeight): Boolean = sizeEqualsWithin(0.1f)(p1)
 
-  def sizeEqualsWithin(epsilon: Double)(p1: FontWithHeight): Boolean = {
+  def sizeEqualsWithin(epsilon: Float)(p1: FontWithHeight): Boolean = {
     p1 match {
       case x: FontWithHeight => ((height - x.height).abs <= epsilon)
       case _ => false
@@ -45,14 +45,14 @@ trait HasFontInfo extends TextContainer {
 }
 
 
-class DelimitingBox(id: String, val theRectangle: RectangleOnPage)
-  extends DocNode(id, Seq.empty, None, None) {
-  override def computeRectangle = Some(theRectangle)
+class DelimitingBox(id: String,  val theRectangle: RectangleOnPage)
+  extends LeafNode(id,None, None, Some(theRectangle)) {
 
   override def create(childrenA: Seq[DocNode]) = {
     assert(childrenA.isEmpty)
     this
   }
+override def printTree(prefix: String): String = prefix + "DELIMITER\n"
 }
 
 class RectBox(id: String, override val theRectangle: RectangleOnPage)
@@ -64,15 +64,23 @@ class CurveBox(id: String, override val theRectangle: RectangleOnPage)
 class FigureBox(id: String, override val theRectangle: RectangleOnPage)
   extends DelimitingBox(id, theRectangle)
 
-class WhitespaceBox(id: String, val theRectangle: RectangleOnPage) extends DocNode(id, Seq.empty, None, None) {
-  override def computeRectangle = Some(theRectangle)
+class WhitespaceBox(id: String, override val theRectangle: RectangleOnPage) extends DelimitingBox(id, theRectangle) {
+
+override def printTree(prefix: String): String =
+		{
+		val buf = new StringBuilder(prefix)
+		val w: Float = this.rectangle.get.width
+		val h: Float = this.rectangle.get.height
+		buf.append(if (w > h) "HORIZONTAL" else "VERTICAL")
+		buf.append(" WHITESPACE: " + w + " x " + h + " : " + this.rectangle.get + "\n")
+		buf.toString()
+		}
 
   override def create(childrenA: Seq[DocNode]) = {
     assert(childrenA.isEmpty)
     this
   }
 
-  override def isLeaf = false
 }
 
 

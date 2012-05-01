@@ -21,10 +21,10 @@ class OverlapRatios(a: Rectangle, basis: Rectangle) {
   val belowMiddle = below.intersection(middleX)
   val belowRight = below.intersection(right)
 
-  //def fullyContained = that.area == middleMiddle.map(_.area).getOrElse(Double.NegativeInfinity)
-  def fullyContained = a.area == a.intersection(basis).map(_.area).getOrElse(Double.NegativeInfinity)
+  //def fullyContained = that.area == middleMiddle.map(_.area).getOrElse(Float.NegativeInfinity)
+  def fullyContained = a.area == a.intersection(basis).map(_.area).getOrElse(Float.NegativeInfinity)
 
-  //def fullyContains = basis.area == a.intersection(basis).map(_.area).getOrElse(Double.NegativeInfinity)
+  //def fullyContains = basis.area == a.intersection(basis).map(_.area).getOrElse(Float.NegativeInfinity)
   def fullyLeftOf = a.area == left.area
 
   def fullyRightOf = a.area == right.area

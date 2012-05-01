@@ -1,9 +1,9 @@
 package edu.umass.cs.iesl.pdf2meta.cli.coarsesegmenter
 
 import com.weiglewilczek.slf4s.Logging
-import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.DocNode
 import collection.mutable.HashMap
 import edu.umass.cs.iesl.scalacommons.collections.{WeightedSet, MutableWeightedSet}
+import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.{LeafNode, InternalDocNode, DocNode}
 
 trait PerceptronCoarseSegmenterComponent extends CoarseSegmenter with Logging
   {
@@ -30,17 +30,17 @@ trait PerceptronCoarseSegmenterComponent extends CoarseSegmenter with Logging
 
       // assign node-local features.  Note the text boxes may be in a hierarchy, but we don't take that into account; we just classify the leaves (but not any secret leaves below those)
 
-      for (box <- doc.allLeaves; feat <- features)
+      for (box <- doc.leaves; feat <- features)
         {
 
         val featuresPerBox: MutableWeightedSet[Feature] = featureMap(box)
         feat match
         {
-          case f: ContextFeature =>
+          case f: ContextFeature[LeafNode] =>
             {
             featuresPerBox.incrementBy(feat, f(doc)(box))
             }
-          case f: LocalFeature =>
+          case f: LocalFeature[LeafNode] =>
             {
            featuresPerBox.incrementBy(feat, f(box))
             }
@@ -53,7 +53,7 @@ trait PerceptronCoarseSegmenterComponent extends CoarseSegmenter with Logging
       // this is why we have to classify all boxes at once instead of per page
       // => nope, postpone all that to alignment
 
-      for (box <- doc.allLeaves) // classify page.allNodes??
+      for (box <- doc.leaves) // classify page.allNodes??
         {
         val featuresPerBox: MutableWeightedSet[Feature] = featureMap(box)
         if (featuresPerBox.asMap.isEmpty)
@@ -73,7 +73,7 @@ trait PerceptronCoarseSegmenterComponent extends CoarseSegmenter with Logging
       val boxes: ClassifiedRectangles =
         {
         def scoreBox(b: DocNode): ClassifiedRectangle = ClassifiedRectangle(b, featureMap(b), scores(b), None)
-        new ClassifiedRectangles(doc.allLeaves.map(scoreBox))
+        new ClassifiedRectangles(doc.leaves.map(scoreBox))
         }
 
 

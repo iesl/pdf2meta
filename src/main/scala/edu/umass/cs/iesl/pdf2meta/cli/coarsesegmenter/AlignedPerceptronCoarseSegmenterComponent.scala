@@ -1,7 +1,7 @@
 package edu.umass.cs.iesl.pdf2meta.cli.coarsesegmenter
 
-import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.DocNode
 import edu.umass.cs.iesl.pdf2meta.cli.segmentsmoother.SegmentSmoother
+import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.{InternalDocNode, DocNode}
 
 trait AlignedPerceptronCoarseSegmenterComponent
         extends CoarseSegmenter

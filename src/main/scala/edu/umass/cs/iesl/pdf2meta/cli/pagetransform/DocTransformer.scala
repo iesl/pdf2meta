@@ -1,12 +1,14 @@
 package edu.umass.cs.iesl.pdf2meta.cli.pagetransform
 
-import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.DocNode
+import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.{InternalDocNode, DocNode}
 
 /**
  * This transforms an entire document.  We describe this separately from preOrderApply and postOrderApply, because given DocTransformer may need to choose one or the other,
  * or something else entirely.
  */
 trait DocTransformer extends ((DocNode) => DocNode)
+
+class DocTransformerException(message: String) extends Exception(message)
 
 trait PreOrderDocTransformer extends DocTransformer
   {

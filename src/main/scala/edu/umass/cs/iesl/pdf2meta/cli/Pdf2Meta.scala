@@ -10,6 +10,7 @@ import edu.umass.cs.iesl.bibmogrify.model.StructuredCitation
 import edu.umass.cs.iesl.bibmogrify.pipeline.Transformer
 import edu.umass.cs.iesl.bibmogrify.NamedPlugin
 
+/*
 object Pdf2Meta {
 
   def main(args: Array[String]) {
@@ -42,6 +43,7 @@ class Pdf2Meta {
     //val m = WiredPipeline.pipeline(w)
   }
 }
+*/
 
 object PdfReader extends Transformer[URL, StructuredCitation] with NamedPlugin with Logging {
 
