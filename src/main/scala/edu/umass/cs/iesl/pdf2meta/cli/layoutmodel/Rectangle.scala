@@ -2,6 +2,7 @@ package edu.umass.cs.iesl.pdf2meta.cli.layoutmodel
 
 import com.weiglewilczek.slf4s.Logging
 import edu.umass.cs.iesl.pdf2meta.cli.readingorder.OverlapRatios
+import scala.Float
 
 object Rectangle extends Logging
 	{
@@ -40,6 +41,14 @@ object Rectangle extends Logging
 			}
 		}
 
+	/**
+	 * negative extents are not allowed, but empty rectangles are
+	 * @param left
+	 * @param bottom
+	 * @param right
+	 * @param top
+	 * @return
+	 */
 	def apply(left: Float, bottom: Float, right: Float, top: Float): Option[Rectangle] =
 		{
 		//try
@@ -51,10 +60,104 @@ object Rectangle extends Logging
 		//catch
 		//{case e: IllegalArgumentException => None}
 		}
+
+	/**
+	 * given a set of nonoverlapping rectangles and one new rectangle which may overlap the others, return a new set of nonoverlapping rectangles tiling
+	 * the same space.  In other words, add to the set of nonoverlapping rectangles some new ones covering whatever portions of r were not already
+	 * accounted for.
+	 *
+	 * @param fixed
+	 * @param r
+	 * @return
+	 */
+	private final def addNonOverlappingRegions[T <: Rectangle](fixed: Set[T], r: Rectangle): Set[Rectangle] =
+		{
+		val overlaps = fixed.flatMap(_.intersection(r)).toSeq
+		val decomposed: Set[Rectangle] = r - overlaps
+		fixed ++ decomposed
+		}
+
+	def decomposeToNonOverlapping[T <: Rectangle](orig: Set[T]): Set[Rectangle] =
+		{
+		val result = orig.foldLeft[Set[Rectangle]](Set())(addNonOverlappingRegions)
+		//perf
+		for (i <- result; j <- result if j != i)
+			{
+			assert(!i.overlaps(j))
+			}
+		result
+		}
 	}
 
 trait Rectangle
 	{
+
+	/**
+	 * A set of nonoverlapping rectangles tiling the space left when the arguments are removed from this.  Strategy: find horizontal intervals containing no
+	 * holes, and make full-height rectangles out of those.  If there are none, do the same thing for vertical intervals.  Recurse.
+	 * @param holes
+	 * @return
+	 */
+	/*
+	def -(holes: Seq[Rectangle]): Set[Rectangle] =
+		{
+		val h = holes.map(r => (r.left, r.right))
+		val nonOverlappingH = FloatIntervals.union(h)
+		val horizontalNoHoles = FloatIntervals.invert(nonOverlappingH, left, right)
+		val horizontalSolids = horizontalNoHoles.map(_ match
+		                      {
+			                      case (hl, hr) => Rectangle(hl, bottom, hr, top)
+		                      })
+
+		if (horizontalSolids.isEmpty)
+			{
+
+			}
+
+		blah blah
+		}
+		*/
+	// that was too much work, just subtract one at a time and fold.
+
+	def -(holes: Seq[Rectangle]): Set[Rectangle] =
+		{
+		def subtractOneFromAll(bases: Set[Rectangle], hole: Rectangle): Set[Rectangle] =
+			{
+			bases.flatMap(_ - hole)
+			}
+
+		holes.foldLeft(Set(this))(subtractOneFromAll)
+		}
+
+	def -(hole: Rectangle): Set[Rectangle] =
+		{
+		if (!overlaps(hole)) Set(this)
+		else
+			{
+			val above = this.above(hole.top)
+			//val middleY = this.below(hole.top).above(hole.bottom)
+			val below = this.below(hole.bottom)
+
+			val left = this.leftOf(hole.left)
+			val middleX = this.rightOf(hole.left).leftOf(hole.right)
+			val right = this.rightOf(hole.right)
+
+			//val aboveLeft = above.intersection(left)
+			val aboveMiddle = above.intersection(middleX)
+			//val aboveRight = above.intersection(right)
+			//val middleLeft = middleY.intersection(left)
+			//val middleMiddle = middleY.intersection(middleX)
+			//val middleRight = middleY.intersection(right)
+			//val belowLeft = below.intersection(left)
+			val belowMiddle = below.intersection(middleX)
+			//val belowRight = below.intersection(right)
+			//Set(aboveLeft,aboveMiddle,aboveRight,middleLeft,middleRight,belowLeft,belowMiddle,belowRight).flatten
+			val leftO = if (left.isEmpty) None else Some(left)
+			val rightO = if (right.isEmpty) None else Some(right)
+			Set(leftO, aboveMiddle, belowMiddle, rightO).flatten
+			}
+		}
+
 	def topEdge: Rectangle = Rectangle(left, top, right, top).get
 
 	def bottomEdge: Rectangle = Rectangle(left, bottom, right, bottom).get
@@ -78,7 +181,7 @@ trait Rectangle
 	val right : Float
 	val top   : Float
 
-	def ==(that: Rectangle): Boolean =
+	def equalBounds(that: Rectangle): Boolean =
 		{
 		left == that.left && bottom == that.bottom && right == that.right && top == that.top
 		}
@@ -91,13 +194,15 @@ trait Rectangle
 
 	def height = (top - bottom).abs
 
-	def area = width * height
+	lazy val area = width * height
 
 	def aspectRatio = width / height
 
 	def isLandscape = width > height
 
 	def isPortrait = height > width
+
+	def isEmpty = area == 0
 
 	/*
    def isHighlyLandscape = width > 4*height
@@ -109,7 +214,10 @@ trait Rectangle
 
 	def overlaps(that: Rectangle): Boolean =
 		{
-		intersection(that).isDefined
+		if (this.left > that.right || that.left > this.right || this.bottom > that.top || that.bottom > this.top)
+			false
+		else
+			intersection(that).isDefined
 		}
 
 	/*
@@ -170,6 +278,7 @@ trait Rectangle
 		{
 		//if (overlapsInclusive(that))
 		//	{
+		// the Rectangle factory returns None for negative extents, but allows zero extents.
 		val or = Rectangle(left.max(that.left), bottom.max(that.bottom), right.min(that.right), top.min(that.top))
 		//	}
 		or.flatMap(r =>
@@ -244,7 +353,7 @@ trait RectangleOnPage extends Rectangle
 	override def toString = "" + page + " (" + left + "," + bottom + "), (" + right + "," + top + ")"
 	}
 
-private class RealRectangleOnPage(val page: Page, val left: Float, val bottom: Float, val right: Float, val top: Float) extends RectangleOnPage
+private case class RealRectangleOnPage(page: Page, left: Float, bottom: Float, right: Float, top: Float) extends RectangleOnPage
 	{
 	require(top >= bottom)
 	require(right >= left)

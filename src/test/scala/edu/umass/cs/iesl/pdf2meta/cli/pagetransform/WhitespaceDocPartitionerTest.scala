@@ -13,12 +13,12 @@ import collection.mutable
 class WhitespaceDocPartitionerTest extends Spec with ShouldMatchers with BeforeAndAfter
 	{
 
-	val p                                              = new WhitespaceDocPartitioner
-	val qualityFunction: (Rectangle) => Double         = (x: Rectangle) => x.area
-	val pivotPicker    : (Set[Rectangle]) => Rectangle = (s: Set[Rectangle]) => s.toSeq(Random.nextInt(s.size))
+	val p                                                      = new WhitespaceDocPartitioner
+	val qualityFunction: (Rectangle, Set[Rectangle]) => Double = (x: Rectangle, y: Set[Rectangle]) => x.area - y.map(_.area).sum
+	val pivotPicker    : (Set[Rectangle]) => Rectangle         = (s: Set[Rectangle]) => s.toSeq(Random.nextInt(s.size))
 
 	//perf?
-	def configuredFindWhitespace(bound: Rectangle, allObstacles: Set[Rectangle]) = p.find_whitespace(qualityFunction, pivotPicker)(bound, allObstacles)
+	def configuredFindWhitespaces(bound: Rectangle, allObstacles: Set[Rectangle]) = p.find_whitespaces(qualityFunction, pivotPicker)(bound, allObstacles)
 
 	val bound     = Rectangle(0, 0, 100, 100).get
 	val obstacles = mutable.Set() ++ Set(Rectangle(10, 10, 20, 20), Rectangle(40, 40, 50, 80)).flatten
@@ -27,39 +27,44 @@ class WhitespaceDocPartitionerTest extends Spec with ShouldMatchers with BeforeA
 	{
 	it("works at all")
 	{
-	val w = configuredFindWhitespace(bound, obstacles.toSet)
-	w.get.area should be === 5000
+	val w = configuredFindWhitespaces(bound, obstacles.toSet)
+	w(0).area should be === 5000
 	}
 
 	it("works repeatedly")
 	{
-	val w = configuredFindWhitespace(bound, obstacles.toSet).get
+	val w = configuredFindWhitespaces(bound, obstacles.toSet)
+	w.map((r) => info(r.toString))
+	w.map(_.area) should be === Seq(5000, 3200, 600, 200, 200, 200)
+	/*
 	w.area should be === 5000
 	obstacles += w
 
-	val w2 = configuredFindWhitespace(bound, obstacles.toSet).get
+	val w2 = configuredFindWhitespaces(bound, obstacles.toSet).get
 	w2.area should be === 3200
 	obstacles += w2
 
-	val w3 = configuredFindWhitespace(bound, obstacles.toSet).get
+
+	val w3 = configuredFindWhitespaces(bound, obstacles.toSet).get
 	w3.area should be === 600
 	obstacles += w3
 
-	val w4 = configuredFindWhitespace(bound, obstacles.toSet).get
+	val w4 = configuredFindWhitespaces(bound, obstacles.toSet).get
 	w4.area should be === 200
 	obstacles += w4
 
-	val w5 = configuredFindWhitespace(bound, obstacles.toSet).get
+	val w5 = configuredFindWhitespaces(bound, obstacles.toSet).get
 	w5.area should be === 200
 	obstacles += w5
 
-	val w6 = configuredFindWhitespace(bound, obstacles.toSet).get
+	val w6 = configuredFindWhitespaces(bound, obstacles.toSet).get
 	w6.area should be === 200
 	obstacles += w6
 
 
-	val w7 = configuredFindWhitespace(bound, obstacles.toSet)
+	val w7 = configuredFindWhitespaces(bound, obstacles.toSet)
 	w7 should be === None
+	*/
 	}
 	}
 	}

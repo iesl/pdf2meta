@@ -68,19 +68,19 @@ trait WebPipelineComponent extends ((Workspace) => (DocNode, ClassifiedRectangle
     {
     def apply(w: Workspace): (DocNode, ClassifiedRectangles) =
       {
-      logger.debug("Starting XML extraction...")
+      logger.debug("Starting PDF extraction...")
       val startTime = new Date
-      logger.debug("Running XML extraction...")
+      //logger.debug("Running PDF extraction...")
 
       val doc = pdfExtractor(w)
 
-      logger.debug("XML extraction done ")
+      //logger.debug("PDF extraction done ")
       val extractTime = new Date()
 
-      logger.debug("XML extraction took " + ((extractTime.getTime - startTime.getTime)) + " milliseconds")
+      logger.debug("PDF extraction took " + ((extractTime.getTime - startTime.getTime)) + " milliseconds")
       val regrouped = docTransformer(doc)
 
-      logger.debug("XML extraction done ")
+      //logger.debug("Regrouping done ")
       val regroupTime = new Date()
 
       logger.debug("Regrouping took " + ((regroupTime.getTime - extractTime.getTime)) + " milliseconds")
@@ -88,7 +88,7 @@ trait WebPipelineComponent extends ((Workspace) => (DocNode, ClassifiedRectangle
       val segments: ClassifiedRectangles = coarseSegmenter(regrouped)
 
 
-      logger.debug("Regrouping done ")
+      //logger.debug("Regrouping done ")
       val labellingTime = new Date()
 
       logger.debug("Labelling took " + ((labellingTime.getTime - regroupTime.getTime)) + " milliseconds")

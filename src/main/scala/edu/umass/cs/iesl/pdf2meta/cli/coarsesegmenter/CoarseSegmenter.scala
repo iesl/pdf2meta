@@ -153,10 +153,7 @@ object ClassifiedRectangles
 			override val bodyText    : Seq[BodyTextSection]       = Seq(new UndifferentiatedBodyTextSection(cr.body))
 			override val authors                                  =
 				{
-				val a = cr.authors.split("and|,").map(fullname => new AuthorInRole(new Person()
-					{
-					override val name = Some(fullname)
-					}, Nil)).toList
+				val a = cr.authors.split("and|,").map(fullname => new AuthorInRole(Person(fullname), Nil)).toList
 				a
 				}
 			override val references  : Seq[StructuredCitation]    = cr.referenceStrings.map(s => new StructuredCitation()
