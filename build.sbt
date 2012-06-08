@@ -26,7 +26,7 @@ libraryDependencies += "org.slf4j" % "jcl-over-slf4j" % "1.6.4"
 
 resolvers += "David Soergel Repo" at "http://dev.davidsoergel.com/nexus/content/groups/public"
 
-resolvers += "David Soergel Snapshots" at "http://dev.davidsoergel.com/nexus/content/groups/snapshots"
+resolvers += "David Soergel Snapshots" at "http://dev.davidsoergel.com/nexus/content/repositories/snapshots"
 
 resolvers += "IESL Repo" at "https://dev-iesl.cs.umass.edu/content/repositories/releases"
 
