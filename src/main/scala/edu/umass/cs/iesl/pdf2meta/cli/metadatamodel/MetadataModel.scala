@@ -2,6 +2,7 @@ package edu.umass.cs.iesl.pdf2meta.cli.metadatamodel
 
 import edu.umass.cs.iesl.bibmogrify.model._
 import java.net.URL
+import edu.umass.cs.iesl.scalacommons.NonemptyString
 
 /*
 @deprecated
@@ -40,7 +41,8 @@ object SimpleMetadataModel
 */
 // case classes?
 class SimpleMetadataModel(sourcefile: URL, idauth: IdentifierAuthority, docid: String, //pubmedid?
-                          pubyear: Option[Int], override val title: Option[String], override val authors: Seq[AuthorInRole], paperAbstract: String, body: String, referenceStrings: List[String], referenceIds: List[String],
+                          pubyear: Option[Int], override val title: Option[NonemptyString], override val authors: Seq[AuthorInRole], paperAbstract: String,
+                          body: String, referenceStrings: List[String], referenceIds: List[String],
                           override val containedIn: Option[ContainmentInfo]) extends StructuredCitation {
   override val doctype: Option[DocType] = None //JournalArticle
   // val docSubtype: Option[String] = None // for journal articles: Letter; Application Note; Research Article, etc.  For grants: R01, K99, etc.

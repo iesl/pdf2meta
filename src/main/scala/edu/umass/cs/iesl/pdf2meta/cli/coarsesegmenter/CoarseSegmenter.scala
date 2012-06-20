@@ -6,7 +6,7 @@ import edu.umass.cs.iesl.scalacommons.StringUtils._
 import edu.umass.cs.iesl.bibmogrify.model.CitationUtils._
 import collection.Seq
 import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel._
-import edu.umass.cs.iesl.scalacommons.{ListUtils, StringUtils}
+import edu.umass.cs.iesl.scalacommons.{NonemptyString, ListUtils, StringUtils}
 
 trait CoarseSegmenter extends (DocNode => ClassifiedRectangles)
 
@@ -143,7 +143,7 @@ object ClassifiedRectangles
 		{
 		new StructuredCitation
 			{
-			override val title       : Option[String]             = cr.title
+			override val title       : Option[NonemptyString]             = StringUtils.emptyStringToNone(cr.title)
 			override val doctype     : Option[DocType]            = JournalArticle
 			override val abstractText: Iterable[TextWithLanguage] = cr.paperAbstract match
 			{
@@ -158,7 +158,7 @@ object ClassifiedRectangles
 				}
 			override val references  : Seq[StructuredCitation]    = cr.referenceStrings.map(s => new StructuredCitation()
 				{
-				override val unstructuredString : Option[String] = s
+				override val unstructuredString : Option[NonemptyString] = s
 				})
 			}
 		}
