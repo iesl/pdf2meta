@@ -1,11 +1,13 @@
 import sbt._
-import edu.umass.cs.iesl.sbtbase.IeslProject
+import edu.umass.cs.iesl.sbtbase.Dependencies
 import edu.umass.cs.iesl.sbtbase.IeslProject._
-import edu.umass.cs.iesl.sbtbase.Dependencies._
 
-// this is just an example, to show how simple a build can be once all the boilerplate stuff is factored out.
 
 object Pdf2MetaBuild extends Build {
+
+  implicit val allDeps: Dependencies = new Dependencies(); //(CleanLogging.excludeLoggers)  // doesn't work?
+
+  import allDeps._
 
   val vers = "0.1-SNAPSHOT"
 
@@ -14,15 +16,16 @@ object Pdf2MetaBuild extends Build {
     bibmogrify("latest.integration"),
     liftJson(),
     scalatest(),
-    scalacheck(),
+    // scalacheck(),
     classutil(),
     pdfbox("1.6.0"),
     jclOverSlf4j()
     )
 
 
-  lazy val pdf2meta = IeslProject("pdf2meta", vers, deps, Public, WithSnapshotDependencies)
+  lazy val pdf2meta = Project("pdf2meta", file(".")).ieslSetup(vers, deps, Public, WithSnapshotDependencies).cleanLogging.standardLogging()
 
+///       .ieslSetup(vers, deps, Public, WithSnapshotDependencies, org = organization, conflict = ConflictStrict)
 }
  /*
 libraryDependencies +=  "edu.umass.cs.iesl" %% "scalacommons" % "0.1-SNAPSHOT"  changing()
