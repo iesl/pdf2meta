@@ -5,14 +5,14 @@ import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.Rectangle
 import org.scalacheck.Gen
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.Spec
+import org.scalatest.FunSpec
 
 /**
  * @author <a href="mailto:dev@davidsoergel.com">David Soergel</a>
  * @version $Id$
  */
 
-class RectangularReadingOrderTest extends Spec with ShouldMatchers with GeneratorDrivenPropertyChecks {
+class RectangularReadingOrderTest extends FunSpec with ShouldMatchers with GeneratorDrivenPropertyChecks {
 
   val compareRectanglesSolid = PrivateMethod[Option[Int]]('compareRectanglesSolid)
 

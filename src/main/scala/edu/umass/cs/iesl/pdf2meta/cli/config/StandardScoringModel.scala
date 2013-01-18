@@ -5,6 +5,8 @@ import scala.Predef._
 import scala.{Float, Some}
 import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel._
 import edu.umass.cs.iesl.pdf2meta.cli.coarsesegmenter._
+import edu.umass.cs.iesl.scalacommons.Lexicon
+import edu.umass.cs.iesl.pdf2meta.cli.coarsesegmenter.Lexicon
 
 /*
 trait ScoringModelComponent
@@ -453,6 +455,7 @@ object StandardScoringModel extends ScoringModel with Logging
 					{
 					val m = lex.matches(box.text.split("\\W")) // not .toLowerCase
 					val prop = m.mkString("").length.toFloat / t.length.toFloat
+            
 					linearBetween(min, max)(prop)
 					}
 			}

@@ -3,6 +3,7 @@ package edu.umass.cs.iesl.pdf2meta.cli.metadatamodel
 import edu.umass.cs.iesl.bibmogrify.model._
 import java.net.URL
 import edu.umass.cs.iesl.scalacommons.NonemptyString
+import edu.umass.cs.iesl.scalacommons.StringUtils._
 
 /*
 @deprecated
@@ -40,7 +41,7 @@ object SimpleMetadataModel
   }
 */
 // case classes?
-class SimpleMetadataModel(sourcefile: URL, idauth: IdentifierAuthority, docid: String, //pubmedid?
+class SimpleMetadataModel(sourcefile: URL, idauth: IdentifierAuthority, docid: NonemptyString, //pubmedid?
                           pubyear: Option[Int], override val title: Option[NonemptyString], override val authors: Seq[AuthorInRole], paperAbstract: String,
                           body: String, referenceStrings: List[String], referenceIds: List[String],
                           override val containedIn: Option[ContainmentInfo]) extends StructuredCitation {
@@ -54,10 +55,8 @@ class SimpleMetadataModel(sourcefile: URL, idauth: IdentifierAuthority, docid: S
     override val authority = Some(idauth)
     override val value = docid
   })
-  override val locations: Seq[Location] = Seq(new Location() {
-    val url = sourcefile;
-    val hashes = Nil
-  })
+  override val locations: Seq[Location] = Seq(BasicUrlLocation(sourcefile, Nil))
+  
   // val supplementaryLocations: Seq[Location] = Nil // where to find supplementary material, databases, etc.
   //val containedIn: Option[ContainmentInfo] = None // journal, book, proceedings, etc.
   // val publisher: Option[Institution] = None // likely blank when there is containedIn, i.e. paper -> journal -> publisher
@@ -76,7 +75,8 @@ class SimpleMetadataModel(sourcefile: URL, idauth: IdentifierAuthority, docid: S
 
   override val abstractText: Iterable[TextWithLanguage] = paperAbstract match {
     case "" => None
-    case a => Some(new TextWithLanguage(None, a)) }
+    case a => TextWithLanguage(None, a)
+  }
     // val introText: Option[String] = None
     // val bodyText: Option[String] = None
 

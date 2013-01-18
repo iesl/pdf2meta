@@ -1,13 +1,13 @@
 package edu.umass.cs.iesl.pdf2meta.cli.layoutmodel
 
 import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.{BeforeAndAfter, Spec}
+import org.scalatest.{BeforeAndAfter, FunSpec}
 
 /**
  * @author <a href="mailto:dev@davidsoergel.com">David Soergel</a>
  * @version $Id$
  */
-class RealRectangleTest extends Spec with ShouldMatchers with BeforeAndAfter
+class RealRectangleTest extends FunSpec with ShouldMatchers with BeforeAndAfter
 	{
 	describe("A pair of rectangles")
 	{

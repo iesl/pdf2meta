@@ -16,7 +16,7 @@ object Pdf2MetaBuild extends Build {
     bibmogrify("latest.integration"),
     liftJson(),
     scalatest(),
-    // scalacheck(),
+    scalacheck(),
     classutil(),
     pdfbox("1.6.0"),
     jclOverSlf4j()

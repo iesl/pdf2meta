@@ -1,7 +1,7 @@
 package edu.umass.cs.iesl.pdf2meta.cli.pagetransform
 
 import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.{BeforeAndAfter, Spec}
+import org.scalatest.{FunSpec, BeforeAndAfter}
 import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.Rectangle
 import util.Random
 import collection.mutable
@@ -10,7 +10,7 @@ import collection.mutable
  * @author <a href="mailto:dev@davidsoergel.com">David Soergel</a>
  * @version $Id$
  */
-class WhitespaceDocPartitionerTest extends Spec with ShouldMatchers with BeforeAndAfter
+class WhitespaceDocPartitionerTest extends FunSpec with ShouldMatchers with BeforeAndAfter
 	{
 
 	val p                                                      = new WhitespaceDocPartitioner

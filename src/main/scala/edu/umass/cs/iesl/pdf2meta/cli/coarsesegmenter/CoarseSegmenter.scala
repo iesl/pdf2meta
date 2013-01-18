@@ -6,7 +6,7 @@ import edu.umass.cs.iesl.scalacommons.StringUtils._
 import edu.umass.cs.iesl.bibmogrify.model.CitationUtils._
 import collection.Seq
 import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel._
-import edu.umass.cs.iesl.scalacommons.{NonemptyString, ListUtils, StringUtils}
+import edu.umass.cs.iesl.scalacommons.{NonemptyString, ListUtils}
 
 trait CoarseSegmenter extends (DocNode => ClassifiedRectangles)
 
@@ -120,7 +120,7 @@ class ClassifiedRectangles(val raw: Seq[ClassifiedRectangle])
 		// and/or, look for "hanging-indent" annotation
 		//val refStrings = individualReferences.map(_.text.removeNewlines)
 
-		val refStrings = refGroups.map(group => group.map(_.text).mkString(" ").removeNewlines)
+		val refStrings = refGroups.map(group => group.map(_.text).mkString(" ").maskNewlines)
 		refStrings
 		}
 
@@ -136,24 +136,27 @@ class ClassifiedRectangles(val raw: Seq[ClassifiedRectangle])
 
 object ClassifiedRectangles
 	{
-	import StringUtils.emptyStringToNone
+  //import Option.option2Iterable  // does Predef not provide this !???
+    
 	//** this shouldn't really be implicit; too much magic?  Or, it's OK because the magic is above?
 	// could be just another Transformer
 	implicit def classifiedRectanglesToStructuredCitation: (ClassifiedRectangles) => StructuredCitation = cr =>
 		{
 		new StructuredCitation
 			{
-			override val title       : Option[NonemptyString]             = StringUtils.emptyStringToNone(cr.title)
+			override val title       : Option[NonemptyString]             = cr.title.opt
 			override val doctype     : Option[DocType]            = JournalArticle
-			override val abstractText: Iterable[TextWithLanguage] = cr.paperAbstract match
-			{
-				case "" => None
-				case a  => Some(new TextWithLanguage(None, a))
-			}
+			override val abstractText: Iterable[TextWithLanguage] = {
+        val result: Option[TextWithLanguage] = cr.paperAbstract match {
+          case "" => None
+          case a  => TextWithLanguage(None, a)
+        }
+        result
+      }
 			override val bodyText    : Seq[BodyTextSection]       = Seq(new UndifferentiatedBodyTextSection(cr.body))
 			override val authors                                  =
 				{
-				val a = cr.authors.split("and|,").map(fullname => new AuthorInRole(Person(fullname), Nil)).toList
+				val a = cr.authors.split("and|,").map(fullname => new AuthorInRole(Person(fullname.n), Nil)).toList
 				a
 				}
 			override val references  : Seq[StructuredCitation]    = cr.referenceStrings.map(s => new StructuredCitation()

@@ -1,13 +1,13 @@
 package edu.umass.cs.iesl.pdf2meta.cli.layoutmodel
 
 import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.{BeforeAndAfter, Spec}
+import org.scalatest.{FunSpec, BeforeAndAfter}
 
 /**
  * @author <a href="mailto:dev@davidsoergel.com">David Soergel</a>
  * @version $Id$
  */
-class RectangleTest extends Spec with ShouldMatchers with BeforeAndAfter
+class RectangleTest extends FunSpec with ShouldMatchers with BeforeAndAfter
 	{
 
 	val x = Rectangle(1, 1, 2, 2)

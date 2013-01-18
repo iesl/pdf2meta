@@ -1,6 +1,6 @@
 package edu.umass.cs.iesl.pdf2meta.cli.readingorder
 
-import org.scalatest.{BeforeAndAfter, Spec}
+import org.scalatest.{FunSpec, BeforeAndAfter}
 import org.scalatest.matchers.ShouldMatchers
 import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.RealRectangle
 
@@ -10,7 +10,7 @@ import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.RealRectangle
  * @version $Id$
  */
 
-class OverlapRatiosTest extends Spec with ShouldMatchers with BeforeAndAfter {
+class OverlapRatiosTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
 
   val basis = new RealRectangle(10, 20, 100, 200)
 
