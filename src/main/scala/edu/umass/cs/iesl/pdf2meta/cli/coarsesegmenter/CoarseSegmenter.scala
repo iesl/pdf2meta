@@ -6,7 +6,7 @@ import edu.umass.cs.iesl.scalacommons.StringUtils._
 import edu.umass.cs.iesl.bibmogrify.model.CitationUtils._
 import collection.Seq
 import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel._
-import edu.umass.cs.iesl.scalacommons.{NonemptyString, ListUtils}
+import edu.umass.cs.iesl.scalacommons.{StringUtils, NonemptyString, ListUtils}
 
 trait CoarseSegmenter extends (DocNode => ClassifiedRectangles)
 
