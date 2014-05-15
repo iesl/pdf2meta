@@ -1,6 +1,6 @@
 package edu.umass.cs.iesl.pdf2meta.cli.pagetransform
 
-import com.weiglewilczek.slf4s.Logging
+import com.typesafe.scalalogging.slf4j.Logging
 import collection.Seq
 import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.{InternalDocNode, WhitespacePartitionedDocNode, DocNode}
 

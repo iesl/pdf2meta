@@ -1,6 +1,6 @@
 package edu.umass.cs.iesl.pdf2meta.cli.config
 
-import com.weiglewilczek.slf4s.Logging
+import com.typesafe.scalalogging.slf4j.Logging
 import scala.Predef._
 import scala.{Float, Some}
 import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel._

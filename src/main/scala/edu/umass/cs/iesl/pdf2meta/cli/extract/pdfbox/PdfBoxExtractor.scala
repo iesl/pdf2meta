@@ -1,7 +1,7 @@
 package edu.umass.cs.iesl.pdf2meta.cli.extract.pdfbox
 
 import edu.umass.cs.iesl.scalacommons.Workspace
-import com.weiglewilczek.slf4s.Logging
+import com.typesafe.scalalogging.slf4j.Logging
 import org.apache.pdfbox.exceptions.InvalidPasswordException
 import org.apache.pdfbox.pdmodel.{PDPage, PDDocument}
 import collection.mutable.Buffer

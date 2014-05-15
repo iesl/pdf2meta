@@ -3,7 +3,7 @@ package edu.umass.cs.iesl.pdf2meta
 import cli.metadatamodel.{Venue, Author,  SimpleMetadataModel}
 import scala.xml.factory.XMLLoader
 import javax.xml.parsers.SAXParser
-import com.weiglewilczek.slf4s.Logging
+import com.typesafe.scalalogging.slf4j.Logging
 import tools.nsc.io.File
 import xml.{Text, NodeSeq, Elem}
 import scala.actors.Actor._

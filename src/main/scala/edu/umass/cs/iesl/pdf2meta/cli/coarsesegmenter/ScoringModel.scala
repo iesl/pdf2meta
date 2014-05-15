@@ -1,6 +1,6 @@
 package edu.umass.cs.iesl.pdf2meta.cli.coarsesegmenter
 
-import com.weiglewilczek.slf4s.Logging
+import com.typesafe.scalalogging.slf4j.Logging
 import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel._
 import edu.umass.cs.iesl.scalacommons.collections.WeightedSet
 import scala.Tuple2

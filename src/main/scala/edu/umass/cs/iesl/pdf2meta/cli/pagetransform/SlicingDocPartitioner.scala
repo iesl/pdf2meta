@@ -2,7 +2,7 @@ package edu.umass.cs.iesl.pdf2meta.cli.pagetransform
 
 import collection.Seq
 import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel._
-import com.weiglewilczek.slf4s.Logging
+import com.typesafe.scalalogging.slf4j.Logging
 import edu.umass.cs.iesl.scalacommons.FloatIntervals
 import scala.None
 
