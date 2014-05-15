@@ -1,7 +1,7 @@
 package edu.umass.cs.iesl.pdf2meta.cli.pagetransform
 
 import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.DocNode
-import com.weiglewilczek.slf4s.Logging
+import com.typesafe.scalalogging.slf4j.Logging
 import java.util.Date
 
 trait DocTransformerPipelineComponent extends DocTransformer with Logging //extends DocTransformerComponent

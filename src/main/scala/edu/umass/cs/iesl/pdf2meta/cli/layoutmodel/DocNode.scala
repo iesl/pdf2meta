@@ -1,7 +1,7 @@
 package edu.umass.cs.iesl.pdf2meta.cli.layoutmodel
 
 import scala.collection.Seq
-import com.weiglewilczek.slf4s.Logging
+import com.typesafe.scalalogging.slf4j.Logging
 import edu.umass.cs.iesl.scalacommons.OrderedTreeNode
 import scala.Predef._
 import scala._

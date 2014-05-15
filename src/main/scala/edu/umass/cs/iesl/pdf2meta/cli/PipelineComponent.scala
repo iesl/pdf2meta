@@ -5,7 +5,7 @@ import extract.PdfExtractor
 import layoutmodel.DocNode
 import pagetransform.DocTransformer
 import java.util.Date
-import com.weiglewilczek.slf4s.Logging
+import com.typesafe.scalalogging.slf4j.Logging
 import edu.umass.cs.iesl.scalacommons.Workspace
 import edu.umass.cs.iesl.bibmogrify.model.StructuredCitation
 

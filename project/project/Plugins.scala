@@ -11,12 +11,10 @@ object IeslPluginLoader extends Build
     //.settings(resolvers += "IESL Public Snapshots" at "https://dev-iesl.cs.umass.edu/nexus/content/groups/public-snapshots")
     .settings(addSbtPlugin("edu.umass.cs.iesl" %% "iesl-sbt-base" % "latest.release")) // apparently buggy: "latest.integration" changing()
     // Our Nexus can't proxy this Ivy-format repo
-    .settings(resolvers +=
-    Resolver.url("artifactory", url("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases"))(Resolver
-      .ivyStylePatterns))
-    .settings(addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.8.4"))
-    .settings(addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.6.0"))
-    .settings(addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.1.0"))
+    .settings(resolvers += Resolver.url("artifactory", url("http://scalasbt.artifactoryonline.com/asbt/sbt-plugin-releases"))(Resolver.ivyStylePatterns))
+    .settings(addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.11.2"))
+    .settings(addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.7.4"))
+    .settings(addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.5.2"))
 }
 
 

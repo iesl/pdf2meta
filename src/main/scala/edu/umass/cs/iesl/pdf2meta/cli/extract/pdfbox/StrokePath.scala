@@ -2,7 +2,7 @@ package edu.umass.cs.iesl.pdf2meta.cli.extract.pdfbox
 
 import org.apache.pdfbox.util.operator.OperatorProcessor
 
-import com.weiglewilczek.slf4s.Logging
+import com.typesafe.scalalogging.slf4j.Logging
 import org.apache.pdfbox.cos.COSBase
 import org.apache.pdfbox.util._
 import org.apache.pdfbox.util.Matrix

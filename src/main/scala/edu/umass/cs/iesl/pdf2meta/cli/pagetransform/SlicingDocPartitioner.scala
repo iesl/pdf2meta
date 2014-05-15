@@ -2,7 +2,7 @@ package edu.umass.cs.iesl.pdf2meta.cli.pagetransform
 
 import collection.Seq
 import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel._
-import com.weiglewilczek.slf4s.Logging
+import com.typesafe.scalalogging.slf4j.Logging
 import edu.umass.cs.iesl.scalacommons.FloatIntervals
 import scala.None
 
@@ -206,7 +206,7 @@ class SlicingDocPartitioner extends PreOrderDocTransformer with Logging
 						                                         1000) // , vrect.width)  // always honor vertical partitions
 
 
-						Some(p, vrect.area)
+						Some(p -> vrect.area)
 						}
 					}
 				case None    => None
