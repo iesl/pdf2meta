@@ -101,26 +101,26 @@ trait ExtendedMatchDPAligner[S, L] extends SequenceAligner[S, L] with Logging
       case (Nil, Nil) => None
       case (i, Nil) =>
         {
-        val insertPrefix: (Option[DPCell[S, L]], Double) = memoh(i.tail, Nil).map((c: DPCell[S, L]) => (Some(c), c.score)).getOrElse((None, 0))
+        val insertPrefix: (Option[DPCell[S, L]], Double) = memoh(i.tail -> Nil).map((c: DPCell[S, L]) => (Some(c), c.score)).getOrElse((None, 0d))
         Some(createCell(None, None, insertPrefix._1, i.length * beforeStartTextSkipPenalty))
         }
       case (Nil, j) =>
         {
-        val deletePrefix: (Option[DPCell[S, L]], Double) = memoh(Nil, j.tail).map((c: DPCell[S, L]) => (Some(c), c.score)).getOrElse((None, 0))
+        val deletePrefix: (Option[DPCell[S, L]], Double) = memoh(Nil -> j.tail).map((c: DPCell[S, L]) => (Some(c), c.score)).getOrElse((None, 0d))
         Some(createCell(None, None, deletePrefix._1, j.length * beforeStartLabelSkipPenalty))
         }
       case (i, j) =>
         {
         //logger.debug("Computing DP cell: " + i.length + ", " + j.length)
-        val matchPrefix: (Option[DPCell[S, L]], Double) = memoh(i.tail, j.tail).map((c: DPCell[S, L]) => (Some(c), c.score)).getOrElse((None, 0))
+        val matchPrefix: (Option[DPCell[S, L]], Double) = memoh(i.tail -> j.tail).map((c: DPCell[S, L]) => (Some(c), c.score)).getOrElse((None, 0d))
         val matchMove = scoreMatch(i, j, matchPrefix._1)
         val matchScore: Double = matchPrefix._2 + matchMove._3
 
-        val insertPrefix: (Option[DPCell[S, L]], Double) = memoh(i.tail, j).map((c: DPCell[S, L]) => (Some(c), c.score)).getOrElse((None, 0))
+        val insertPrefix: (Option[DPCell[S, L]], Double) = memoh(i.tail -> j).map((c: DPCell[S, L]) => (Some(c), c.score)).getOrElse((None, 0d))
         val insertMove = scoreInsert(i, j, insertPrefix._1)
         val insertScore = insertPrefix._2 + insertMove._3
 
-        val deletePrefix: (Option[DPCell[S, L]], Double) = memoh(i, j.tail).map((c: DPCell[S, L]) => (Some(c), c.score)).getOrElse((None, 0))
+        val deletePrefix: (Option[DPCell[S, L]], Double) = memoh(i -> j.tail).map((c: DPCell[S, L]) => (Some(c), c.score)).getOrElse((None, 0d))
         val deleteMove = scoreDelete(i, j, deletePrefix._1)
         val deleteScore = deletePrefix._2 + deleteMove._3
 
@@ -147,8 +147,7 @@ trait ExtendedMatchDPAligner[S, L] extends SequenceAligner[S, L] with Logging
 
     val alignment: List[(Option[S], Option[L])] = for (c: DPCell[S, L] <- bestCell.traceback.reverse) yield (c.x, c.y)
 
-    def debug
-      {
+    def debug() {
       val tr = bestCell.traceback
       val tabTable: String = (for (j <- Range(0, labels.length + 1)) yield
         {

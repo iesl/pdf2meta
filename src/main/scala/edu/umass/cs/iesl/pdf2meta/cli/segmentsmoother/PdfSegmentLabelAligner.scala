@@ -59,7 +59,7 @@ class PdfSegmentLabelAligner(val model: CoarseLabelModel) extends ExtendedMatchD
      */
     // note emitting "None" as the aligned symbol produces a skip, which will later be overridden with the local label
 
-    lazy val alignedLabels: List[String] = prefix.map(_.traceback).map(_.map(c => c.y)).flatten.toList.flatten
+      lazy val alignedLabels: List[String] = List() // TODO prefix.map(_.traceback).map(_.map(c => c.y)).flatten.toList.flatten
 
     val (previousLabelBlocks: Int, previousLabelTextLength: Int) = prefix.head match
     {

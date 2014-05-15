@@ -1,7 +1,7 @@
 package edu.umass.cs.iesl.pdf2meta.cli.readingorder
 
 import org.scalatest.{FunSpec, BeforeAndAfter}
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.Matchers
 import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.RealRectangle
 
 
@@ -10,7 +10,7 @@ import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.RealRectangle
  * @version $Id$
  */
 
-class OverlapRatiosTest extends FunSpec with ShouldMatchers with BeforeAndAfter {
+class OverlapRatiosTest extends FunSpec with Matchers with BeforeAndAfter {
 
   val basis = new RealRectangle(10, 20, 100, 200)
 
@@ -19,50 +19,50 @@ class OverlapRatiosTest extends FunSpec with ShouldMatchers with BeforeAndAfter 
     val o = new OverlapRatios(fullyAboveLeft, basis)
 
     it("produces the expected above rectangle") {
-      o.above should be === fullyAboveLeft
+      o.above shouldEqual fullyAboveLeft
     }
 
     it("produces the expected middleY rectangle") {
-      o.middleY should be === new RealRectangle(8, 200, 9, 200)
+      o.middleY shouldEqual new RealRectangle(8, 200, 9, 200)
     }
 
     it("produces the expected below rectangle") {
-      o.below should be === new RealRectangle(8, 20, 9, 20)
+      o.below shouldEqual new RealRectangle(8, 20, 9, 20)
     }
 
     it("produces the expected left rectangle") {
-      o.left should be === fullyAboveLeft
+      o.left shouldEqual fullyAboveLeft
     }
 
     it("produces the expected middleX rectangle") {
-      o.middleX should be === new RealRectangle(10, 201, 10, 202)
+      o.middleX shouldEqual new RealRectangle(10, 201, 10, 202)
     }
 
     it("produces the expected right rectangle") {
-      o.right should be === new RealRectangle(100, 201, 100, 202)
+      o.right shouldEqual new RealRectangle(100, 201, 100, 202)
     }
 
     it("has the expected fully contained relationship with the basis") {
-      o.fullyContained should be === false
+      o.fullyContained shouldEqual false
     }
 
     it("has the expected fully relationships with the basis") {
-      o.fullyAbove should be === true
-      o.fullyLeftOf should be === true
-      o.fullyBelow should be === false
-      o.fullyRightOf should be === false
+      o.fullyAbove shouldEqual true
+      o.fullyLeftOf shouldEqual true
+      o.fullyBelow shouldEqual false
+      o.fullyRightOf shouldEqual false
     }
 
     it("has the expected mostly relationships with the basis") {
-      o.mostlyAbove should be === true
-      o.mostlyLeftOf should be === true
-      o.mostlyBelow should be === false
-      o.mostlyRightOf should be === false
+      o.mostlyAbove shouldEqual true
+      o.mostlyLeftOf shouldEqual true
+      o.mostlyBelow shouldEqual false
+      o.mostlyRightOf shouldEqual false
     }
 
     it("has the expected starts relationships with the basis") {
-      o.startsAboveLeft should be === true
-      o.startsBelowRight should be === false
+      o.startsAboveLeft shouldEqual true
+      o.startsBelowRight shouldEqual false
     }
 
     /*
@@ -78,31 +78,31 @@ class OverlapRatiosTest extends FunSpec with ShouldMatchers with BeforeAndAfter 
      */
 
     it("produces the expected above-left rectangle") {
-      o.aboveLeft should be === Some(fullyAboveLeft)
+      o.aboveLeft shouldEqual Some(fullyAboveLeft)
     }
     it("produces the expected above-middle rectangle") {
-      o.aboveMiddle should be === None
+      o.aboveMiddle shouldEqual None
     }
     it("produces the expected above-right rectangle") {
-      o.aboveRight should be === None
+      o.aboveRight shouldEqual None
     }
     it("produces the expected middle-left rectangle") {
-      o.middleLeft should be === None
+      o.middleLeft shouldEqual None
     }
     it("produces the expected middle-middle rectangle") {
-      o.middleMiddle should be === None
+      o.middleMiddle shouldEqual None
     }
     it("produces the expected middle-right rectangle") {
-      o.middleRight should be === None
+      o.middleRight shouldEqual None
     }
     it("produces the expected below-left rectangle") {
-      o.belowLeft should be === None
+      o.belowLeft shouldEqual None
     }
     it("produces the expected below-middle rectangle") {
-      o.belowMiddle should be === None
+      o.belowMiddle shouldEqual None
     }
     it("produces the expected below-right rectangle") {
-      o.belowRight should be === None
+      o.belowRight shouldEqual None
     }
   }
 
@@ -112,50 +112,50 @@ class OverlapRatiosTest extends FunSpec with ShouldMatchers with BeforeAndAfter 
     val o = new OverlapRatios(partlyAboveLeft, basis)
 
     it("produces the expected above rectangle") {
-      o.above should be === new RealRectangle(8, 200, 11, 202)
+      o.above shouldEqual new RealRectangle(8, 200, 11, 202)
     }
 
     it("produces the expected middleY rectangle") {
-      o.middleY should be === new RealRectangle(8, 199, 11, 200)
+      o.middleY shouldEqual new RealRectangle(8, 199, 11, 200)
     }
 
     it("produces the expected below rectangle") {
-      o.below should be === new RealRectangle(8, 20, 11, 20)
+      o.below shouldEqual new RealRectangle(8, 20, 11, 20)
     }
 
     it("produces the expected left rectangle") {
-      o.left should be === new RealRectangle(8, 199, 10, 202)
+      o.left shouldEqual new RealRectangle(8, 199, 10, 202)
     }
 
     it("produces the expected middleX rectangle") {
-      o.middleX should be === new RealRectangle(10, 199, 11, 202)
+      o.middleX shouldEqual new RealRectangle(10, 199, 11, 202)
     }
 
     it("produces the expected right rectangle") {
-      o.right should be === new RealRectangle(100, 199, 100, 202)
+      o.right shouldEqual new RealRectangle(100, 199, 100, 202)
     }
 
     it("has the expected fully contained relationship with the basis") {
-      o.fullyContained should be === false
+      o.fullyContained shouldEqual false
     }
 
     it("has the expected fully relationships with the basis") {
-      o.fullyAbove should be === false
-      o.fullyLeftOf should be === false
-      o.fullyBelow should be === false
-      o.fullyRightOf should be === false
+      o.fullyAbove shouldEqual false
+      o.fullyLeftOf shouldEqual false
+      o.fullyBelow shouldEqual false
+      o.fullyRightOf shouldEqual false
     }
 
     it("has the expected mostly relationships with the basis") {
-      o.mostlyAbove should be === true
-      o.mostlyLeftOf should be === true
-      o.mostlyBelow should be === false
-      o.mostlyRightOf should be === false
+      o.mostlyAbove shouldEqual true
+      o.mostlyLeftOf shouldEqual true
+      o.mostlyBelow shouldEqual false
+      o.mostlyRightOf shouldEqual false
     }
 
     it("has the expected starts relationships with the basis") {
-      o.startsAboveLeft should be === true
-      o.startsBelowRight should be === false
+      o.startsAboveLeft shouldEqual true
+      o.startsBelowRight shouldEqual false
     }
 
     /*
@@ -171,31 +171,31 @@ class OverlapRatiosTest extends FunSpec with ShouldMatchers with BeforeAndAfter 
      */
 
     it("produces the expected above-left rectangle") {
-      o.aboveLeft should be === Some(new RealRectangle(8, 200, 10, 202))
+      o.aboveLeft shouldEqual Some(new RealRectangle(8, 200, 10, 202))
     }
     it("produces the expected above-middle rectangle") {
-      o.aboveMiddle should be ===  Some(new RealRectangle(10, 200, 11, 202))
+      o.aboveMiddle shouldEqual  Some(new RealRectangle(10, 200, 11, 202))
     }
     it("produces the expected above-right rectangle") {
-      o.aboveRight should be === None
+      o.aboveRight shouldEqual None
     }
     it("produces the expected middle-left rectangle") {
-      o.middleLeft should be ===   Some(new RealRectangle(8, 199, 10, 200))
+      o.middleLeft shouldEqual   Some(new RealRectangle(8, 199, 10, 200))
     }
     it("produces the expected middle-middle rectangle") {
-      o.middleMiddle should be ===   Some(new RealRectangle(10, 199, 11, 200))
+      o.middleMiddle shouldEqual   Some(new RealRectangle(10, 199, 11, 200))
     }
     it("produces the expected middle-right rectangle") {
-      o.middleRight should be === None
+      o.middleRight shouldEqual None
     }
     it("produces the expected below-left rectangle") {
-      o.belowLeft should be === None
+      o.belowLeft shouldEqual None
     }
     it("produces the expected below-middle rectangle") {
-      o.belowMiddle should be === None
+      o.belowMiddle shouldEqual None
     }
     it("produces the expected below-right rectangle") {
-      o.belowRight should be === None
+      o.belowRight shouldEqual None
     }
   }
 

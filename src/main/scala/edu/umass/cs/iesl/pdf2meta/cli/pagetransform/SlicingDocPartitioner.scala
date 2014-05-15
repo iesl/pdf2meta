@@ -206,7 +206,7 @@ class SlicingDocPartitioner extends PreOrderDocTransformer with Logging
 						                                         1000) // , vrect.width)  // always honor vertical partitions
 
 
-						Some(p, vrect.area)
+						Some(p -> vrect.area)
 						}
 					}
 				case None    => None

@@ -17,19 +17,22 @@ object Pdf2MetaBuild extends Build {
   val deps = Seq(
     ieslScalaCommons("latest.integration"),
     bibmogrify("latest.integration"),
-    liftJson(),
+    "org.json4s" %% "json4s-native" % "3.2.9",
     scalatest(),
     scalacheck(),
     classutil(),
     pdfbox("1.6.0"),
-    jclOverSlf4j(),
-
+    //jclOverSlf4j(),
     // these should be provided transitively by scalacommons, but they aren't because it's defined "notTransitive"
-    dsutils(), commonsLang(), classutil(), "com.mongodb.casbah" % "casbah_2.9.0-1" % "2.1.5.0"
-    )
+    dsutils(), commonsLang(), classutil(),
+    "edu.umass.cs.iesl" %% "namejuggler" % "0.1-SNAPSHOT",
+    "org.mongodb" %% "casbah" % "2.5.0"
+  )
 
 
   lazy val pdf2meta = Project("pdf2meta", file(".")).ieslSetup(vers, deps, Public, WithSnapshotDependencies).settings(assemblySettings: _*)
+    .cleanLogging.standardLogging
+    .settings(scalaVersion := "2.10.4")
     .settings(mainClass in assembly := Some("edu.umass.cs.iesl.bibmogrify.BibMogrify"))
     .settings(mergeStrategy in assembly <<= (mergeStrategy in assembly) {
     (old) => {
@@ -46,7 +49,6 @@ object Pdf2MetaBuild extends Build {
         old(x)
       }
     } })
-    .cleanLogging.standardLogging
 
 ///       .ieslSetup(vers, deps, Public, WithSnapshotDependencies, org = organization, conflict = ConflictStrict)
 }
