@@ -29,7 +29,7 @@ CVS
 .classpath
 .settings
 .distfiles
-.ensime
+.ensime*
 .scala_dependencies
 
 # Intellij IDEA files
