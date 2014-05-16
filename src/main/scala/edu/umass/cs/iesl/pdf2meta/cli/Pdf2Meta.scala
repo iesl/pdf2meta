@@ -3,10 +3,6 @@ package edu.umass.cs.iesl.pdf2meta.cli
 import config.{WiredExtractOnlyPipeline, WiredPipeline}
 import layoutmodel.DocNode
 import tools.nsc.io.JFile
-<<<<<<< HEAD
-//import com.typesafe.scalalogging.slf4j.Logging
-=======
->>>>>>> e76b1fb7f4eb4f393d65aef7df75867a65148eb5
 import com.typesafe.scalalogging.slf4j.Logging
 import java.net.URL
 import edu.umass.cs.iesl.scalacommons.{StreamWorkspace, FileWorkspace}
