@@ -24,7 +24,9 @@ object Pdf2MetaBuild extends Build {
     pdfbox("1.6.0"),
     //jclOverSlf4j(),
     // these should be provided transitively by scalacommons, but they aren't because it's defined "notTransitive"
-    dsutils(), commonsLang(), classutil(),
+    dsutils(), commonsLang(), 
+    "org.rogach" %% "scallop" % "0.9.5",
+    "org.clapper" %% "classutil" % "1.0.4",
     "edu.umass.cs.iesl" %% "namejuggler" % "0.1-SNAPSHOT",
     "org.mongodb" %% "casbah" % "2.5.0"
   )

@@ -78,7 +78,10 @@ class SlicingDocPartitioner extends PreOrderDocTransformer with Logging
 			// sort by line thickness so that we later prefer the thickest delimiter
 			val horizontalLines = delimiters.filter(_.rectangle.get.isLandscape).sortBy(x => x.rectangle.get.height)
 
-			val horizontalHoles = FloatIntervals.holesBySize(FloatIntervals.union(nonDelimiters.map(_.rectangle.get.verticalInterval)))
+        val vint = nonDelimiters.map(_.rectangle.get.verticalInterval)
+        val uvint = FloatIntervals.union(vint)
+
+			val horizontalHoles = FloatIntervals.holesBySize(uvint)
 
 			def horizontalLineInHole(line: DocNode) =
 				{
