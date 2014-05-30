@@ -5,10 +5,12 @@ import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel._
 import edu.umass.cs.iesl.scalacommons.{StatsUtils, ListUtils}
 import edu.umass.cs.iesl.pdf2meta.cli.pagetransform.PreOrderDocTransformer
 
+import scala.xml.XML
+
 /**
- * Convert a sequence of characters constituting a line into a single node, inserting spaces as appropriate
+ * Extracts the data from metatagger
  *
- * @author <a href="mailto:dev@davidsoergel.com">David Soergel</a>
+ * @author kzaporojets
  * @version $Id$
  */
 class MetataggerExtractor extends PreOrderDocTransformer with Logging
