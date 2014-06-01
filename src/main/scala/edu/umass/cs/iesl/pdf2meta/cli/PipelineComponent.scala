@@ -99,7 +99,7 @@ trait WebPipelineComponent extends ((Workspace) => (DocNode, ClassifiedRectangle
       }
     }
 
-  class MetataggerPipeline extends Function1[Workspace, (DocNode, ClassifiedRectangles)]
+  class MetataggerPipeline extends Function1[Workspace, (DocNode/*, ClassifiedRectangles*/)]
   {
     def apply(w: Workspace): (DocNode/*, ClassifiedRectangles*/) =
     {
