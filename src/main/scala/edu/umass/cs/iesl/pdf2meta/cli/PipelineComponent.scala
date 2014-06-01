@@ -1,7 +1,7 @@
 package edu.umass.cs.iesl.pdf2meta.cli
 
 import coarsesegmenter.{CoarseSegmenter, ClassifiedRectangles}
-import extract.PdfExtractor
+import edu.umass.cs.iesl.pdf2meta.cli.extract.{MetataggerExtractor, PdfExtractor}
 import layoutmodel.DocNode
 import pagetransform.DocTransformer
 import java.util.Date
@@ -59,10 +59,12 @@ trait ExtractOnlyPipelineComponent extends ((Workspace) => DocNode)
 trait WebPipelineComponent extends ((Workspace) => (DocNode, ClassifiedRectangles)) with Logging
   {
   val pdfExtractor: PdfExtractor
+  val metataggerExtractor: MetataggerExtractor
   val docTransformer: DocTransformer
   val coarseSegmenter: CoarseSegmenter
 
   val pipeline: Pipeline
+  val metataggerPipeline: MetataggerPipeline //MetataggerPipeline
 
   class Pipeline extends Function1[Workspace, (DocNode, ClassifiedRectangles)]
     {
@@ -96,6 +98,40 @@ trait WebPipelineComponent extends ((Workspace) => (DocNode, ClassifiedRectangle
       (regrouped, segments)
       }
     }
+
+  class MetataggerPipeline extends Function1[Workspace, (DocNode, ClassifiedRectangles)]
+  {
+    def apply(w: Workspace): (DocNode/*, ClassifiedRectangles*/) =
+    {
+      logger.debug("Starting PDF extraction...")
+      val startTime = new Date
+      //logger.debug("Running PDF extraction...")
+
+      val doc = metataggerExtractor(w)
+
+      //logger.debug("PDF extraction done ")
+      val extractTime = new Date()
+
+      logger.debug("Metatagger extraction took " + ((extractTime.getTime - startTime.getTime)) + " milliseconds")
+      val regrouped = docTransformer(doc)
+
+      //logger.debug("Regrouping done ")
+      val regroupTime = new Date()
+
+      logger.debug("Regrouping took " + ((regroupTime.getTime - extractTime.getTime)) + " milliseconds")
+
+      val segments: ClassifiedRectangles = coarseSegmenter(regrouped)
+
+
+      //logger.debug("Regrouping done ")
+      val labellingTime = new Date()
+
+      logger.debug("Labelling took " + ((labellingTime.getTime - regroupTime.getTime)) + " milliseconds")
+
+      //(regrouped, segments)
+      (regrouped)
+    }
+  }
 
   def apply(w: Workspace): (DocNode, ClassifiedRectangles) = pipeline.apply(w)
   }

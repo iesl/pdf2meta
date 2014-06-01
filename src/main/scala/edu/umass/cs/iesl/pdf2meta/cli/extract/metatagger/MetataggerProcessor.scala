@@ -13,7 +13,7 @@ import scala.xml.XML
  * @author kzaporojets
  * @version $Id$
  */
-class MetataggerExtractor extends PreOrderDocTransformer with Logging
+class MetataggerProcessor extends PreOrderDocTransformer with Logging
 	{
 	/*
 	 private class WordMerger(threshold: Float)
