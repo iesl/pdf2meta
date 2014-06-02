@@ -11,6 +11,8 @@ import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel._
 import edu.umass.cs.iesl.pdf2meta.cli.extract.pdfbox.LayoutItemsToDocNodes
 import java.awt.Dimension
 import scala.xml._
+import edu.umass.cs.iesl.pdf2meta.cli.coarsesegmenter.{ClassifiedRectangle, ClassifiedRectangles}
+
 /**
  * @author <a href="mailto:dev@davidsoergel.com">David Soergel</a>
  * @version $Id$
@@ -97,22 +99,18 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
 
   def processXMLRecursive(node:Seq[Node], parentName:String, pageDimensions:Rectangle):Seq[DocNode] =
   {
-//    val ptrn = ".*".r
     val ptrn = "([0-9].*)".r
-//    val Pattern = """([0-9])(.*)""".r
-//    println(ptrn.pattern.matcher("hello").find())
     val seqDocNode:Seq[DocNode] = Seq()
-//    node.foreach{currentNode =>
+    val seqClassifiedRectangle:Seq[ClassifiedRectangle] = Seq()
 
+//ClassifiedRectangle(node: DocNode, featureWeights: WeightedSet[Feature], labelWeights: WeightedSet[String],
+// basedOn: Option[ClassifiedRectangle])
     val res = for(currentNode <- node)
       yield
       { (currentNode \ "@llx").text
         match
         {
           case ptrn(_) =>
-            //          println(parentName + currentNode.label + ": " + (currentNode \ "@llx").text)
-
-
             println(currentNode.label + ": " + (currentNode \ "@llx").text)
             //(id: String,  val theRectangle: RectangleOnPage)
             val currNode: DocNode = new DelimitingBox((currentNode \ "@llx").text + (currentNode \ "@lly").text +
@@ -124,15 +122,20 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
               override val right: Float = (currentNode \ "@urx").text.toFloat
             })
 
-            //seqDocNode :+ currNode
-            (seqDocNode ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + "->",pageDimensions)) :+ currNode
+            //val classifiedRectangles:ClassifiedRectangles = new ClassifiedRectangles()
+            ((seqDocNode ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + "->",pageDimensions)) :+ currNode, seqClassifiedRectangle)
 
           case _ =>
-            seqDocNode
+            (seqDocNode, seqClassifiedRectangle)
           //println("Not match: " + parentName + currentNode.label + ":" + (currentNode \ "@llx").text)
         }
       }
-      res.flatten
+
+
+      //val res2 = (1,2,3)
+      val res2 = res.map{t:((Seq[DocNode], Seq[ClassifiedRectangle])) => t._1}
+   // t:(Double, Double) => t._1 * t._2
+      res2.flatten
  //   seqDocNode
   }
 }
