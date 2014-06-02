@@ -45,7 +45,10 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
     val docNodes:Seq[DocNode] = processXMLRecursive(documentMT \\ "headers", "")
 //    recursiveXMLProcess(documentMT)
     println ("end of trying to get llx from the header")
-    val document: PDDocument = PDDocument.load(v1.file.bufferedInput())
+    val internalDoc:InternalDocNode = new InternalDocNode("id_val", docNodes, Some((List("val")).toIterator), Some((List("val")).toIterator))
+
+    internalDoc
+/*    val document: PDDocument = PDDocument.load(v1.file.bufferedInput())
     //      new InternalDocNode("root", new List(new DocNode("1",None, None), None, None))
     import collection.JavaConversions._
     val allPagesB: Buffer[_] = document.getDocumentCatalog.getAllPages;
@@ -80,7 +83,7 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
     //		finally
     //			{
     //			document.close();
-    //			}
+    //			}*/
   }
 
 

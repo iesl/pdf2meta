@@ -2,7 +2,7 @@ package edu.umass.cs.iesl.pdf2meta.cli
 
 import coarsesegmenter.{CoarseSegmenter, ClassifiedRectangles}
 import edu.umass.cs.iesl.pdf2meta.cli.extract.{MetataggerExtractor, PdfExtractor}
-import layoutmodel.DocNode
+import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.{InternalDocNode, DocNode}
 import pagetransform.DocTransformer
 import java.util.Date
 import com.typesafe.scalalogging.slf4j.Logging
@@ -108,28 +108,35 @@ trait WebPipelineComponent extends ((Workspace) => (DocNode, ClassifiedRectangle
       //logger.debug("Running PDF extraction...")
 
       val doc = metataggerExtractor(w)
+/*
+(override val id: String, override val children: Seq[DocNode], override val localInfo: Option[Iterator[String]],
+                      override val localErrors: Option[Iterator[String]])
+* */
 
+
+
+      doc
       //logger.debug("PDF extraction done ")
-      val extractTime = new Date()
-
-      logger.debug("Metatagger extraction took " + ((extractTime.getTime - startTime.getTime)) + " milliseconds")
-      val regrouped = docTransformer(doc)
-
-      //logger.debug("Regrouping done ")
-      val regroupTime = new Date()
-
-      logger.debug("Regrouping took " + ((regroupTime.getTime - extractTime.getTime)) + " milliseconds")
-
-      val segments: ClassifiedRectangles = coarseSegmenter(regrouped)
-
-
-      //logger.debug("Regrouping done ")
-      val labellingTime = new Date()
-
-      logger.debug("Labelling took " + ((labellingTime.getTime - regroupTime.getTime)) + " milliseconds")
-
-      //(regrouped, segments)
-      (regrouped)
+//      val extractTime = new Date()
+//
+//      logger.debug("Metatagger extraction took " + ((extractTime.getTime - startTime.getTime)) + " milliseconds")
+//      val regrouped = docTransformer(doc(0))
+//
+//      //logger.debug("Regrouping done ")
+//      val regroupTime = new Date()
+//
+//      logger.debug("Regrouping took " + ((regroupTime.getTime - extractTime.getTime)) + " milliseconds")
+//
+//      val segments: ClassifiedRectangles = coarseSegmenter(regrouped)
+//
+//
+//      //logger.debug("Regrouping done ")
+//      val labellingTime = new Date()
+//
+//      logger.debug("Labelling took " + ((labellingTime.getTime - regroupTime.getTime)) + " milliseconds")
+//
+//      //(regrouped, segments)
+//      (regrouped)
     }
   }
 
