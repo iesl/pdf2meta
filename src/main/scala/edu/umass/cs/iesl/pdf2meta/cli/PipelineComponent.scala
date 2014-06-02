@@ -99,9 +99,9 @@ trait WebPipelineComponent extends ((Workspace) => (DocNode, ClassifiedRectangle
       }
     }
 
-  class MetataggerPipeline extends Function1[Workspace, (DocNode/*, ClassifiedRectangles*/)]
+  class MetataggerPipeline extends Function1[Workspace, (DocNode, ClassifiedRectangles)]
   {
-    def apply(w: Workspace): (DocNode/*, ClassifiedRectangles*/) =
+    def apply(w: Workspace): (DocNode, ClassifiedRectangles) =
     {
       logger.debug("Starting PDF extraction...")
       val startTime = new Date
@@ -115,7 +115,7 @@ trait WebPipelineComponent extends ((Workspace) => (DocNode, ClassifiedRectangle
 
 
 
-      doc
+//      doc
       //logger.debug("PDF extraction done ")
 //      val extractTime = new Date()
 //
@@ -127,7 +127,9 @@ trait WebPipelineComponent extends ((Workspace) => (DocNode, ClassifiedRectangle
 //
 //      logger.debug("Regrouping took " + ((regroupTime.getTime - extractTime.getTime)) + " milliseconds")
 //
-//      val segments: ClassifiedRectangles = coarseSegmenter(regrouped)
+      val segments: ClassifiedRectangles = coarseSegmenter(doc)
+
+      (doc, segments)
 //
 //
 //      //logger.debug("Regrouping done ")

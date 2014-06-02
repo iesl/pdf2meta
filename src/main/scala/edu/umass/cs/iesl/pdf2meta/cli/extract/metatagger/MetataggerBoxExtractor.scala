@@ -14,7 +14,7 @@ import scala.xml._
 /**
  * @author <a href="mailto:dev@davidsoergel.com">David Soergel</a>
  * @version $Id$
- *  kzaporojets: adapting to metatagger
+ *  kzaporojets: adapted to metatagger
  */
 class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Function1[Workspace, DocNode] {
   def apply(v1: Workspace) = {
@@ -42,11 +42,19 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
 //    (documentMT \\ "headers").foreach{header =>
 //      println((header \ "@llx").text)
 //    }
-    val docNodes:Seq[DocNode] = processXMLRecursive(documentMT \\ "headers", "")
+    val docNodes:Seq[DocNode] = processXMLRecursive(documentMT \\ "headers", "",
+    //TODO: encode the size of the page inside xml
+     new Rectangle {
+        override val bottom: Float = 0f
+        override val top: Float = 792.0f
+        override val left: Float = 0f
+        override val right: Float = 612.0f
+      })
 //    recursiveXMLProcess(documentMT)
     println ("end of trying to get llx from the header")
-    val internalDoc:InternalDocNode = new InternalDocNode("id_val", docNodes, Some((List("val")).toIterator), Some((List("val")).toIterator))
-
+    val internalDoc:InternalDocNode = new InternalDocNode("id_val", docNodes, None, None) //Some((List("val")).toIterator), Some((List("val")).toIterator))
+    //(0.0,0.0), (612.0,792.0)
+    //Page(1,(0.0,0.0), (612.0,792.0))
     internalDoc
 /*    val document: PDDocument = PDDocument.load(v1.file.bufferedInput())
     //      new InternalDocNode("root", new List(new DocNode("1",None, None), None, None))
@@ -87,7 +95,7 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
   }
 
 
-  def processXMLRecursive(node:Seq[Node], parentName:String):Seq[DocNode] =
+  def processXMLRecursive(node:Seq[Node], parentName:String, pageDimensions:Rectangle):Seq[DocNode] =
   {
 //    val ptrn = ".*".r
     val ptrn = "([0-9].*)".r
@@ -95,6 +103,7 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
 //    println(ptrn.pattern.matcher("hello").find())
     val seqDocNode:Seq[DocNode] = Seq()
 //    node.foreach{currentNode =>
+
     val res = for(currentNode <- node)
       yield
       { (currentNode \ "@llx").text
@@ -102,17 +111,13 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
         {
           case ptrn(_) =>
             //          println(parentName + currentNode.label + ": " + (currentNode \ "@llx").text)
+
+
             println(currentNode.label + ": " + (currentNode \ "@llx").text)
             //(id: String,  val theRectangle: RectangleOnPage)
             val currNode: DocNode = new DelimitingBox((currentNode \ "@llx").text + (currentNode \ "@lly").text +
               (currentNode \ "@urx").text + (currentNode \ "@ury").text, new RectangleOnPage {
-              override val page: Page = new Page(1,
-                new Rectangle {
-                  override val bottom: Float = 1000.0f
-                  override val top: Float = 1.0f
-                  override val left: Float = 1.0f
-                  override val right: Float = 800.0f
-                })
+              override val page: Page = new Page(1,pageDimensions)
               override val bottom: Float = (currentNode \ "@lly").text.toFloat
               override val top: Float = (currentNode \ "@ury").text.toFloat
               override val left: Float = (currentNode \ "@llx").text.toFloat
@@ -120,7 +125,7 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
             })
 
             //seqDocNode :+ currNode
-            (seqDocNode ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + "->")) :+ currNode
+            (seqDocNode ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + "->",pageDimensions)) :+ currNode
 
           case _ =>
             seqDocNode
