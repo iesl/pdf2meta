@@ -42,7 +42,7 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
 //    (documentMT \\ "headers").foreach{header =>
 //      println((header \ "@llx").text)
 //    }
-    processXMLRecursive(documentMT \\ "headers", "")
+    val docNodes:Seq[DocNode] = processXMLRecursive(documentMT \\ "headers", "")
 //    recursiveXMLProcess(documentMT)
     println ("end of trying to get llx from the header")
     val document: PDDocument = PDDocument.load(v1.file.bufferedInput())
@@ -84,22 +84,48 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
   }
 
 
-  def processXMLRecursive(node:Seq[Node], parentName:String)
+  def processXMLRecursive(node:Seq[Node], parentName:String):Seq[DocNode] =
   {
 //    val ptrn = ".*".r
     val ptrn = "([0-9].*)".r
 //    val Pattern = """([0-9])(.*)""".r
 //    println(ptrn.pattern.matcher("hello").find())
+    val seqDocNode:Seq[DocNode] = Seq()
+//    node.foreach{currentNode =>
+    val res = for(currentNode <- node)
+      yield
+      { (currentNode \ "@llx").text
+        match
+        {
+          case ptrn(_) =>
+            //          println(parentName + currentNode.label + ": " + (currentNode \ "@llx").text)
+            println(currentNode.label + ": " + (currentNode \ "@llx").text)
+            //(id: String,  val theRectangle: RectangleOnPage)
+            val currNode: DocNode = new DelimitingBox((currentNode \ "@llx").text + (currentNode \ "@lly").text +
+              (currentNode \ "@urx").text + (currentNode \ "@ury").text, new RectangleOnPage {
+              override val page: Page = new Page(1,
+                new Rectangle {
+                  override val bottom: Float = 1000.0f
+                  override val top: Float = 1.0f
+                  override val left: Float = 1.0f
+                  override val right: Float = 800.0f
+                })
+              override val bottom: Float = (currentNode \ "@lly").text.toFloat
+              override val top: Float = (currentNode \ "@ury").text.toFloat
+              override val left: Float = (currentNode \ "@llx").text.toFloat
+              override val right: Float = (currentNode \ "@urx").text.toFloat
+            })
 
-    node.foreach{currentNode => (currentNode \ "@llx").text match{
-        case ptrn(_) =>
-//          println(parentName + currentNode.label + ": " + (currentNode \ "@llx").text)
-          println(currentNode.label + ": " + (currentNode \ "@llx").text)
-          processXMLRecursive(currentNode.child,parentName + currentNode.label + "->")
-        case _ =>
+            //seqDocNode :+ currNode
+            (seqDocNode ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + "->")) :+ currNode
+
+          case _ =>
+            seqDocNode
           //println("Not match: " + parentName + currentNode.label + ":" + (currentNode \ "@llx").text)
+        }
       }
-    }
+      res.flatten
+ //   seqDocNode
   }
 }
 
