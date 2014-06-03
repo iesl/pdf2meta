@@ -127,11 +127,12 @@ trait WebPipelineComponent extends ((Workspace) => (DocNode, ClassifiedRectangle
 //
 //      logger.debug("Regrouping took " + ((regroupTime.getTime - extractTime.getTime)) + " milliseconds")
 //
-      val segments: ClassifiedRectangles = coarseSegmenter(doc)
+//      val segments: ClassifiedRectangles = coarseSegmenter(doc)
 
-      (doc, segments)
+//      (doc, segments)
+      doc
 //
-//
+      //
 //      //logger.debug("Regrouping done ")
 //      val labellingTime = new Date()
 //
