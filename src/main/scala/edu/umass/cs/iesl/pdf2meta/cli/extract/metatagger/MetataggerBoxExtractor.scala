@@ -20,6 +20,14 @@ import edu.umass.cs.iesl.pdf2meta.cli.config.StandardScoringModel
  *  kzaporojets: adapted to metatagger
  */
 class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Function1[Workspace, (DocNode, ClassifiedRectangles)] {
+
+  //TODO: read from properties file
+  val mapAcceptedLabels:Map[String, String] = Map("CONTENT -> HEADERS -> TITLE" -> "HEADERS -> TITLE",
+                                              "CONTENT -> HEADERS -> AUTHORS" -> "HEADERS -> AUTHORS",
+                                              "CONTENT -> HEADERS -> INSTITUTION" -> "HEADERS -> INSTITUTION",
+                                              "CONTENT -> HEADERS -> ADDRESS" -> "HEADERS -> ADDRESS",
+                                              "CONTENT -> HEADERS -> EMAIL" -> "HEADERS -> EMAIL",
+                                              "CONTENT -> HEADERS -> ABSTRACT" -> "HEADERS -> ABSTRACT")
   def apply(v1: Workspace) = {
     //here xml
 
@@ -32,7 +40,7 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
 //    (documentMT \\ "headers").foreach{header =>
 //      println((header \ "@llx").text)
 //    }
-    val docNodes:(Seq[DocNode], Seq[ClassifiedRectangle]) = processXMLRecursive(documentMT \\ "headers", "",
+    val docNodes:(Seq[DocNode], Seq[ClassifiedRectangle]) = processXMLRecursive(documentMT \\ "content", "",
     //TODO: encode the size of the page inside xml and read from there
      new Rectangle {
         override val bottom: Float = 0f
@@ -99,18 +107,16 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
         match
         {
           case ptrn(_) =>
-            println(currentNode.label + ": " + (currentNode \ "@llx").text)
+            //println(currentNode.label + ": " + (currentNode \ "@pageNum").text)
             //(id: String,  val theRectangle: RectangleOnPage)
             val currNode: DocNode = new DelimitingBox(/*(currentNode \ "@llx").text + (currentNode \ "@lly").text +
-              (currentNode \ "@urx").text + (currentNode \ "@ury").text + */currentNode.label, new RectangleOnPage {
-              override val page: Page = new Page(1,pageDimensions)
+              (currentNode \ "@urx").text + (currentNode \ "@ury").text + */parentName + currentNode.label, new RectangleOnPage {
+              override val page: Page = new Page(Integer.valueOf((currentNode \ "@pageNum").text),pageDimensions)
               override val bottom: Float = (currentNode \ "@lly").text.toFloat
               override val top: Float = (currentNode \ "@ury").text.toFloat
               override val left: Float = (currentNode \ "@llx").text.toFloat
               override val right: Float = (currentNode \ "@urx").text.toFloat
             })
-//ClassifiedRectangle(node: DocNode, featureWeights: WeightedSet[Feature], labelWeights: WeightedSet[String],
-// basedOn: Option[ClassifiedRectangle])
             val f:Feature = LocalFeature("dumbfeature", (box: DocNode) =>
                               {
                             box match
@@ -125,38 +131,36 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
             val weightedStringSet:WeightedSet[String] = new WeightedSet[String]{
               val asMap = Map[String, Double]()
             }
-//override val id: String, override val theText: String,  font: String,  fontHeight: Float, val rect: RectangleOnPage,
-//val charWidths : Array[Float]
-            val currClassifiedRectangle: ClassifiedRectangle =
-                    new ClassifiedRectangle(new MetataggerBoxTextAtom(currNode.id, currentNode.label, "Font", 0.0f,
-                        /*new RectangleOnPage {override val page: Page = new Page(1, pageDimensions)
-                          override val bottom: Float = 0f
-                          override val top: Float = 0f
-                          override val left: Float = 0f
-                          override val right: Float = 0f
-                        }*/ currNode.rectangle.get, Array[Float](0f))//currNode
-              , weightedFeatureSet, weightedStringSet, None)
 
-            //currClassifiedRectangle.node.text = ""
-            //currClassifiedRectangle.label = Some("string")
-            //val classifiedRectangles:ClassifiedRectangles = new ClassifiedRectangles()
-            ((seqDocNode ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + "->",pageDimensions)._1) :+ currNode,
-              (seqClassifiedRectangle ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + "->",pageDimensions)._2) :+ currClassifiedRectangle)
+            if(mapAcceptedLabels.keys.exists(x => x==(parentName + currentNode.label).toUpperCase()))
+            {
+              val currClassifiedRectangle: ClassifiedRectangle =
+                      new ClassifiedRectangle(new MetataggerBoxTextAtom(currNode.id,
+                        mapAcceptedLabels.get((parentName + currentNode.label).toUpperCase()).get, "Font", 0.0f,
+                           currNode.rectangle.get, Array[Float](0f))//currNode
+                , weightedFeatureSet, weightedStringSet, None)
 
+              ((seqDocNode ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + " -> ",pageDimensions)._1) :+ currNode,
+                (seqClassifiedRectangle ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + " -> ",pageDimensions)._2) :+ currClassifiedRectangle)
+            }
+            else
+            {
+              ((seqDocNode ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + " -> ",pageDimensions)._1),
+                (seqClassifiedRectangle ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + " -> ",pageDimensions)._2))
+            }
 
           case _ =>
-            (seqDocNode, seqClassifiedRectangle)
-          //println("Not match: " + parentName + currentNode.label + ":" + (currentNode \ "@llx").text)
+           // println ("not matched: " + currentNode.label)
+            ((seqDocNode ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + " -> ",pageDimensions)._1),
+              (seqClassifiedRectangle ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + " -> ",pageDimensions)._2))
+
+//            (seqDocNode, seqClassifiedRectangle)
         }
       }
 
 
-      //val res2 = (1,2,3)
       (res.map{t:((Seq[DocNode], Seq[ClassifiedRectangle])) => t._1}.flatten,
         res.map{t:((Seq[DocNode], Seq[ClassifiedRectangle])) => t._2}.flatten)
-   // t:(Double, Double) => t._1 * t._2
-      //res2.flatten
- //   seqDocNode
   }
 }
 
@@ -169,7 +173,6 @@ class MetataggerBoxTextAtom(override val id: String, override val theText: Strin
 
 	override def partitionByFont(boxorder: Ordering[RectangularOnPage]) = Seq(this)
 
-	//def fontSize = fontHeight
 
 	override def create(childrenA: Seq[DocNode]) =
 		{
