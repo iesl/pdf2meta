@@ -101,8 +101,8 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
           case ptrn(_) =>
             println(currentNode.label + ": " + (currentNode \ "@llx").text)
             //(id: String,  val theRectangle: RectangleOnPage)
-            val currNode: DocNode = new DelimitingBox((currentNode \ "@llx").text + (currentNode \ "@lly").text +
-              (currentNode \ "@urx").text + (currentNode \ "@ury").text, new RectangleOnPage {
+            val currNode: DocNode = new DelimitingBox(/*(currentNode \ "@llx").text + (currentNode \ "@lly").text +
+              (currentNode \ "@urx").text + (currentNode \ "@ury").text + */currentNode.label, new RectangleOnPage {
               override val page: Page = new Page(1,pageDimensions)
               override val bottom: Float = (currentNode \ "@lly").text.toFloat
               override val top: Float = (currentNode \ "@ury").text.toFloat
