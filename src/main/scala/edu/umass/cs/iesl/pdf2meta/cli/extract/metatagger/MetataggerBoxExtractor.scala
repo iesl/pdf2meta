@@ -23,11 +23,25 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
 
   //TODO: read from properties file
   val mapAcceptedLabels:Map[String, String] = Map("CONTENT -> HEADERS -> TITLE" -> "HEADERS -> TITLE",
-                                              "CONTENT -> HEADERS -> AUTHORS" -> "HEADERS -> AUTHORS",
-                                              "CONTENT -> HEADERS -> INSTITUTION" -> "HEADERS -> INSTITUTION",
-                                              "CONTENT -> HEADERS -> ADDRESS" -> "HEADERS -> ADDRESS",
-                                              "CONTENT -> HEADERS -> EMAIL" -> "HEADERS -> EMAIL",
-                                              "CONTENT -> HEADERS -> ABSTRACT" -> "HEADERS -> ABSTRACT")
+    "CONTENT -> HEADERS -> AUTHORS" -> "HEADERS -> AUTHORS",
+    "CONTENT -> HEADERS -> INSTITUTION" -> "HEADERS -> INSTITUTION",
+    "CONTENT -> HEADERS -> ADDRESS" -> "HEADERS -> ADDRESS",
+    "CONTENT -> HEADERS -> EMAIL" -> "HEADERS -> EMAIL",
+    "CONTENT -> HEADERS -> ABSTRACT" -> "HEADERS -> ABSTRACT",
+    "CONTENT -> BIBLIO -> REFERENCE -> CONFERENCE" -> "REFERENCES -> CONFERENCE",
+    "CONTENT -> BIBLIO -> REFERENCE -> ADDRESS" -> "REFERENCES -> ADDRESS",
+    "CONTENT -> BIBLIO -> REFERENCE -> PUBLISHER" -> "REFERENCES -> PUBLISHER",                                              "CONTENT -> BIBLIO -> REFERENCE -> ADDRESS" -> "REFERENCES -> ADDRESS",
+    "CONTENT -> BIBLIO -> REFERENCE -> REF-MARKER" -> "REFERENCES -> REF-MARKER",
+    "CONTENT -> BIBLIO -> REFERENCE -> AUTHORS" -> "REFERENCES -> AUTHORS",
+    "CONTENT -> BIBLIO -> REFERENCE" -> "REFERENCES",
+    "CONTENT -> BIBLIO -> REFERENCE -> TITLE" -> "REFERENCES -> TITLE",
+    "CONTENT -> BIBLIO -> REFERENCE -> JOURNAL" -> "REFERENCES -> JOURNAL",
+    "CONTENT -> BIBLIO -> REFERENCE -> VOLUME" -> "REFERENCES -> VOLUME",
+    "CONTENT -> BIBLIO -> REFERENCE -> NUMBER" -> "REFERENCES -> NUMBER",
+    "CONTENT -> BIBLIO -> REFERENCE -> PAGES" -> "REFERENCES -> PAGES",
+    "CONTENT -> BIBLIO -> REFERENCE -> DATE" -> "REFERENCES -> DATE",
+    "CONTENT -> BIBLIO -> REFERENCE -> BOOKTITLE" -> "REFERENCES -> BOOKTITLE",
+    "CONTENT -> BIBLIO -> REFERENCE -> NOTE" -> "REFERENCES -> NOTE")
   def apply(v1: Workspace) = {
     //here xml
 
