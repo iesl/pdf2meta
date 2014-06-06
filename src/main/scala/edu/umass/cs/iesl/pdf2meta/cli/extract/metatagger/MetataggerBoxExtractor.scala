@@ -30,7 +30,8 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
     "CONTENT -> HEADERS -> ABSTRACT" -> "HEADERS -> ABSTRACT",
     "CONTENT -> BIBLIO -> REFERENCE -> CONFERENCE" -> "REFERENCES -> CONFERENCE",
     "CONTENT -> BIBLIO -> REFERENCE -> ADDRESS" -> "REFERENCES -> ADDRESS",
-    "CONTENT -> BIBLIO -> REFERENCE -> PUBLISHER" -> "REFERENCES -> PUBLISHER",                                              "CONTENT -> BIBLIO -> REFERENCE -> ADDRESS" -> "REFERENCES -> ADDRESS",
+    "CONTENT -> BIBLIO -> REFERENCE -> PUBLISHER" -> "REFERENCES -> PUBLISHER",
+    "CONTENT -> BIBLIO -> REFERENCE -> ADDRESS" -> "REFERENCES -> ADDRESS",
     "CONTENT -> BIBLIO -> REFERENCE -> REF-MARKER" -> "REFERENCES -> REF-MARKER",
     "CONTENT -> BIBLIO -> REFERENCE -> AUTHORS" -> "REFERENCES -> AUTHORS",
     "CONTENT -> BIBLIO -> REFERENCE" -> "REFERENCES",
@@ -48,13 +49,10 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
     println ("path to xml: " + v1.file.path.toString)
     val documentMT: Elem = XML.loadFile(v1.file.path.toString)
 
-    //documentMT.text
-    //allTextBoxes: Seq[DocNode]
+
     println ("trying to get llx from the header:")
-//    (documentMT \\ "headers").foreach{header =>
-//      println((header \ "@llx").text)
-//    }
-    val docNodes:(Seq[DocNode], Seq[ClassifiedRectangle]) = processXMLRecursive(documentMT \\ "content", "",
+
+    val docNodes:(Seq[DocNode], Seq[ClassifiedRectangle]) = processXMLRecursive(documentMT \\ "content", "", "",
     //TODO: encode the size of the page inside xml and read from there
      new Rectangle {
         override val bottom: Float = 0f
@@ -67,46 +65,11 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
     val internalDoc:InternalDocNode = new InternalDocNode("id_val", docNodes._1, None, None)
     val classifiedRectangles:ClassifiedRectangles = new ClassifiedRectangles(docNodes._2)
     (internalDoc, classifiedRectangles)
-/*    val document: PDDocument = PDDocument.load(v1.file.bufferedInput())
-    //      new InternalDocNode("root", new List(new DocNode("1",None, None), None, None))
-    import collection.JavaConversions._
-    val allPagesB: Buffer[_] = document.getDocumentCatalog.getAllPages;
-    val allPages: Seq[PDPage] = allPagesB.toSeq.asInstanceOf[Seq[PDPage]]
 
-
-
-    val allPageNodes = for ((thepage: PDPage, pageNum: Int) <- allPages.zipWithIndex) yield {
-      //logger.info("Processing page: " + page.);
-      val contents: PDStream = thepage.getContents
-      val mbox: PDRectangle = thepage.getMediaBox
-
-      // note that zipWithIndex naturally started at 0, but page numbering should be 1-based.
-      val pPage = new Page(pageNum + 1, new RealRectangle(mbox.getLowerLeftX, mbox.getLowerLeftY, mbox.getUpperRightX, mbox.getUpperRightY))
-
-      if (contents != null) {
-        val printer: LayoutItemsToDocNodes = new {
-          val pdpage = thepage
-          private val box: PDRectangle = pdpage.findMediaBox()
-          val pageSize = new Dimension(box.getWidth.asInstanceOf[Int], box.getHeight.asInstanceOf[Int]);
-          val docPage = pPage
-        } with LayoutItemsToDocNodes
-
-        printer.processStream(thepage, thepage.findResources(), thepage.getContents().getStream());
-        Some(printer.getRootDocNode());
-      }
-      else None
-    }
-
-    new InternalDocNode("root", allPageNodes.flatten, None, None)
-    //    }
-    //		finally
-    //			{
-    //			document.close();
-    //			}*/
   }
 
 
-  def processXMLRecursive(node:Seq[Node], parentName:String, pageDimensions:Rectangle):(Seq[DocNode], Seq[ClassifiedRectangle]) =
+  def processXMLRecursive(node:Seq[Node], parentName:String, parentId:String, pageDimensions:Rectangle):(Seq[DocNode], Seq[ClassifiedRectangle]) =
   {
     val ptrn = "([0-9].*)".r
     val seqDocNode:Seq[DocNode] = Seq()
@@ -123,10 +86,10 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
             //(id: String,  val theRectangle: RectangleOnPage)
             if((parentName + currentNode.label).toUpperCase().contains("REFERENCE") &&
                  Math.abs((currentNode \ "@lly").text.toFloat -
-                      (currentNode \ "@ury").text.toFloat)>400  )
+                      (currentNode \ "@ury").text.toFloat)>400)
             {
-              ((seqDocNode ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + " -> ",pageDimensions)._1),
-                (seqClassifiedRectangle ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + " -> ",pageDimensions)._2))
+              ((seqDocNode ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + " -> ", parentId, pageDimensions)._1),
+                (seqClassifiedRectangle ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + " -> ", parentId, pageDimensions)._2))
             }
             else
             {
@@ -134,14 +97,14 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
                 (currentNode \ "@urx").text + (currentNode \ "@ury").text + */
 
                 {if((parentName + currentNode.label).toUpperCase().contains("REFERENCE"))
-                {
-                  parentName + currentNode.label + (currentNode \ "@llx").text + (currentNode \ "@lly").text +
-                  (currentNode \ "@urx").text + (currentNode \ "@ury").text + (currentNode \ "@pageNum").text
-                }
-                else
-                {
-                  parentName + currentNode.label
-                }
+                  {
+                    parentId + parentName + currentNode.label + (currentNode \ "@llx").text + (currentNode \ "@lly").text +
+                    (currentNode \ "@urx").text + (currentNode \ "@ury").text + (currentNode \ "@pageNum").text
+                  }
+                  else
+                  {
+                    parentId + parentName + currentNode.label
+                  }
                 }
                 , new RectangleOnPage {
                 override val page: Page = new Page(Integer.valueOf((currentNode \ "@pageNum").text),pageDimensions)
@@ -157,13 +120,15 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
                                 case _                 => 0f
                               }
                             })
-  //StandardScoringModel.sideways
               val weightedFeatureSet:WeightedSet[Feature] = new WeightedSet[Feature]{
                 val asMap = Map[Feature, Double]()
               }
               val weightedStringSet:WeightedSet[String] = new WeightedSet[String]{
                 val asMap = Map[String, Double]()
               }
+
+              def returnParentId(lblName:String, rect:Rectangle, parentId:String)={if(lblName.toUpperCase()=="REFERENCE"){"REFERENCE_" + rect.top.toInt + "_" +
+                                                                               rect.left.toInt + "_" + rect.bottom.toInt + "_" + rect.right.toInt + "_" }else{parentId}}
 
               if(mapAcceptedLabels.keys.exists(x => x==(parentName + currentNode.label).toUpperCase()))
               {
@@ -173,21 +138,18 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
                              currNode.rectangle.get, Array[Float](0f))//currNode
                   , weightedFeatureSet, weightedStringSet, None)
 
-                ((seqDocNode ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + " -> ",pageDimensions)._1) :+ currNode,
-                  (seqClassifiedRectangle ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + " -> ",pageDimensions)._2) :+ currClassifiedRectangle)
+                ((seqDocNode ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + " -> ",returnParentId(currentNode.label, currNode.rectangle.get,parentId),pageDimensions)._1) :+ currNode,
+                  (seqClassifiedRectangle ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + " -> ",returnParentId(currentNode.label, currNode.rectangle.get,parentId),pageDimensions)._2) :+ currClassifiedRectangle)
               }
               else
               {
-                ((seqDocNode ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + " -> ",pageDimensions)._1),
-                  (seqClassifiedRectangle ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + " -> ",pageDimensions)._2))
+                ((seqDocNode ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + " -> ",returnParentId(currentNode.label, currNode.rectangle.get,parentId),pageDimensions)._1),
+                  (seqClassifiedRectangle ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + " -> ",returnParentId(currentNode.label, currNode.rectangle.get,parentId),pageDimensions)._2))
               }
-              }
+            }
           case _ =>
-           // println ("not matched: " + currentNode.label)
-            ((seqDocNode ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + " -> ",pageDimensions)._1),
-              (seqClassifiedRectangle ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + " -> ",pageDimensions)._2))
-
-//            (seqDocNode, seqClassifiedRectangle)
+            ((seqDocNode ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + " -> ",parentId,pageDimensions)._1),
+              (seqClassifiedRectangle ++ processXMLRecursive(currentNode.child, parentName + currentNode.label + " -> ",parentId,pageDimensions)._2))
         }
       }
 
