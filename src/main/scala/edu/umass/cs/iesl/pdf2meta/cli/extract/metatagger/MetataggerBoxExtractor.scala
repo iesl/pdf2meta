@@ -93,26 +93,30 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
             }
             else
             {
-              val currNode: DocNode = new DelimitingBox(/*(currentNode \ "@llx").text + (currentNode \ "@lly").text +
-                (currentNode \ "@urx").text + (currentNode \ "@ury").text + */
+              def returnParentId(lblName:String, rect:Rectangle, parentId:String)={if(lblName.toUpperCase()=="REFERENCE"){"REFERENCE_" + rect.top.toInt + "_" +
+                rect.left.toInt + "_" + rect.bottom.toInt + "_" + rect.right.toInt + "_" }else{parentId}}
 
-                {if((parentName + currentNode.label).toUpperCase().contains("REFERENCE"))
-                  {
-                    parentId + parentName + currentNode.label + (currentNode \ "@llx").text + (currentNode \ "@lly").text +
-                    (currentNode \ "@urx").text + (currentNode \ "@ury").text + (currentNode \ "@pageNum").text
-                  }
-                  else
-                  {
-                    parentId + parentName + currentNode.label
-                  }
-                }
-                , new RectangleOnPage {
+              val rectOnPage:RectangleOnPage = new RectangleOnPage {
                 override val page: Page = new Page(Integer.valueOf((currentNode \ "@pageNum").text),pageDimensions)
                 override val bottom: Float = (currentNode \ "@lly").text.toFloat
                 override val top: Float = (currentNode \ "@ury").text.toFloat
                 override val left: Float = (currentNode \ "@llx").text.toFloat
                 override val right: Float = (currentNode \ "@urx").text.toFloat
-              })
+              }
+              val currNode: DocNode = new DelimitingBox(/*(currentNode \ "@llx").text + (currentNode \ "@lly").text +
+                (currentNode \ "@urx").text + (currentNode \ "@ury").text + */
+
+                {if((parentName + currentNode.label).toUpperCase().contains("REFERENCE"))
+                  {
+                    returnParentId(currentNode.label, rectOnPage,"") + "_" + (currentNode \ "@pageNum").text + "_" + parentId + parentName + currentNode.label + (currentNode \ "@llx").text + (currentNode \ "@lly").text +
+                    (currentNode \ "@urx").text + (currentNode \ "@ury").text
+                  }
+                  else
+                  {
+                    returnParentId(currentNode.label, rectOnPage,"") + parentId + parentName + currentNode.label
+                  }
+                }
+                , rectOnPage)
               val f:Feature = LocalFeature("dumbfeature", (box: DocNode) =>
                                 {
                               box match
@@ -127,8 +131,6 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
                 val asMap = Map[String, Double]()
               }
 
-              def returnParentId(lblName:String, rect:Rectangle, parentId:String)={if(lblName.toUpperCase()=="REFERENCE"){"REFERENCE_" + rect.top.toInt + "_" +
-                                                                               rect.left.toInt + "_" + rect.bottom.toInt + "_" + rect.right.toInt + "_" }else{parentId}}
 
               if(mapAcceptedLabels.keys.exists(x => x==(parentName + currentNode.label).toUpperCase()))
               {
