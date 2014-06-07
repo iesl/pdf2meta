@@ -93,8 +93,8 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
             }
             else
             {
-              def returnParentId(lblName:String, rect:Rectangle, parentId:String)={if(lblName.toUpperCase()=="REFERENCE"){"REFERENCE_" + rect.top.toInt + "_" +
-                rect.left.toInt + "_" + rect.bottom.toInt + "_" + rect.right.toInt + "_" }else{parentId}}
+              def returnParentId(lblName:String, rect:RectangleOnPage, parentId:String)={if(lblName.toUpperCase()=="REFERENCE"){"REFERENCE_" + rect.top.toInt + "_" +
+                rect.left.toInt + "_" + rect.bottom.toInt + "_" + rect.right.toInt + "_" + rect.page.pagenum +  "_"}else{parentId}}
 
               val rectOnPage:RectangleOnPage = new RectangleOnPage {
                 override val page: Page = new Page(Integer.valueOf((currentNode \ "@pageNum").text),pageDimensions)
@@ -108,12 +108,13 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
 
                 {if((parentName + currentNode.label).toUpperCase().contains("REFERENCE"))
                   {
-                    returnParentId(currentNode.label, rectOnPage,"") + "_" + (currentNode \ "@pageNum").text + "_" + parentId + parentName + currentNode.label + (currentNode \ "@llx").text + (currentNode \ "@lly").text +
-                    (currentNode \ "@urx").text + (currentNode \ "@ury").text
+                    returnParentId(currentNode.label, rectOnPage,"") + parentId + parentName + currentNode.label /* + (currentNode \ "@llx").text + (currentNode \ "@lly").text +
+                    (currentNode \ "@urx").text + (currentNode \ "@ury").text*/
                   }
                   else
                   {
-                    returnParentId(currentNode.label, rectOnPage,"") + parentId + parentName + currentNode.label
+                    returnParentId(currentNode.label, rectOnPage,"") + parentId + parentName + currentNode.label  /*+ (currentNode \ "@llx").text + (currentNode \ "@lly").text +
+                      (currentNode \ "@urx").text + (currentNode \ "@ury").text*/
                   }
                 }
                 , rectOnPage)
