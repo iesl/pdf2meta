@@ -43,6 +43,10 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
     "CONTENT -> BIBLIO -> REFERENCE -> DATE" -> "REFERENCES -> DATE",
     "CONTENT -> BIBLIO -> REFERENCE -> BOOKTITLE" -> "REFERENCES -> BOOKTITLE",
     "CONTENT -> BIBLIO -> REFERENCE -> NOTE" -> "REFERENCES -> NOTE")
+
+  //for recursive content such as authors that itself can be composed of firstname, lastname, etc.
+  val recursiveExtraction:List[String] = List("CONTENT -> BIBLIO -> REFERENCE -> AUTHORS")
+
   def apply(v1: Workspace) = {
     //here xml
 
@@ -135,9 +139,34 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
 
               if(mapAcceptedLabels.keys.exists(x => x==(parentName + currentNode.label).toUpperCase()))
               {
+                def getContent(currentNode:scala.xml.Node, currNode:DocNode, completePath:String):String =
+                                    {if(!currentNode.text.toString().contains("\n") && currNode.id.toUpperCase().contains("REFERENCE"))
+                                    {
+                                          ": " + currentNode.text.toString()
+                                    }
+                                    else if(recursiveExtraction.exists(x => x == completePath.toUpperCase()))
+                                    {
+                                        ": " + getRecursiveContent(currentNode)
+                                    }
+                                    else
+                                    {
+                                       ""
+                                    }}
+                def getRecursiveContent(currentNode:scala.xml.Node):String =
+                {
+                  if(currentNode.text.toString().contains("\n"))
+                  {
+
+                    currentNode.child.map(x=> getRecursiveContent(x)).mkString(" ")
+                  }
+                  else
+                  {
+                    currentNode.text
+                  }
+                }
                 val currClassifiedRectangle: ClassifiedRectangle =
                         new ClassifiedRectangle(new MetataggerBoxTextAtom(currNode.id,
-                          mapAcceptedLabels.get((parentName + currentNode.label).toUpperCase()).get, "Font", 0.0f,
+                          mapAcceptedLabels.get((parentName + currentNode.label).toUpperCase()).get + getContent(currentNode,currNode,parentName + currentNode.label), "Font", 0.0f,
                              currNode.rectangle.get, Array[Float](0f))//currNode
                   , weightedFeatureSet, weightedStringSet, None)
 
