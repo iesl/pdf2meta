@@ -46,7 +46,8 @@ object WiredExtractOnlyPipeline extends ExtractOnlyPipelineComponent
 		{
 		val transformers = List(new PageHonoringDocFlattener
 		                        // top-down phase
-		                        , new SlicingDocPartitioner, new WeakPartitionRemover, new DocDeepSorter(RectangularReadingOrder)
+		                        , new SlicingDocPartitioner
+                            , new WeakPartitionRemover, new DocDeepSorter(RectangularReadingOrder)
 
 		                        // bottom-up phase
 		                        , new LineMerger, new SidewaysLineMerger, new IndentedParagraphsMerger, new EmptyEndNodeAdder

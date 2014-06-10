@@ -13,6 +13,8 @@ import java.awt.{Dimension, Stroke}
 import collection.mutable
 import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel._
 import edu.umass.cs.iesl.pdf2meta.cli.pagetransform.SimpleLineMerger
+import org.apache.pdfbox._
+import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.Page
 
 /**
  * Combine needed elements from PDFTextStripper, PrintImageLocations, and PageDrawer

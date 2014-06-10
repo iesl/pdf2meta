@@ -162,7 +162,7 @@ class LeafNode(override val id: String, override val localInfo: Option[Iterator[
 
 	def printTree(prefix: String): String =
 		{
-		if (spanText.length > 1)
+		if (spanText.length > 0)
 			{
 			val buf = new StringBuilder(prefix)
 			buf.append("LEAF: " + spanText + "\n")
