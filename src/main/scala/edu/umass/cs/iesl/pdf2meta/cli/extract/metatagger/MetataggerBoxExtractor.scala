@@ -118,10 +118,10 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
 
               val rectOnPage:RectangleOnPage = new RectangleOnPage {
                 override val page: Page = new Page(Integer.valueOf((currentNode \ "@pageNum").text),pageDimensions)
-                override val bottom: Float = (currentNode \ "@lly").text.toFloat
-                override val top: Float = (currentNode \ "@ury").text.toFloat
-                override val left: Float = (currentNode \ "@llx").text.toFloat
-                override val right: Float = (currentNode \ "@urx").text.toFloat
+                override val bottom: Float = (currentNode \ "@lly").text.toFloat + 5.0f
+                override val top: Float = (currentNode \ "@ury").text.toFloat + 5.0f
+                override val left: Float = (currentNode \ "@llx").text.toFloat + 5.0f
+                override val right: Float = (currentNode \ "@urx").text.toFloat + 5.0f
               }
               val currNode: DocNode = new DelimitingBox(
                     returnParentId(currentNode.label, rectOnPage,"") + parentId + parentName + currentNode.label
@@ -207,12 +207,6 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
     def returnParentId(lblName:String, rect:RectangleOnPage, parentId:String)={if(lblName.toUpperCase()=="REFERENCE"){"REFERENCE_" + rect.top.toInt + "_" +
       rect.left.toInt + "_" + rect.bottom.toInt + "_" + rect.right.toInt + "_" + rect.page.pagenum +  "_"}else{parentId}}
 
-//    def invokeItself(node:Seq[Node], parentName:String, parentId:String,pageDimensions:Rectangle, startMerge:Boolean)=
-//        {
-//          if(node.size>1){
-//            processXMLRecursiveV2(node.tail,parentName)
-//          }
-//        }
     val res = for(currentNode <- node.groupBy(_.label))
     yield
     { (currentNode._2(0) \ "@llx").text
@@ -241,10 +235,10 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
           }
           val rectOnPage:RectangleOnPage = new RectangleOnPage {
             override val page: Page = new Page(Integer.valueOf((currentNode._2(0) \ "@pageNum").text),pageDimensions)
-            override val bottom: Float = (currentNode._2(0) \ "@lly").text.toFloat
-            override val top: Float = (currentNode._2(0) \ "@ury").text.toFloat
-            override val left: Float = (currentNode._2(0) \ "@llx").text.toFloat
-            override val right: Float = (currentNode._2(0) \ "@urx").text.toFloat
+            override val bottom: Float = (currentNode._2(0) \ "@lly").text.toFloat + 2.0f
+            override val top: Float = (currentNode._2(0) \ "@ury").text.toFloat + 2.0f
+            override val left: Float = (currentNode._2(0) \ "@llx").text.toFloat - 7.0f
+            override val right: Float = (currentNode._2(0) \ "@urx").text.toFloat - 7.0f
           }
           val currNode: DocNode = new DelimitingBox(
               returnParentId(currentNode._2(0).label, rectOnPage,"") + parentId + parentName + currentNode._2(0).label
@@ -297,19 +291,6 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
                               else
                                 {(seqDocNode,seqClassifiedRectangle)}}
 
-//            val textSiblings = {if(mergeIsApplicable() && recSiblings._2.size>0)
-//            {
-//              recSiblings._2.map(sibl =>
-//                if(currentMerge == (parentName + currentNode._1).toUpperCase())
-//                {
-//                  sibl.node.text
-//                }
-//              ).mkString(" ")
-//            }
-//            else
-//            {
-//              ""
-//            }}
 
             val currClassifiedRectangle: ClassifiedRectangle =
               new ClassifiedRectangle(new MetataggerBoxTextAtom(currNode.id,
@@ -318,8 +299,7 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
                 currNode.rectangle.get, Array[Float](0f))//currNode
                 , weightedFeatureSet, weightedStringSet, None)
 
-//            (((seqDocNode ++ recSiblings._1) ++ recRes._1) :+ currNode,
-//              ((seqClassifiedRectangle ++ recSiblings._2) ++ recRes._2) :+ currClassifiedRectangle)
+
             ((((seqDocNode) ++ recSiblings._1) ++ recRes._1) :+ currNode,
               (((seqClassifiedRectangle) ++ recSiblings._2) ++ recRes._2):+ currClassifiedRectangle )
           }
@@ -336,7 +316,7 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
         }
       case _ =>
         val recRes = processXMLRecursiveV2(currentNode._2(0).child, parentName + currentNode._2(0).label + " -> ", parentId
-            /*returnParentId(currentNode._2(0).label, currNode.rectangle.get,parentId)*/ ,pageDimensions)
+            ,pageDimensions)
         ((seqDocNode ++ recRes._1),
           (seqClassifiedRectangle ++ recRes._2))
     }
