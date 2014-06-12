@@ -303,7 +303,9 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
 
 
             ((((seqDocNode) ++ recSiblings._1) ++ recRes._1) :+ currNode,
-              (((seqClassifiedRectangle) ++ recSiblings._2) ++ recRes._2):+ currClassifiedRectangle )
+              (((seqClassifiedRectangle) ++ {if(mergeIsApplicable()){
+                 recSiblings._2.map(x=>currClassifiedRectangle)
+              }else{recSiblings._2}}) ++ recRes._2):+ currClassifiedRectangle )
           }
           else
           {
