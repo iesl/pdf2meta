@@ -42,7 +42,9 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
     "CONTENT -> BIBLIO -> REFERENCE -> PAGES" -> "REFERENCES -> PAGES",
     "CONTENT -> BIBLIO -> REFERENCE -> DATE" -> "REFERENCES -> DATE",
     "CONTENT -> BIBLIO -> REFERENCE -> BOOKTITLE" -> "REFERENCES -> BOOKTITLE",
-    "CONTENT -> BIBLIO -> REFERENCE -> NOTE" -> "REFERENCES -> NOTE")
+    "CONTENT -> BIBLIO -> REFERENCE -> NOTE" -> "REFERENCES -> NOTE",
+    "CONTENT -> BIBLIO -> REFERENCE -> INSTITUTION" -> "REFERENCES -> INSTITUTION",
+    "CONTENT -> BIBLIO -> REFERENCE -> WEB" -> "REFERENCES -> WEB")
 
   //for recursive content such as authors that itself can be composed of firstname, lastname, etc.
   val recursiveExtraction:List[String] = List("CONTENT -> BIBLIO -> REFERENCE -> AUTHORS")
