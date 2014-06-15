@@ -112,7 +112,7 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
 //    (internalDoc, classifiedRectangles)
 
     val docNodes:Seq[ClassifiedRectangle] =
-      processXMLRecursiveV3(documentMT \\ "content", "", "",
+      processXMLRecursiveV4(documentMT \\ "content", "", "",
     //TODO: encode the size of the page inside xml and read from there
      new Rectangle {
         override val bottom: Float = 0f
@@ -553,13 +553,6 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
             }
             else{false}
           }
-//          val rectOnPage:RectangleOnPage = new RectangleOnPage {
-//            override val page: Page = new Page(Integer.valueOf((currentNode._2(0) \ "@pageNum").text),pageDimensions)
-//            override val bottom: Float = (currentNode._2(0) \ "@lly").text.toFloat + 2.0f
-//            override val top: Float = (currentNode._2(0) \ "@ury").text.toFloat + 2.0f
-//            override val left: Float = (currentNode._2(0) \ "@llx").text.toFloat - 7.0f
-//            override val right: Float = (currentNode._2(0) \ "@urx").text.toFloat - 7.0f
-//          }
           val rectOnPage:RectangleOnPage = getRectangleOnPage(currentNode._2(0))
 
           val currNode: DocNode = new DelimitingBox(
@@ -609,36 +602,64 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
             //for extracting the author data in a particular node
             def extractAuthors(currentNode:Seq[scala.xml.Node], currentAuthorId:Int):Seq[ClassifiedRectangle] =
             {
-              val currentAuthor = currentNode.head
-              //for each of the authors, extract the first, middle and last names
-              def getXAuthorPart(currAuthor:Node, part:String, acronym:String):String = {
-                 val firstName = currAuthor.child.filter(x=> x.label==part)
-                 if(firstName.size>0)
-                 {
-                   acronym + ": " + firstName(0).text + " "
-                 }
-                 else
-                 {
-                   ""
-                 }
-              }
-              val currentAuthorText = getXAuthorPart(currentAuthor, "author-first", "FN") +
-                                          getXAuthorPart(currentAuthor, "author-middle","MN") +
-                                          getXAuthorPart(currentAuthor, "author-last", "LN")
-              val rectOnPage = getRectangleOnPage(currentAuthor)
 
-              val currClassifiedRectangle: ClassifiedRectangle =
-                new ClassifiedRectangle(new MetataggerBoxTextAtom(currNode.id + "_author_" + currentAuthorId,
-                  currentAuthorText, "Font", 0.0f,
-                  rectOnPage, Array[Float](0f))//currNode
-                  , weightedFeatureSet, weightedStringSet, None, List())
-              if(currentNode.size>1)
+              val currentAuthor = currentNode.head
+
+              if(currentAuthor.label.toUpperCase()!="AUTHOR")
               {
-                currClassifiedRectangle +: extractAuthors(currentNode.tail, currentAuthorId+1)
+                if(currentNode.size>1)
+                {
+                  extractAuthors(currentNode.tail,currentAuthorId)
+                }
+                else
+                {
+                  List()
+                }
               }
               else
               {
-                List(currClassifiedRectangle)
+                //for each of the authors, extract the first, middle and last names
+                def getXAuthorPart(currAuthor:Node, part:String, acronym:String):String = {
+                   val firstName = currAuthor.child.filter(x=> x.label==part)
+                   if(firstName.size>0)
+                   {
+                     acronym + ": " + firstName(0).text + " "
+                   }
+                   else
+                   {
+                     ""
+                   }
+                }
+                val currentAuthorText = getXAuthorPart(currentAuthor, "author-first", "FN") +
+                                            getXAuthorPart(currentAuthor, "author-middle","MN") +
+                                            getXAuthorPart(currentAuthor, "author-last", "LN")
+                val rectOnPage = getRectangleOnPage(currentAuthor)
+
+                val currClassifiedRectangle: ClassifiedRectangle =
+                  new ClassifiedRectangle(new MetataggerBoxTextAtom(currNode.id + "_author_" + currentAuthorId,
+                    currentAuthorText, "Font", 0.0f,
+                    rectOnPage, Array[Float](0f))//currNode
+                    , weightedFeatureSet, weightedStringSet, None, List())
+                if(currentNode.size>1)
+                {
+                  currClassifiedRectangle +: extractAuthors(currentNode.tail, currentAuthorId+1)
+                }
+                else
+                {
+                  List(currClassifiedRectangle)
+                }
+              }
+            }
+
+            def getAuthorDetails(currentNode:scala.xml.Node, path:String):Seq[ClassifiedRectangle] =
+            {
+              if(authorExtraction.exists(x => x==path.toUpperCase()))
+              {
+                extractAuthors(currentNode.child,1)
+              }
+              else
+              {
+                List()
               }
             }
 
@@ -654,7 +675,7 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
                 {mapAcceptedLabels.get((parentName + currentNode._2(0).label).toUpperCase()).get} +
                   getContent(currentNode._2(0),currNode,parentName + currentNode._2(0).label), "Font", 0.0f,
                 currNode.rectangle.get, Array[Float](0f))//currNode
-                , weightedFeatureSet, weightedStringSet, None, List())
+                , weightedFeatureSet, weightedStringSet, None, getAuthorDetails(currentNode._2(0), parentName + currentNode._2(0).label))
 
 
             (((seqClassifiedRectangle) ++ {if(mergeIsApplicable()){
