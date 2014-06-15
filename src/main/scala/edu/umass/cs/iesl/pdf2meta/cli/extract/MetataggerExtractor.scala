@@ -6,6 +6,6 @@ import edu.umass.cs.iesl.pdf2meta.cli.coarsesegmenter.ClassifiedRectangles
 /**
  * Created by klimzaporojets on 5/31/14.
  */
-trait MetataggerExtractor extends Function1[Workspace, (DocNode, ClassifiedRectangles)]
+trait MetataggerExtractor extends Function1[Workspace, ClassifiedRectangles /*(DocNode, ClassifiedRectangles)*/]
 
 class MetataggerExtractorException(message: String) extends Exception(message)

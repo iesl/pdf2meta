@@ -7,7 +7,7 @@ class LabelTransformer(labelMap: Map[String, String]) extends Function1[Seq[Clas
     val newRaw = for (c <- v1) yield
       {
       val newWeights = c.labelWeights.mapLabels(labelMap)
-      ClassifiedRectangle(c.node, c.featureWeights, newWeights, Some(c))
+      ClassifiedRectangle(c.node, c.featureWeights, newWeights, Some(c),List())
       }
     new ClassifiedRectangles(newRaw)
     }

@@ -10,7 +10,10 @@ import edu.umass.cs.iesl.scalacommons.{StringUtils, NonemptyString, ListUtils}
 
 trait CoarseSegmenter extends (DocNode => ClassifiedRectangles)
 
-case class ClassifiedRectangle(node: DocNode, featureWeights: WeightedSet[Feature], labelWeights: WeightedSet[String], basedOn: Option[ClassifiedRectangle])
+//kzaporojets: added children, so it can support recursive structure, such as the one when showing first and last name inside
+//authors of a particular paper
+case class ClassifiedRectangle(node: DocNode, featureWeights: WeightedSet[Feature], labelWeights: WeightedSet[String], basedOn: Option[ClassifiedRectangle],
+                                   children:Seq[ClassifiedRectangle])
 	{
 	def callLabel(os: Option[String]): ClassifiedRectangle =
 		{
@@ -22,7 +25,7 @@ case class ClassifiedRectangle(node: DocNode, featureWeights: WeightedSet[Featur
 				       def asMap = Map((s, 1.0))
 				       }
 
-			       new ClassifiedRectangle(node, featureWeights, newWeights.normalized, Some(this))
+			       new ClassifiedRectangle(node, featureWeights, newWeights.normalized, Some(this),this.children)
 			       }).getOrElse(this)
 		}
 

@@ -72,7 +72,7 @@ trait PerceptronCoarseSegmenterComponent extends CoarseSegmenter with Logging
       val scores = mutableScores.mapValues[WeightedSet[String]](_.normalized)
       val boxes: ClassifiedRectangles =
         {
-        def scoreBox(b: DocNode): ClassifiedRectangle = ClassifiedRectangle(b, featureMap(b), scores(b), None)
+        def scoreBox(b: DocNode): ClassifiedRectangle = ClassifiedRectangle(b, featureMap(b), scores(b), None,List())
         new ClassifiedRectangles(doc.leaves.map(scoreBox))
         }
 

@@ -9,7 +9,7 @@ class StubCoarseSegmenter extends CoarseSegmenter
     {
     val noFeatures = WeightedSet[Feature](Seq.empty);
     val noLabels = WeightedSet[String](Seq.empty);
-    val crs = v1.leaves.map(x => ClassifiedRectangle(x, noFeatures, noLabels, None))
+    val crs = v1.leaves.map(x => ClassifiedRectangle(x, noFeatures, noLabels, None, List()))
     new ClassifiedRectangles(crs)
     }
   }

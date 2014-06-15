@@ -2,12 +2,13 @@ package edu.umass.cs.iesl.pdf2meta.cli
 
 import coarsesegmenter.{CoarseSegmenter, ClassifiedRectangles}
 import edu.umass.cs.iesl.pdf2meta.cli.extract.{MetataggerExtractor, PdfExtractor}
-import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.{InternalDocNode, DocNode}
+import edu.umass.cs.iesl.pdf2meta.cli.layoutmodel.{LeafNode, RectangleOnPage, InternalDocNode, DocNode}
 import pagetransform.DocTransformer
 import java.util.Date
 import com.typesafe.scalalogging.slf4j.Logging
 import edu.umass.cs.iesl.scalacommons.Workspace
 import edu.umass.cs.iesl.bibmogrify.model.StructuredCitation
+import scala.xml.dtd.{ExternalID, DocType}
 
 trait PipelineComponent extends ((Workspace) => StructuredCitation)
   {
@@ -68,7 +69,7 @@ trait WebPipelineComponent extends ((Workspace) => (DocNode, ClassifiedRectangle
 
   class Pipeline extends Function1[Workspace, (DocNode, ClassifiedRectangles)]
     {
-    def apply(w: Workspace): (DocNode, ClassifiedRectangles) =
+    def apply(w: Workspace):(DocNode, ClassifiedRectangles) =
       {
       logger.debug("Starting PDF extraction...")
       val startTime = new Date
@@ -105,43 +106,22 @@ trait WebPipelineComponent extends ((Workspace) => (DocNode, ClassifiedRectangle
     {
       logger.debug("Starting PDF extraction...")
       val startTime = new Date
-      //logger.debug("Running PDF extraction...")
 
       val doc = metataggerExtractor(w)
-/*
-(override val id: String, override val children: Seq[DocNode], override val localInfo: Option[Iterator[String]],
-                      override val localErrors: Option[Iterator[String]])
-* */
 
+      val docNod =new DocNode("1",None,None){override def printTree(prefix: String): String = ""
 
+      override def leaves: Seq[LeafNode] = List()
 
-//      doc
-      //logger.debug("PDF extraction done ")
-//      val extractTime = new Date()
-//
-//      logger.debug("Metatagger extraction took " + ((extractTime.getTime - startTime.getTime)) + " milliseconds")
-//      val regrouped = docTransformer(doc(0))
-//
-//      //logger.debug("Regrouping done ")
-//      val regroupTime = new Date()
-//
-//      logger.debug("Regrouping took " + ((regroupTime.getTime - extractTime.getTime)) + " milliseconds")
-//
-//      val segments: ClassifiedRectangles = coarseSegmenter(doc)
+      override def rectangle: Option[RectangleOnPage] = None
 
-//      (doc, segments)
-      doc
-//
-      //
-//      //logger.debug("Regrouping done ")
-//      val labellingTime = new Date()
-//
-//      logger.debug("Labelling took " + ((labellingTime.getTime - regroupTime.getTime)) + " milliseconds")
-//
-//      //(regrouped, segments)
-//      (regrouped)
+      override def create(children: Seq[DocNode]): DocNode = {children(0)}
+
+      override def children: Seq[DocNode] = List()
+    }
+      (docNod,doc)
     }
   }
 
-  def apply(w: Workspace): (DocNode, ClassifiedRectangles) = pipeline.apply(w)
+  def apply(w: Workspace):(DocNode, ClassifiedRectangles) = pipeline.apply(w)
   }
