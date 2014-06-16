@@ -679,7 +679,8 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
 
 
             (((seqClassifiedRectangle) ++ {if(mergeIsApplicable()){
-              recSiblings.map(x=>currClassifiedRectangle)
+//              recSiblings.map(x=>currClassifiedRectangle)
+              recSiblings.map(x=>x)
             }else{recSiblings}}) ++ recRes) :+ currClassifiedRectangle
           }
           else
