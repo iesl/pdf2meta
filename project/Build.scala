@@ -1,3 +1,4 @@
+import com.earldouglas.xsbtwebplugin.WebPlugin
 import sbt._
 import sbtassembly.Plugin._
 import AssemblyKeys._
@@ -22,6 +23,13 @@ object Pdf2MetaBuild extends Build {
     scalacheck(),
     classutil(),
     pdfbox("1.6.0"),
+    //lift to support session
+    liftWebkit(),
+    liftMapper(),
+    liftWizard(),
+    jetty("6.1.26"),
+    jettyContainer("6.1.26"),
+
     //jclOverSlf4j(),
     // these should be provided transitively by scalacommons, but they aren't because it's defined "notTransitive"
     dsutils(), commonsLang(), 
@@ -36,6 +44,7 @@ object Pdf2MetaBuild extends Build {
     .cleanLogging.standardLogging
     .settings(scalaVersion := "2.10.4")
     .settings(mainClass in assembly := Some("edu.umass.cs.iesl.bibmogrify.BibMogrify"))
+    .settings(WebPlugin.webSettings :_*)
     .settings(mergeStrategy in assembly <<= (mergeStrategy in assembly) {
     (old) => {
       case "logback.xml" => MergeStrategy.first

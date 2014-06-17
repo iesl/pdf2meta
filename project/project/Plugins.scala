@@ -15,6 +15,7 @@ object IeslPluginLoader extends Build
     .settings(addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.11.2"))
     .settings(addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.7.4"))
     .settings(addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.5.2"))
+    .settings(addSbtPlugin("com.earldouglas" % "xsbt-web-plugin" % "0.9.0"))
 }
 
 
