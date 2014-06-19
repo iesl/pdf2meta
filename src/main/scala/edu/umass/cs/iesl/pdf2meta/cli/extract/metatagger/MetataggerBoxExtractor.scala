@@ -15,7 +15,7 @@ import edu.umass.cs.iesl.pdf2meta.cli.coarsesegmenter.{LocalFeature, Feature, Cl
 import edu.umass.cs.iesl.scalacommons.collections.WeightedSet
 import edu.umass.cs.iesl.pdf2meta.cli.config.StandardScoringModel
 import net.liftweb.http.S
-
+import edu.umass.cs.iesl.pdf2meta.cli.lib.MapToProperties
 /**
  * @author <a href="mailto:dev@davidsoergel.com">David Soergel</a>
  * @version $Id$
@@ -78,16 +78,19 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
 
 
     println ("end of trying to get llx from the header")
+    val props:MapToProperties = new MapToProperties()
+    val propertiesFilename:String =
+      S.get("propertiesFile").openOrThrowException("err while obtaining properties file")
 
+    val properties:Map[String,String] = props.readPropertiesFile(propertiesFilename)
     val docNodes:Seq[ClassifiedRectangle] =
       processXMLRecursiveV4(documentMT \\ "content", "", "",
-    //TODO: encode the size of the page inside xml and read from there
      new Rectangle {
         override val bottom: Float = 0f
-        override val top: Float = java.lang.Float.valueOf(S.get("height").openOrThrowException("err in width"))
+        override val top: Float = properties.get("height").get.toFloat //java.lang.Float.valueOf(S.get("height").openOrThrowException("err in width"))
        //792.0f
         override val left: Float = 0f
-        override val right: Float = java.lang.Float.valueOf(S.get("width").openOrThrowException("err in height")) //612.0f
+        override val right: Float = properties.get("width").get.toFloat //java.lang.Float.valueOf(S.get("width").openOrThrowException("err in height")) //612.0f
       })
     val classifiedRectangles:ClassifiedRectangles = new ClassifiedRectangles(docNodes)
     classifiedRectangles
