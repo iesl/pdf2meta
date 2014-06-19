@@ -24,9 +24,9 @@ object Pdf2MetaBuild extends Build {
     classutil(),
     pdfbox("1.6.0"),
     //lift to support session
-//    liftWebkit(),
-//    liftMapper(),
-//    liftWizard(),
+    liftWebkit(),
+    liftMapper(),
+    liftWizard(),
     jetty("6.1.26"),
     jettyContainer("6.1.26"),
 
@@ -44,7 +44,7 @@ object Pdf2MetaBuild extends Build {
     .cleanLogging.standardLogging
     .settings(scalaVersion := "2.10.4")
     .settings(mainClass in assembly := Some("edu.umass.cs.iesl.bibmogrify.BibMogrify"))
-//    .settings(WebPlugin.webSettings :_*)
+    .settings(WebPlugin.webSettings :_*)
     .settings(mergeStrategy in assembly <<= (mergeStrategy in assembly) {
     (old) => {
       case "logback.xml" => MergeStrategy.first
