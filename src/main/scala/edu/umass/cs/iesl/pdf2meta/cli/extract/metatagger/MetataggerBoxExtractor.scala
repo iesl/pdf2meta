@@ -70,14 +70,8 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
   def apply(v1: Workspace) = {
     //here xml
 
-    println ("path to xml: " + v1.file.path.toString)
     val documentMT: Elem = XML.loadFile(v1.file.path.toString)
 
-
-    println ("trying to get llx from the header:")
-
-
-    println ("end of trying to get llx from the header")
     val props:MapToProperties = new MapToProperties()
     val propertiesFilename:String =
       S.get("propertiesFile").openOrThrowException("err while obtaining properties file")

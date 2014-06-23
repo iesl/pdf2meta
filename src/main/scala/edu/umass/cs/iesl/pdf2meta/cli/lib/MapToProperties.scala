@@ -48,7 +48,6 @@ class MapToProperties {
   {
     val mapped = scala.collection.JavaConversions.mapAsJavaMap(properties)
     val c:Config = ConfigFactory.parseMap(mapped)
-    println(c.root().render(ConfigRenderOptions.defaults().setJson(false).setComments(false).setFormatted(false).setOriginComments(false)))
     scala.tools.nsc.io.File(fileName).writeAll(c.root().render(ConfigRenderOptions.defaults().setJson(false).setComments(false).setOriginComments(false)).replaceAll("=\"","=").replaceAll("\"\n","\n") )
   }
 
