@@ -32,6 +32,8 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
     "CONTENT -> HEADERS -> ABSTRACT" -> "HEADERS -> ABSTRACT",
     "CONTENT -> HEADERS -> NOTE" -> "HEADERS -> NOTE",
     "CONTENT -> HEADERS -> NOTE -> DATE" -> "HEADERS -> NOTE -> DATE",
+    "CONTENT -> HEADERS -> NOTE -> INSTITUTION" -> "HEADERS -> NOTE -> INSTITUTION",
+    "CONTENT -> HEADERS -> NOTE -> ADDRESS" -> "HEADERS -> NOTE -> ADDRESS",
     "CONTENT -> HEADERS -> DATE" -> "HEADERS -> DATE",
     "CONTENT -> HEADERS -> KEYWORD" -> "HEADERS -> KEYWORD",
     "CONTENT -> BIBLIO -> REFERENCE -> CONFERENCE" -> "REFERENCES -> CONFERENCE",
@@ -65,7 +67,8 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
 //however, the position of the textboxes may be different
   val mergeContent:List[String] = List("CONTENT -> BIBLIO -> REFERENCE -> CONFERENCE",
                                   "CONTENT -> BIBLIO -> REFERENCE -> DATE",
-                                  "CONTENT -> BIBLIO -> REFERENCE -> ADDRESS")
+                                  "CONTENT -> BIBLIO -> REFERENCE -> ADDRESS",
+                                  "CONTENT -> BIBLIO -> REFERENCE -> TITLE")
 
   def apply(v1: Workspace) = {
     //here xml
@@ -116,9 +119,9 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
     { (currentNode._2(0) \ "@llx").text
     match {
       case ptrn(_) =>
-
+        println("change")
         if((parentName + currentNode._1).toUpperCase().contains("REFERENCE") &&
-          Math.abs((currentNode._2(0) \ "@lly").text.toFloat - (currentNode._2(0) \ "@ury").text.toFloat)>400)
+          Math.abs((currentNode._2(0) \ "@lly").text.toFloat - (currentNode._2(0) \ "@ury").text.toFloat)> 20 /*100*/ /*400*/)
         {
           val recRes:Seq[ClassifiedRectangle] = processXMLRecursiveV3(currentNode._2(0).child, parentName + currentNode._2(0).label + " -> ",parentId,pageDimensions)
           val recSiblings:Seq[ClassifiedRectangle] = {if(currentNode._2.size>1){processXMLRecursiveV3(currentNode._2.tail, parentName,parentId,pageDimensions)}
@@ -248,6 +251,7 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
     { (currentNode._2(0) \ "@llx").text
     match {
       case ptrn(_) =>
+        println("change")
 
         def getRectangleOnPage(cNode:Node):RectangleOnPage = {
           val rectOnPage:RectangleOnPage = new RectangleOnPage {
@@ -261,7 +265,7 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
         }
 
         if((parentName + currentNode._1).toUpperCase().contains("REFERENCE") &&
-          Math.abs((currentNode._2(0) \ "@lly").text.toFloat - (currentNode._2(0) \ "@ury").text.toFloat)>400)
+          Math.abs((currentNode._2(0) \ "@lly").text.toFloat - (currentNode._2(0) \ "@ury").text.toFloat)> 400 /*400*/)
         {
           val recRes:Seq[ClassifiedRectangle] = processXMLRecursiveV4(currentNode._2(0).child, parentName + currentNode._2(0).label + " -> ",parentId,pageDimensions)
           val recSiblings:Seq[ClassifiedRectangle] = {if(currentNode._2.size>1){processXMLRecursiveV4(currentNode._2.tail, parentName,parentId,pageDimensions)}
