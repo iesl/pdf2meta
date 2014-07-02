@@ -9,30 +9,50 @@ IFS=$'\n';
 
 mkdir -p "$2/downloaded"
 
+
+currpath=$(pwd)
+cd "$2"
+real2=`pwd -P`
+cd "$currpath"
+cd "$3"
+real3=`pwd -P`
+
+echo $real2 
+echo $real3 
+cd "$currpath"
+#read -p "Paused real2 ..."
 wget -r -l 0 -np "$1" -P "$2/downloaded/"
-for name in `find $2/downloaded/ -name \*.pdf -print` # `ls -a $2/downloaded/*.pdf`  
+
+cd "$currpath"
+
+for name in `find $real2/downloaded/ -name \*.pdf -print` # `ls -a $2/downloaded/*.pdf`  
 do  
 	newname="$(echo $name | sed 's/ /_/g')"
 	mv "$name" $newname
 	subdirname="$(echo $newname | rev | cut -d '.' -f2-10 | cut -d '/' -f1 | rev)"
 
-	mkdir -p "$2/data/$subdirname"
+	mkdir -p "$real2/data/$subdirname"
 
 	echo $subdirname
 	#copies the pdf there too
-	cp $newname "$2/data/$subdirname/"
+	cp $newname "$real2/data/$subdirname/"
 
 	#runs pstotext 
-	pstotext $newname > "$2/data/$subdirname/""$subdirname"".pdf.xml"
+	pstotext $newname > "$real2/data/$subdirname/""$subdirname"".pdf.xml"
 
 	#runs metatagger
-	cd "$3"
-	echo "$2/data/$subdirname/""$subdirname"".pdf.xml -> $2/data/$subdirname/""$subdirname"".pdf_runcrf.xml" | "$3/bin/runcrf"
 
+	cd "$real3"
+	echo "$real2/data/$subdirname/""$subdirname"".pdf.xml -> $real2/data/$subdirname/""$subdirname"".pdf_runcrf.xml" | "$real3/bin/runcrf"
+
+	cd "$currpath"
+#	ls
+#	pwd
+#	read -p "Paused after ls and pwd ..."
 	#runs imagemagick 
-	convert -density 400 -verbose "$2data/$subdirname/""$subdirname"".pdf" "$2data/$subdirname/""$subdirname"".pdf.jpg"
+	convert -density 400 -verbose "$real2/data/$subdirname/""$subdirname"".pdf" "$real2/data/$subdirname/""$subdirname"".pdf.jpg"
 	
-	resident=`identify $2data/$subdirname/"$subdirname".pdf`
+	resident=`identify $real2/data/$subdirname/"$subdirname".pdf`
 
 	result="$(echo $resident | cut -d ' ' -f3)"
 
@@ -42,13 +62,13 @@ do
 
 
 	#creates the properties file 
-	touch "$2/""$subdirname"".properties"
+	touch "$real2/""$subdirname"".properties"
 
-	echo "ispdfalreadyparsed=yes" >> "$2/""$subdirname"".properties"
-	echo "height=$height" >> "$2/""$subdirname"".properties"
-	echo "width=$width" >> "$2/""$subdirname"".properties"
-	echo "pdflocation=$2data/$subdirname/""$subdirname"".pdf" >> "$2/""$subdirname"".properties"
-	echo "imagedir=$2data/$subdirname/" >> "$2/""$subdirname"".properties"
+	echo "ispdfalreadyparsed=yes" >> "$real2/""$subdirname"".properties"
+	echo "height=$height" >> "$real2/""$subdirname"".properties"
+	echo "width=$width" >> "$real2/""$subdirname"".properties"
+	echo "pdflocation=$real2data/$subdirname/""$subdirname"".pdf" >> "$real2/""$subdirname"".properties"
+	echo "imagedir=$real2data/$subdirname/" >> "$real2/""$subdirname"".properties"
 
 
 #    ispdfalreadyparsed=true
