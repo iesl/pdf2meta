@@ -36,6 +36,8 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
     "CONTENT -> HEADERS -> NOTE -> ADDRESS" -> "HEADERS -> NOTE -> ADDRESS",
     "CONTENT -> HEADERS -> NOTE -> JOURNAL" -> "HEADERS -> NOTE -> JOURNAL",
     "CONTENT -> HEADERS -> NOTE -> PAGES" -> "HEADERS -> NOTE -> PAGES",
+    "CONTENT -> HEADERS -> NOTE -> TECH" -> "HEADERS -> NOTE -> TECH",
+    "CONTENT -> HEADERS -> NOTE -> PUBLISHER" -> "HEADERS -> NOTE -> PUBLISHER",
     "CONTENT -> HEADERS -> DATE" -> "HEADERS -> DATE",
     "CONTENT -> HEADERS -> KEYWORD" -> "HEADERS -> KEYWORD",
     "CONTENT -> BIBLIO -> REFERENCE -> CONFERENCE" -> "REFERENCES -> CONFERENCE",
@@ -62,7 +64,11 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
      "CONTENT -> HEADERS -> AUTHORS"
   )
 
-  val siblingsHerarchyExtraction:List[String] = List("CONTENT -> HEADERS -> INSTITUTION"
+  val siblingsHerarchyExtraction:List[String] = List("CONTENT -> HEADERS -> INSTITUTION",
+    "CONTENT -> HEADERS -> ADDRESS",
+    "CONTENT -> HEADERS -> NOTE -> INSTITUTION"
+    //,
+    //"CONTENT -> HEADERS -> NOTE -> DATE"
   )
 
   //for recursive content such as authors that itself can be composed of firstname, lastname, etc.
@@ -77,7 +83,7 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
                                   //****************************************//
                                   "CONTENT -> HEADERS -> TITLE",
 //                                  "CONTENT -> HEADERS -> INSTITUTION",
-                                  "CONTENT -> HEADERS -> ADDRESS",
+//                                  "CONTENT -> HEADERS -> ADDRESS",
                                   "CONTENT -> HEADERS -> EMAIL",
                                   "CONTENT -> HEADERS -> NOTE -> DATE",
                                   "CONTENT -> HEADERS -> NOTE -> INSTITUTION",
@@ -85,7 +91,9 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
                                   "CONTENT -> HEADERS -> NOTE -> JOURNAL",
                                   "CONTENT -> HEADERS -> NOTE -> PAGES",
                                   "CONTENT -> HEADERS -> DATE",
-                                  "CONTENT -> HEADERS -> KEYWORD"
+                                  "CONTENT -> HEADERS -> KEYWORD",
+  "CONTENT -> HEADERS -> NOTE -> PUBLISHER",
+  "CONTENT -> HEADERS -> NOTE -> TECH"
                                   )
   /*"CONTENT -> HEADERS -> NOTE -> DATE" -> "HEADERS -> NOTE -> DATE",
   "CONTENT -> HEADERS -> NOTE -> INSTITUTION" -> "HEADERS -> NOTE -> INSTITUTION",
@@ -270,6 +278,8 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
 
   def processXMLRecursiveV4(node:Seq[Node], parentName:String, parentId:String, pageDimensions:Rectangle, justContent:Boolean):Seq[ClassifiedRectangle] =
   {
+
+//    println("parent data: " + parentName + " " + parentId)
 
     val ptrn = "([0-9].*)".r
     //    val seqDocNode:Seq[DocNode] = Seq()
@@ -470,7 +480,8 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
 
             val recRes = processXMLRecursiveV4(currentNode._2(0).child, parentName + currentNode._2(0).label + " -> ",returnParentId(currentNode._2(0).label, currNode.rectangle.get,parentId),pageDimensions,false)
 
-            val recSiblings:Seq[ClassifiedRectangle] = {if(currentNode._2.size>1){processXMLRecursiveV4(currentNode._2.tail, parentName,parentId,pageDimensions,true)}
+            val recSiblings:Seq[ClassifiedRectangle] = {if(currentNode._2.size>1){processXMLRecursiveV4(currentNode._2.tail, parentName,parentId,pageDimensions,
+              if(siblingHierarchyApplicable()){true}else{false})}
             else
             {(seqClassifiedRectangle)}}
 
@@ -482,6 +493,11 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
 //                currNode.rectangle.get, Array[Float](0f))//currNode
 //                , weightedFeatureSet, weightedStringSet, None, getAuthorDetails(currentNode._2(0), parentName + currentNode._2(0).label))
 
+
+            if(siblingHierarchyApplicable())
+            {
+              println("hierarchy applicable")
+            }
             val currClassifiedRectangleP: ClassifiedRectangle =
               new ClassifiedRectangle(new MetataggerBoxTextAtom(currNode.id,
                 {if(!justContent){mapAcceptedLabels.get((parentName + currentNode._2(0).label).toUpperCase()).get}else{""}} +
@@ -503,7 +519,7 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
 //              println("Siblings: " + recSiblings.map(x=>x))
                 recSiblings
               //recSiblings.map(x=>x)
-            }else{recSiblings}}) ++ recRes) :+ currClassifiedRectangle
+            }else{if(!siblingHierarchyApplicable() || justContent){recSiblings}else{List()}}}) ++ recRes) :+ currClassifiedRectangle
           }
           else
           {
