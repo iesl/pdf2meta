@@ -37,6 +37,8 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
     "CONTENT -> HEADERS -> NOTE -> JOURNAL" -> "HEADERS -> NOTE -> JOURNAL",
     "CONTENT -> HEADERS -> NOTE -> PAGES" -> "HEADERS -> NOTE -> PAGES",
     "CONTENT -> HEADERS -> NOTE -> TECH" -> "HEADERS -> NOTE -> TECH",
+    "CONTENT -> HEADERS -> NOTE -> VOLUME" -> "HEADERS -> NOTE -> VOLUME",
+    "CONTENT -> HEADERS -> NOTE -> NUMBER" -> "HEADERS -> NOTE -> NUMBER",
     "CONTENT -> HEADERS -> NOTE -> PUBLISHER" -> "HEADERS -> NOTE -> PUBLISHER",
     "CONTENT -> HEADERS -> DATE" -> "HEADERS -> DATE",
     "CONTENT -> HEADERS -> KEYWORD" -> "HEADERS -> KEYWORD",
@@ -66,7 +68,9 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
 
   val siblingsHerarchyExtraction:List[String] = List("CONTENT -> HEADERS -> INSTITUTION",
     "CONTENT -> HEADERS -> ADDRESS",
-    "CONTENT -> HEADERS -> NOTE -> INSTITUTION"
+    "CONTENT -> HEADERS -> NOTE -> INSTITUTION",
+    "CONTENT -> HEADERS -> NOTE -> ADDRESS",
+    "CONTENT -> HEADERS -> EMAIL"
     //,
     //"CONTENT -> HEADERS -> NOTE -> DATE"
   )
@@ -84,17 +88,20 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
                                   "CONTENT -> HEADERS -> TITLE",
 //                                  "CONTENT -> HEADERS -> INSTITUTION",
 //                                  "CONTENT -> HEADERS -> ADDRESS",
-                                  "CONTENT -> HEADERS -> EMAIL",
+//                                  "CONTENT -> HEADERS -> EMAIL",
                                   "CONTENT -> HEADERS -> NOTE -> DATE",
-                                  "CONTENT -> HEADERS -> NOTE -> INSTITUTION",
-                                  "CONTENT -> HEADERS -> NOTE -> ADDRESS",
+//                                  "CONTENT -> HEADERS -> NOTE -> INSTITUTION",
+ //                                 "CONTENT -> HEADERS -> NOTE -> ADDRESS",
                                   "CONTENT -> HEADERS -> NOTE -> JOURNAL",
                                   "CONTENT -> HEADERS -> NOTE -> PAGES",
                                   "CONTENT -> HEADERS -> DATE",
                                   "CONTENT -> HEADERS -> KEYWORD",
-  "CONTENT -> HEADERS -> NOTE -> PUBLISHER",
-  "CONTENT -> HEADERS -> NOTE -> TECH"
-                                  )
+                                  "CONTENT -> HEADERS -> NOTE -> PUBLISHER",
+                                  "CONTENT -> HEADERS -> NOTE -> TECH",
+                                  "CONTENT -> HEADERS -> NOTE -> VOLUME",
+                                  "CONTENT -> HEADERS -> NOTE -> NUMBER",
+                                  "CONTENT -> HEADERS -> ABSTRACT"
+)
   /*"CONTENT -> HEADERS -> NOTE -> DATE" -> "HEADERS -> NOTE -> DATE",
   "CONTENT -> HEADERS -> NOTE -> INSTITUTION" -> "HEADERS -> NOTE -> INSTITUTION",
   "CONTENT -> HEADERS -> NOTE -> ADDRESS" -> "HEADERS -> NOTE -> ADDRESS",
