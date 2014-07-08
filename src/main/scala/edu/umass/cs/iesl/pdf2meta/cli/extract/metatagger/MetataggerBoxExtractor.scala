@@ -30,6 +30,7 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
     "CONTENT -> HEADERS -> ADDRESS" -> "HEADERS -> ADDRESS",
     "CONTENT -> HEADERS -> EMAIL" -> "HEADERS -> EMAIL",
     "CONTENT -> HEADERS -> ABSTRACT" -> "HEADERS -> ABSTRACT",
+    "CONTENT -> HEADERS -> EDITOR" -> "HEADERS -> EDITOR",
    // "CONTENT -> HEADERS -> NOTE" -> "HEADERS -> NOTE",
     "CONTENT -> HEADERS -> NOTE -> DATE" -> "HEADERS -> NOTE -> DATE",
     "CONTENT -> HEADERS -> NOTE -> INSTITUTION" -> "HEADERS -> NOTE -> INSTITUTION",
@@ -100,7 +101,8 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
                                   "CONTENT -> HEADERS -> NOTE -> TECH",
                                   "CONTENT -> HEADERS -> NOTE -> VOLUME",
                                   "CONTENT -> HEADERS -> NOTE -> NUMBER",
-                                  "CONTENT -> HEADERS -> ABSTRACT"
+                                  "CONTENT -> HEADERS -> ABSTRACT",
+                                  "CONTENT -> HEADERS -> EDITOR"
 )
   /*"CONTENT -> HEADERS -> NOTE -> DATE" -> "HEADERS -> NOTE -> DATE",
   "CONTENT -> HEADERS -> NOTE -> INSTITUTION" -> "HEADERS -> NOTE -> INSTITUTION",
