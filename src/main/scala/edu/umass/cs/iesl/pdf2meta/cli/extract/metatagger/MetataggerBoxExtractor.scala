@@ -41,8 +41,12 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
     "CONTENT -> HEADERS -> NOTE -> VOLUME" -> "HEADERS -> NOTE -> VOLUME",
     "CONTENT -> HEADERS -> NOTE -> NUMBER" -> "HEADERS -> NOTE -> NUMBER",
     "CONTENT -> HEADERS -> NOTE -> PUBLISHER" -> "HEADERS -> NOTE -> PUBLISHER",
+    "CONTENT -> HEADERS -> NOTE -> BOOKTITLE" -> "HEADERS -> NOTE -> BOOKTITLE",
     "CONTENT -> HEADERS -> DATE" -> "HEADERS -> DATE",
     "CONTENT -> HEADERS -> KEYWORD" -> "HEADERS -> KEYWORD",
+    "CONTENT -> HEADERS -> TECH" -> "HEADERS -> TECH",
+    "CONTENT -> HEADERS -> WEB" -> "HEADERS -> WEB",
+    "CONTENT -> HEADERS -> PHONE" -> "HEADERS -> PHONE",
     "CONTENT -> BIBLIO -> REFERENCE -> CONFERENCE" -> "REFERENCES -> CONFERENCE",
     "CONTENT -> BIBLIO -> REFERENCE -> ADDRESS" -> "REFERENCES -> ADDRESS",
     "CONTENT -> BIBLIO -> REFERENCE -> PUBLISHER" -> "REFERENCES -> PUBLISHER",
@@ -59,7 +63,8 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
     "CONTENT -> BIBLIO -> REFERENCE -> BOOKTITLE" -> "REFERENCES -> BOOKTITLE",
     "CONTENT -> BIBLIO -> REFERENCE -> NOTE" -> "REFERENCES -> NOTE",
     "CONTENT -> BIBLIO -> REFERENCE -> INSTITUTION" -> "REFERENCES -> INSTITUTION",
-    "CONTENT -> BIBLIO -> REFERENCE -> WEB" -> "REFERENCES -> WEB")
+    "CONTENT -> BIBLIO -> REFERENCE -> WEB" -> "REFERENCES -> WEB"
+    )
 
 
 
@@ -102,7 +107,11 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
                                   "CONTENT -> HEADERS -> NOTE -> VOLUME",
                                   "CONTENT -> HEADERS -> NOTE -> NUMBER",
                                   "CONTENT -> HEADERS -> ABSTRACT",
-                                  "CONTENT -> HEADERS -> EDITOR"
+                                  "CONTENT -> HEADERS -> EDITOR",
+                                  "CONTENT -> HEADERS -> NOTE -> BOOKTITLE",
+                                  "CONTENT -> HEADERS -> TECH",
+                                  "CONTENT -> HEADERS -> WEB",
+                                  "CONTENT -> HEADERS -> PHONE"
 )
   /*"CONTENT -> HEADERS -> NOTE -> DATE" -> "HEADERS -> NOTE -> DATE",
   "CONTENT -> HEADERS -> NOTE -> INSTITUTION" -> "HEADERS -> NOTE -> INSTITUTION",
