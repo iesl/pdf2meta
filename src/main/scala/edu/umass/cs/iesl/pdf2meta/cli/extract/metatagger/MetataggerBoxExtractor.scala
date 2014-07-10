@@ -331,7 +331,8 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
               else if(siblingsHerarchyExtraction.exists(x => x==path.toUpperCase()))
               {
                 //d
-                currRect ++ siblings
+                //currRect ++ siblings
+                currRect ++ siblings.reverse
               }
               else
               {
@@ -370,10 +371,12 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
 
 
             (((seqClassifiedRectangle) ++ {if(mergeIsApplicable()){
-//              println("Siblings: " + recSiblings.map(x=>x))
                 recSiblings
-              //recSiblings.map(x=>x)
             }else{if(!siblingHierarchyApplicable() || justContent){recSiblings}else{List()}}}) ++ recRes) :+ currClassifiedRectangle
+
+//            currClassifiedRectangle +: (((seqClassifiedRectangle) ++ {if(mergeIsApplicable()){
+//                recSiblings
+//            }else{if(!siblingHierarchyApplicable() || justContent){recSiblings}else{List()}}}) ++ recRes)
           }
           else
           {
