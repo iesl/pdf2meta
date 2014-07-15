@@ -68,8 +68,8 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
     "CONTENT -> BIBLIO -> REFERENCE -> INSTITUTION" -> "REFERENCES -> INSTITUTION",
     "CONTENT -> BIBLIO -> REFERENCE -> WEB" -> "REFERENCES -> WEB",
     "CONTENT -> BIBLIO -> REFERENCE -> TECH" -> "REFERENCES -> TECH",
-    "CONTENT -> BIBLIO -> REFERENCE -> AUTHOR" -> "REFERENCES -> AUTHOR"
-
+    "CONTENT -> BIBLIO -> REFERENCE -> AUTHOR" -> "REFERENCES -> AUTHOR",
+    "CONTENT -> HEADERS -> AUTHORS -> AUTHOR -> NOTE" -> "HEADERS -> AUTHORS -> NOTE"
     )
 
 
@@ -119,7 +119,8 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
                                   "CONTENT -> HEADERS -> TECH",
                                   "CONTENT -> HEADERS -> WEB",
                                   "CONTENT -> HEADERS -> PHONE",
-                                  "CONTENT -> HEADERS -> PAGES"
+                                  "CONTENT -> HEADERS -> PAGES",
+                                  "CONTENT -> HEADERS -> AUTHORS -> AUTHOR -> NOTE"
 )
 
   def apply(v1: Workspace) = {

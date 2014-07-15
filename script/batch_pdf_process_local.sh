@@ -3,7 +3,7 @@
 
 echo "input directory: $1"
 echo "output directory: $2"
-#IFS=$'\n';
+IFS=$'\n';
 
 #downloads the files from origin 
 
@@ -33,6 +33,8 @@ cd "$currpath"
 for name in `find $real1 -name \*.pdf -print` # `ls -a $2/downloaded/*.pdf`  
 do  
 	newname="$(echo $name | sed 's/ /_/g')"
+
+	echo "from $name to $newname"
 	mv "$name" $newname
 	subdirname="$(echo $newname | rev | cut -d '.' -f2-10 | cut -d '/' -f1 | rev)"
 
@@ -86,4 +88,4 @@ done
 
 
 
-#IFS=$' \t\n'
+IFS=$' \t\n'
