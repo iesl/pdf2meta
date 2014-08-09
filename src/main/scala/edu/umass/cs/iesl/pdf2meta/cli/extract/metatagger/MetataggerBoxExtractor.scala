@@ -69,7 +69,8 @@ class MetataggerBoxExtractor extends MetataggerExtractor with Logging with Funct
     "CONTENT -> BIBLIO -> REFERENCE -> WEB" -> "REFERENCES -> WEB",
     "CONTENT -> BIBLIO -> REFERENCE -> TECH" -> "REFERENCES -> TECH",
     "CONTENT -> BIBLIO -> REFERENCE -> AUTHOR" -> "REFERENCES -> AUTHOR",
-    "CONTENT -> HEADERS -> AUTHORS -> AUTHOR -> NOTE" -> "HEADERS -> AUTHORS -> NOTE"
+    "CONTENT -> HEADERS -> AUTHORS -> AUTHOR -> NOTE" -> "HEADERS -> AUTHORS -> NOTE",
+    "CONTENT -> BODY -> COLUMN" -> "BODY -> COLUMN"
     )
 
 
